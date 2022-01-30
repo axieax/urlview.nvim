@@ -1,8 +1,10 @@
-# urlview.nvim
+# 🔎 urlview.nvim
 
 A [Neovim](https://neovim.io) plugin which uses `vim.ui.select` to display all the links in the current buffer. Entries can also be selected to be brought up in your browser.
 
-> Note: currently, this plugin only detects URLs beginning with a HTTP(s) or www prefix.
+> Please note that currently, this plugin only detects URLs beginning with a HTTP(s) or www prefix.
+
+![demo](https://user-images.githubusercontent.com/62098008/151710090-04639777-ce5e-49f2-a0ea-777a3c48168f.png)
 
 ## ⚡ Requirements
 
