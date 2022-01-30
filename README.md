@@ -8,7 +8,7 @@ A [Neovim](https://neovim.io) plugin which uses `vim.ui.select` to display all t
 
 ## ⚡ Requirements
 
-This plugin requires **Neovim 0.6+**, which supports the `vim.ui.select` function. If necessary, please check out [Alternatives](#Alternatives) for other similar plugins supporting versions prior to 0.6.
+This plugin requires **Neovim 0.6+**, which supports the `vim.ui.select` function. If necessary, please check out **Alternatives** for other similar plugins supporting versions prior to 0.6.
 
 ## 🚀 Usage
 
