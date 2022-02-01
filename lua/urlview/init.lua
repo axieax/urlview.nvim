@@ -25,8 +25,9 @@ function M.search()
 end
 
 ---Extracts urls from the current buffer
-function M.extract_urls()
-	local content = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
+function M.extract_urls(bufnr)
+	bufnr = bufnr or 0
+	local content = table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n")
 	local captures = {}
 
 	-- Extract URLs starting with http:// or https://
