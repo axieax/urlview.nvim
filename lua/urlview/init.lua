@@ -1,6 +1,6 @@
 local M = {}
 
-local pattern = "[%w@:%%._+~#=/-?&]*"
+local pattern = "[%w@:%%._+~#=/%-?&]*"
 local http_pattern = "https?://"
 local www_pattern = "www%."
 local default_prefix = "https://"
