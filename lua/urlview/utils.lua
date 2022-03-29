@@ -41,6 +41,12 @@ function M.extract_urls(content)
 	return result
 end
 
+--- Opens the url in the browser
+---@param url string
+function M.navigate_url(url)
+	vim.cmd("call netrw#BrowseX('" .. url .. "',netrw#CheckIfRemote())")
+end
+
 --- Determines whether to accept the current value or use a fallback value
 ---@param value any @value to check
 ---@param fallback_value any @fallback value to use

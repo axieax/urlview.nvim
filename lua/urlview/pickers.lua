@@ -11,7 +11,7 @@ function M.default(items)
 	}
 	local function on_choice(item, _)
 		if item then
-			vim.cmd("call netrw#BrowseX('" .. item .. "',netrw#CheckIfRemote())")
+			utils.navigate_url(item)
 		end
 	end
 
@@ -29,6 +29,8 @@ function M.telescope(items, opts)
 
 	local pickers = require("telescope.pickers")
 	local finders = require("telescope.finders")
+	local actions = require("telescope.actions")
+	local action_state = require("telescope.actions.state")
 	local conf = require("telescope.config").values
 
 	pickers.new(opts, {
@@ -37,6 +39,16 @@ function M.telescope(items, opts)
 			results = items,
 		}),
 		sorter = conf.generic_sorter(opts),
+		attach_mappings = function(prompt_bufnr, _)
+			actions.select_default:replace(function()
+				local selection = action_state.get_selected_entry()
+				actions.close(prompt_bufnr)
+				if selection[1] then
+					utils.navigate_url(selection[1])
+				end
+			end)
+			return true
+		end,
 	}):find()
 end
 
