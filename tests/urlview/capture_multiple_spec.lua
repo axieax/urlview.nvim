@@ -1,4 +1,4 @@
-local extract_urls = require("urlview").extract_urls
+local extract_urls = require("urlview.utils").extract_urls
 local assert_tbl_same_any_order = require("tests.urlview.helpers").assert_tbl_same_any_order
 
 describe("multiple captures", function()
@@ -34,7 +34,7 @@ describe("unique captures", function()
 			www.google.com
 		]]
 		local result = extract_urls(content)
-		assert_tbl_same_any_order({ "https://www.google.com", "www.google.com" }, result)
+		assert_tbl_same_any_order({ "https://www.google.com" }, result)
 	end)
 
 	it("different paths", function()
