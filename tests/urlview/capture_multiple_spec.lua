@@ -3,11 +3,11 @@ describe("multiple captures", function()
 	local result_contains = require("tests.urlview.helpers").result_contains
 
 	it("separate lines", function()
-		local url = [[
+		local content = [[
 			http://google.com
 			https://www.google.com
 		]]
-		local result = extract_urls(url)
+		local result = extract_urls(content)
 
 		assert.are.equal(2, #result)
 		assert.truthy(result_contains(result, {
@@ -20,7 +20,20 @@ describe("multiple captures", function()
 		}))
 	end)
 
-	-- TODO: same line (or)
+	it("same line", function()
+		local content = "http://google.com https://www.github.com"
+		local result = extract_urls(content)
+
+		assert.are.equal(2, #result)
+		assert.truthy(result_contains(result, {
+			url = "google.com",
+			prefix = "http://",
+		}))
+		assert.truthy(result_contains(result, {
+			url = "www.github.com",
+			prefix = "https://",
+		}))
+	end)
 end)
 
 describe("unique captures", function()
