@@ -4,7 +4,7 @@ A [Neovim](https://neovim.io) plugin which uses `vim.ui.select` to display all t
 
 > Please note that currently, this plugin only detects URLs beginning with a HTTP(s) or www prefix.
 
-![demo](https://user-images.githubusercontent.com/62098008/160541254-0a629364-707a-4540-bb5b-af201208f6cc.png)
+![demo](https://user-images.githubusercontent.com/62098008/160542972-68278a4a-badd-4672-9d6b-ae9a3a669fd2.png)
 
 ## ⚡ Requirements
 
