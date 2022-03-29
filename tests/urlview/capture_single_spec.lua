@@ -1,67 +1,68 @@
-describe("url-only simple capture", function()
-	local extract_urls = require("urlview").extract_urls
+local assert_no_match = require("tests.urlview.helpers").assert_no_match
+local assert_single_match = require("tests.urlview.helpers").assert_single_match
 
+describe("no capture", function()
+	it("empty string", function()
+		assert_no_match("")
+	end)
+
+	it("random", function()
+		assert_no_match("asdfwiueyfksdlckvj")
+	end)
+
+	it("com only", function()
+		assert_no_match("test.com")
+	end)
+
+	it("com path", function()
+		assert_no_match("test.com/idk")
+	end)
+end)
+
+describe("url-only simple capture", function()
 	it("http capture", function()
-		local url = "http://google.com"
-		local result = extract_urls(url)
-		assert.same({ { url = "google.com", prefix = "http://" } }, result)
+		assert_single_match("http://google.com")
 	end)
 
 	it("https capture", function()
-		local url = "https://google.com"
-		local result = extract_urls(url)
-		assert.same({ { url = "google.com", prefix = "https://" } }, result)
+		assert_single_match("https://google.com")
 	end)
 
 	it("www capture", function()
-		local url = "www.google.com"
-		local result = extract_urls(url)
-		assert.same({ { url = url, prefix = "" } }, result)
+		assert_single_match("www.google.com")
 	end)
 
 	it("http www capture", function()
-		local url = "http://www.google.com"
-		local result = extract_urls(url)
-		assert.same({ { url = "www.google.com", prefix = "http://" } }, result)
+		assert_single_match("http://www.google.com")
 	end)
 
 	it("https www capture", function()
-		local url = "https://www.google.com"
-		local result = extract_urls(url)
-		assert.same({ { url = "www.google.com", prefix = "https://" } }, result)
+		assert_single_match("https://www.google.com")
 	end)
 
 	it("trailing slash", function()
-		local url = "www.google.com/"
-		local result = extract_urls(url)
-		assert.same({ { url = url, prefix = "" } }, result)
+		assert_single_match("www.google.com/")
 	end)
 end)
 
 describe("url-only path capture", function()
-	local extract_urls = require("urlview").extract_urls
-
 	it("lol php capture", function()
-		local url = "https://who.even.uses/index.php"
-		local result = extract_urls(url)
-		assert.same({ { url = "who.even.uses/index.php", prefix = "https://" } }, result)
+		assert_single_match("https://who.even.uses/index.php")
 	end)
 
 	it("https path capture", function()
-		local url = "https://google.com/path/to/idk.html"
-		local result = extract_urls(url)
-		assert.same({ { url = "google.com/path/to/idk.html", prefix = "https://" } }, result)
+		assert_single_match("https://google.com/path/to/idk")
 	end)
 
 	it("www path capture", function()
-		local url = "www.google.com/path/to/idk"
-		local result = extract_urls(url)
-		assert.same({ { url = url, prefix = "" } }, result)
+		assert_single_match("www.google.com/path/to/idk")
 	end)
 
 	it("url-encoded path query capture", function()
-		local url = "www.google.com/P%40%2Bh%20t35T%2F/1dk%3F?q=%3Da%25%3B"
-		local result = extract_urls(url)
-		assert.same({ { url = url, prefix = "" } }, result)
+		assert_single_match("www.google.com/P%40%2Bh%20t35T%2F/1dk%3F?q=%3Da%25%3B")
+	end)
+
+	it("query capture", function()
+		assert_single_match("https://example.com/path/to/idk?q=axie&ax")
 	end)
 end)

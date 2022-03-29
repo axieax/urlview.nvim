@@ -1,16 +1,22 @@
 local M = {}
 
-local function contains_common_key(a, b, key)
-	return a[key] ~= nil and a[key] == b[key]
+local extract_urls = require("urlview.utils").extract_urls
+
+function M.assert_no_match(content)
+	local result = extract_urls(content)
+	assert.equal(0, #result)
 end
 
-function M.result_contains(result, tbl)
-	for _, v in pairs(result) do
-		if contains_common_key(v, tbl, "url") and contains_common_key(v, tbl, "prefix") then
-			return true
-		end
+function M.assert_single_match(url)
+	local result = extract_urls(url)
+	assert.same({ url }, result)
+end
+
+function M.assert_tbl_same_any_order(expected, actual)
+	assert.same(#expected, #actual)
+	for _, e in ipairs(expected) do
+		assert.truthy(vim.tbl_contains(actual, e))
 	end
-	return false
 end
 
 return M
