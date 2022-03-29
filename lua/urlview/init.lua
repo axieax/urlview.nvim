@@ -1,62 +1,30 @@
 local M = {}
 
-local pattern = "[%w@:%%._+~#=/%-?&]*"
-local http_pattern = "https?://"
-local www_pattern = "www%."
-local default_prefix = "https://"
+local pickers = require("urlview.pickers")
+local config = require("urlview.config")
+local utils = require("urlview.utils")
 
---- Display the urls in the current buffer using vim.ui.select
+--- Display the urls in the current buffer
+---@param picker string (optional)
 ---@param bufnr number (optional)
-function M.search(bufnr)
-	bufnr = bufnr or 0
-	local content = table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n")
-	local items = M.extract_urls(content)
-	local options = {
-		prompt = "URLs: ",
-		format_item = function(item)
-			return item.prefix .. item.url
-		end,
-	}
-	local function on_choice(item, _)
-		if item ~= nil then
-			local prefix = (item.prefix == "" and default_prefix) or item.prefix
-			vim.cmd("call netrw#BrowseX('" .. prefix .. item.url .. "',netrw#CheckIfRemote())")
-		end
-	end
+function M.search(picker, bufnr, ...)
+	bufnr = utils.fallback(bufnr, 0)
+	picker = utils.ternary(pickers[picker] ~= nil, picker, config.picker)
 
-	vim.ui.select(items, options, on_choice)
+	local content = table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n")
+	local items = utils.extract_urls(content)
+	if vim.tbl_isempty(items) then
+		vim.notify("No URLs found in buffer" .. utils.ternary(bufnr ~= 0, " " .. bufnr, ""))
+	else
+		return pickers[picker](items, ...)
+	end
 end
 
---- Extracts urls from the given content
----@param content string
----@return table (list) of captures (prefix, url map)
-function M.extract_urls(content)
-	local captures = {}
-
-	-- Extract URLs starting with http:// or https://
-	for capture in content:gmatch(http_pattern .. "%w" .. pattern) do
-		local prefix = capture:match(http_pattern)
-		local url = capture:gsub(http_pattern, "")
-		captures[url] = prefix
-	end
-
-	-- Extract URLs starting with www, excluding already extracted http(s) URLs
-	for capture in content:gmatch(www_pattern .. "%w" .. pattern) do
-		if not captures[capture] then
-			captures[capture] = ""
-		end
-	end
-
-	-- Combine captures
-	local result = {}
-	for url, prefix in pairs(captures) do
-		table.insert(result, {
-			prefix = prefix,
-			url = url,
-		})
-	end
-
-	return result
+--- urlview custom setup
+---@param user_config table (optional)
+function M.setup(user_config)
+	user_config = utils.fallback(user_config, {})
+	config = vim.tbl_deep_extend("force", config, user_config)
 end
 
 return M
