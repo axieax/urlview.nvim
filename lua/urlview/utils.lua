@@ -44,7 +44,23 @@ end
 --- Opens the url in the browser
 ---@param url string
 function M.navigate_url(url)
-	vim.cmd("call netrw#BrowseX('" .. url .. "',netrw#CheckIfRemote())")
+	if config.use_netrw then
+		vim.cmd("call netrw#BrowseX('" .. url .. "',netrw#CheckIfRemote())")
+	else
+		-- supports MacOS, Linux, and FreeBSD
+		local cmd = nil
+		if vim.fn.has "mac" == 1 then -- MacOS
+			cmd = "open "
+		elseif vim.fn.has "linux" == 1 or vim.fn.has "bsd" then -- Linux and FreeBSD
+			cmd = "xdg-open "
+		end
+
+		if cmd then
+			os.execute(cmd .. vim.fn.shellescape(url, 1))
+		else
+			vim.notify("Unsupported OS for opening url from the command line", vim.log.levels.DEBUG)
+		end
+	end
 end
 
 --- Determines whether to accept the current value or use a fallback value
