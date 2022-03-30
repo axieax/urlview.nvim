@@ -1,8 +1,8 @@
 # 🔎 urlview.nvim
 
-A [Neovim](https://neovim.io) plugin which displays all URLs in the current buffer, using the built-in `vim.ui.select` or [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) as a picker. These entries can also be selected to be brought up in your browser.
+A [Neovim](https://neovim.io) plugin which displays all URLs in a buffer, using the built-in `vim.ui.select` or [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) as a picker. These entries can also be selected to be brought up in your browser.
 
-> Please note that currently, this plugin only detects URLs beginning with a HTTP(s) or www prefix.
+> Please note that currently, this plugin only detects URLs beginning with a HTTP(s) or www prefix, but there are plans to support a more general pattern, see [Roadmap](https://github.com/axieax/urlview.nvim/issues/3).
 
 ![demo](https://user-images.githubusercontent.com/62098008/160542972-68278a4a-badd-4672-9d6b-ae9a3a669fd2.png)
 
@@ -14,7 +14,6 @@ This plugin requires **Neovim 0.6+**. If necessary, please check out **Alternati
 
 1. Use the command `:UrlView` to see all the URLs in the current buffer.
 
-- Use `:UrlView <tab>` to view available pickers to display the URLs with
 - For your convenience, feel free to set a keybind for this using `vim.api.nvim_set_keymap`
 
 2. You can optionally select a link to bring it up in your browser.
@@ -35,10 +34,12 @@ However, you can customise the default behaviour using the `setup` function:
 
 ```lua
 require("urlview").setup({
-  picker = "default" -- "default" (vim.ui.select), "telescope" (telescope.nvim)
-	title = "URLs: ", -- prompt title
-	debug = true, -- logs user errors
+  title = "URLs: ", -- prompt title
+  debug = true, -- logs user errors
 })
+
+-- OPTIONAL: for Telescope picker support
+require("telescope").load_extension("urlview")
 ```
 
 ## 🎨 Pickers
@@ -49,13 +50,14 @@ You can customise the appearance of `vim.ui.select` with plugins such as [dressi
 
 ### Telescope
 
-`:UrlView telescope` works out of the box (defaulting back to `vim.ui.select` if [telescope](https://github.com/nvim-telescope/telescope.nvim) is not installed). If you set "telescope" as your default picker in `setup`, then `:UrlView` will automatically use telescope as your default picker.
-
-Additionally, you can use `:Telescope urlview` if you add the following to your config:
+- Additional requirements: [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
+- Make sure you have the following in your config:
 
 ```lua
 require("telescope").load_extension("urlview")
 ```
+
+- You can now use Telescope as your picker with `:Telescope urlview`!
 
 ## 🛍️ Alternatives
 
