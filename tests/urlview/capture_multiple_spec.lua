@@ -1,4 +1,4 @@
-local extract_urls = require("urlview.utils").extract_urls
+local extract_links_from_content = require("urlview.search").content
 local assert_tbl_same_any_order = require("tests.urlview.helpers").assert_tbl_same_any_order
 
 describe("multiple captures", function()
@@ -7,13 +7,13 @@ describe("multiple captures", function()
 			http://google.com
 			https://www.google.com
 		]]
-		local result = extract_urls(content)
+		local result = extract_links_from_content(content)
 		assert_tbl_same_any_order({ "http://google.com", "https://www.google.com" }, result)
 	end)
 
 	it("same line", function()
 		local content = "http://google.com https://www.github.com"
-		local result = extract_urls(content)
+		local result = extract_links_from_content(content)
 		assert_tbl_same_any_order({ "http://google.com", "https://www.github.com" }, result)
 	end)
 end)
@@ -24,7 +24,7 @@ describe("unique captures", function()
 			http://google.com
 			http://google.com
 		]]
-		local result = extract_urls(content)
+		local result = extract_links_from_content(content)
 		assert_tbl_same_any_order({ "http://google.com" }, result)
 	end)
 
@@ -33,7 +33,7 @@ describe("unique captures", function()
 			https://www.google.com
 			www.google.com
 		]]
-		local result = extract_urls(content)
+		local result = extract_links_from_content(content)
 		assert_tbl_same_any_order({ "https://www.google.com" }, result)
 	end)
 
@@ -42,7 +42,7 @@ describe("unique captures", function()
 			https://www.google.com/search?q=vim
 			https://www.google.com/search?q=nvim
 		]]
-		local result = extract_urls(content)
+		local result = extract_links_from_content(content)
 		assert_tbl_same_any_order(
 			{ "https://www.google.com/search?q=vim", "https://www.google.com/search?q=nvim" },
 			result

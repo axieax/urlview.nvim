@@ -1,26 +1,31 @@
 local M = {}
 
-local pickers = require("urlview.pickers")
 local config = require("urlview.config")
 local utils = require("urlview.utils")
+local search = require("urlview.search")
+local pickers = require("urlview.pickers")
 
---- Display the urls in the current buffer
----@param bufnr number (optional)
+--- Searchs the provided context for links
+---@param ctx string where to search
 ---@param picker string (optional)
-function M.search(bufnr, picker, ...)
-	bufnr = utils.fallback(bufnr, 0)
-	picker = utils.fallback(picker, "default")
+function M.search(ctx, picker, opts)
+	picker = utils.fallback(picker, config.default_picker)
+	opts = utils.fallback(opts, {})
+	ctx = utils.fallback(ctx, opts.ctx) or "buffer"
 
-	local content = table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n")
-	local items = utils.extract_urls(content)
-	if vim.tbl_isempty(items) then
-		utils.log("No URLs found in buffer")
-	else
-		return pickers[picker](items, ...)
+	-- extract links from ctx
+	local links = search[ctx](opts)
+	if links then
+		if vim.tbl_isempty(links) then
+			utils.log("No links found in context" .. ctx)
+		else
+			return pickers[picker](links, opts)
+		end
 	end
 end
 
---- urlview custom setup
+--- Custom setup function
+--- Not required to be called unless user wants to modify the default config
 ---@param user_config table (optional)
 function M.setup(user_config)
 	user_config = utils.fallback(user_config, {})

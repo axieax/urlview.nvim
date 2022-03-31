@@ -1,14 +1,14 @@
 local M = {}
 
-local extract_urls = require("urlview.utils").extract_urls
+local extract_links_from_content = require("urlview.search").content
 
 function M.assert_no_match(content)
-	local result = extract_urls(content)
+	local result = extract_links_from_content(content)
 	assert.equal(0, #result)
 end
 
 function M.assert_single_match(url)
-	local result = extract_urls(url)
+	local result = extract_links_from_content(url)
 	assert.same({ url }, result)
 end
 

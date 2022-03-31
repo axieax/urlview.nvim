@@ -1,6 +1,6 @@
 # 🔎 urlview.nvim
 
-A [Neovim](https://neovim.io) plugin which displays all URLs in a buffer, using the built-in `vim.ui.select` or [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) as a picker. These entries can also be selected to be brought up in your browser.
+UrlView is a [Neovim](https://neovim.io) plugin which displays links from a variety of contexts (from a buffer, Packer plugin URLs), using the built-in `vim.ui.select` or [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) as a picker. These entries can also be selected to be brought up in your browser.
 
 > Please note that currently, this plugin only detects URLs beginning with a HTTP(s) or www prefix, but there are plans to support a more general pattern, see [Roadmap](https://github.com/axieax/urlview.nvim/issues/3).
 
@@ -15,6 +15,8 @@ This plugin requires **Neovim 0.6+**. If necessary, please check out **Alternati
 1. Use the command `:UrlView` to see all the URLs in the current buffer.
 
 - For your convenience, feel free to set a keybind for this using `vim.api.nvim_set_keymap`
+- You can also hit `:UrlView <tab>` to see additional contexts that you can search from
+  - e.g. `:UrlView packer` to view links for installed [packer.nvim](https://github.com/wbthomason/packer.nvim) plugins
 
 2. You can optionally select a link to bring it up in your browser.
 
@@ -35,6 +37,7 @@ However, you can customise the default behaviour using the `setup` function:
 ```lua
 require("urlview").setup({
   title = "URLs: ", -- prompt title
+  default_picker = "default", -- "default" (vim.ui.select) or "telescope"
   use_netrw = true, -- use netrw to open urls, if false use xdg-open/open system command
   debug = true, -- logs user errors
 })
