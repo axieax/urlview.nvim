@@ -16,6 +16,7 @@ This plugin requires **Neovim 0.6+**. If necessary, please check out **Alternati
 
 - For your convenience, feel free to set a keybind for this using `vim.api.nvim_set_keymap`
 - You can also hit `:UrlView <tab>` to see additional contexts that you can search from
+  - e.g. `:UrlView packer` to view links for installed [packer.nvim](https://github.com/wbthomason/packer.nvim) plugins
 
 2. You can optionally select a link to bring it up in your browser.
 
