@@ -2,7 +2,7 @@ local urlview = require("urlview")
 local search = require("urlview.search")
 local assert_tbl_same_any_order = require("tests.urlview.helpers").assert_tbl_same_any_order
 
-describe("custom Jira searcher", function()
+describe("custom Jira searcher (template table)", function()
 	before_each(function()
 		urlview.setup({
 			custom_searches = {
@@ -102,5 +102,41 @@ describe("overwrite default searcher", function()
 			"i-love-testing",
 			"i-live-testing",
 		}, result)
+	end)
+end)
+
+describe("custom function", function()
+	before_each(function()
+		urlview.setup({
+			custom_searches = {
+				test = function(opts)
+					return { opts.a or "default", opts.b or "default", opts.c or "default" }
+				end,
+			},
+		})
+	end)
+
+	after_each(function()
+		search.test = nil
+	end)
+
+	it("capture one", function()
+		local result = search.test({ a = "a" })
+		assert_tbl_same_any_order({ "a", "default", "default" }, result)
+	end)
+
+	it("capture two", function()
+		local result = search.test({ a = "a", c = "c" })
+		assert_tbl_same_any_order({ "a", "c", "default" }, result)
+	end)
+
+	it("capture three", function()
+		local result = search.test({ a = "a", b = "b", c = "c" })
+		assert_tbl_same_any_order({ "a", "b", "c" }, result)
+	end)
+
+	it("ignore extra", function()
+		local result = search.test({ a = "a", b = "b", c = "c", d = "d" })
+		assert_tbl_same_any_order({ "a", "b", "c" }, result)
 	end)
 end)

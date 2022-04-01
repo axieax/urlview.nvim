@@ -3,6 +3,7 @@ local M = {}
 local config = require("urlview.config")
 local utils = require("urlview.utils")
 local search = require("urlview.search")
+local search_helpers = require("urlview.search.helpers")
 local pickers = require("urlview.pickers")
 
 --- Searchs the provided context for links
@@ -32,12 +33,7 @@ function M.setup(user_config)
 	config = vim.tbl_deep_extend("force", config, user_config)
 
 	-- Register custom searches
-	for searcher, patterns in pairs(config.custom_searches) do
-		search[searcher] = function(opts)
-			local content = opts.content or utils.get_buffer_content(opts.bufnr)
-			return utils.extract_pattern(content, patterns.capture, patterns.format)
-		end
-	end
+	search_helpers.register_custom_searches(config.custom_searches)
 end
 
 return M

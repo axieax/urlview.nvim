@@ -8,14 +8,6 @@ local pattern = "[%w@:%%._+~#=/%-?&]*"
 local http_pattern = "https?://"
 local www_pattern = "www%."
 
---- Extracts urls from the current buffer
----@param opts table (map, optional) containing bufnr (number, optional)
----@return table (list) of extracted links
-function M.buffer(opts)
-	local content = utils.get_buffer_content(opts.bufnr)
-	return M.content(content)
-end
-
 --- Extracts urls from the given content
 ---@param content string
 ---@return table (list) of extracted links
@@ -49,23 +41,25 @@ function M.content(content)
 	return links
 end
 
---- Extracts urls of packer.nvim plugins
----@return table (list) of extracted links
-function M.packer()
-	local links = {}
-	for _, info in pairs(packer_plugins or {}) do
-		table.insert(links, info.url)
+local function default_custom_generator(patterns)
+	return function(opts)
+		local content = opts.content or utils.get_buffer_content(opts.bufnr)
+		return utils.extract_pattern(content, patterns.capture, patterns.format)
 	end
-	return links
 end
 
-function M.__index(_, k)
-	if k ~= nil then
-		utils.log("Cannot search context " .. k)
-		return function()
-			return nil
+function M.register_custom_searches(searchers)
+	local search = require("urlview.search")
+	for source, patterns in pairs(searchers) do
+		if type(patterns) == "function" then
+			-- TODO: test
+			search[source] = patterns
+		elseif type(patterns) == "table" and not vim.tbl_islist(patterns) then
+			search[source] = default_custom_generator(patterns)
+		else
+			utils.log("Cannot register custom searcher " .. source .. ": invalid type (not a function or map table)")
 		end
 	end
 end
 
-return setmetatable(M, M)
+return M
