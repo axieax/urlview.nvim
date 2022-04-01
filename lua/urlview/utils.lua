@@ -2,6 +2,27 @@ local M = {}
 
 local config = require("urlview.config")
 
+--- Extracts content from a given buffer
+---@param bufnr number (optional)
+---@return string @content of buffer
+function M.get_buffer_content(bufnr)
+	bufnr = M.fallback(bufnr, 0)
+	return table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n")
+end
+
+--- Extract @captures from @content and display them as @formats
+---@param content string @content to extract from
+---@param capture string @capture pattern to extract
+---@param format string @format pattern to display
+---@return table @list of extracted links
+function M.extract_pattern(content, capture, format)
+	local captures = {}
+	for c in content:gmatch(capture) do
+		table.insert(captures, string.format(format, c))
+	end
+	return captures
+end
+
 --- Opens the url in the browser
 ---@param url string
 function M.navigate_url(url)

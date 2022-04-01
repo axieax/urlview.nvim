@@ -1,4 +1,4 @@
-local extract_links_from_content = require("urlview.search").content
+local extract_links_from_content = require("urlview.search.helpers").content
 local assert_tbl_same_any_order = require("tests.urlview.helpers").assert_tbl_same_any_order
 
 describe("multiple captures", function()

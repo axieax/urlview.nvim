@@ -8,15 +8,6 @@ local pattern = "[%w@:%%._+~#=/%-?&]*"
 local http_pattern = "https?://"
 local www_pattern = "www%."
 
---- Extracts urls from the current buffer
----@param opts table (map, optional) containing bufnr (number, optional)
----@return table (list) of extracted links
-function M.buffer(opts)
-	local bufnr = utils.fallback(opts.bufnr, 0)
-	local content = table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n")
-	return M.content(content)
-end
-
 --- Extracts urls from the given content
 ---@param content string
 ---@return table (list) of extracted links
@@ -50,23 +41,39 @@ function M.content(content)
 	return links
 end
 
---- Extracts urls of packer.nvim plugins
----@return table (list) of extracted links
-function M.packer()
-	local links = {}
-	for _, info in pairs(packer_plugins or {}) do
-		table.insert(links, info.url)
+local function default_custom_generator(patterns)
+	if not patterns.capture or not patterns.format then
+		return nil
 	end
-	return links
+
+	return function(opts)
+		local content = opts.content or utils.get_buffer_content(opts.bufnr)
+		return utils.extract_pattern(content, patterns.capture, patterns.format)
+	end
 end
 
-function M.__index(_, k)
-	if k ~= nil then
-		utils.log("Cannot search context " .. k)
-		return function()
-			return nil
+--- Registers custom searchers
+---@param searchers table (map) of { source: patterns (function or table) }
+function M.register_custom_searches(searchers)
+	local search = require("urlview.search")
+	for source, patterns in pairs(searchers) do
+		if type(patterns) == "function" then
+			search[source] = patterns
+		elseif type(patterns) == "table" and not vim.tbl_islist(patterns) then
+			local func = default_custom_generator(patterns)
+			if func then
+				search[source] = func
+			else
+				utils.log(
+					"Unable to register custom searcher "
+						.. source
+						.. ": please ensure that the table has 'capture' and 'format' fields"
+				)
+			end
+		else
+			utils.log("Unable to register custom searcher " .. source .. ": invalid type (not a function or map table)")
 		end
 	end
 end
 
-return setmetatable(M, M)
+return M

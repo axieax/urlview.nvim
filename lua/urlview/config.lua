@@ -10,6 +10,8 @@ local config = {
 	navigate_method = "netrw",
 	-- Logs user warnings
 	debug = true,
+	-- Custom search captures
+	custom_searches = {},
 }
 
 return config

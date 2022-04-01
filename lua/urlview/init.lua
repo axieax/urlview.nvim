@@ -3,6 +3,7 @@ local M = {}
 local config = require("urlview.config")
 local utils = require("urlview.utils")
 local search = require("urlview.search")
+local search_helpers = require("urlview.search.helpers")
 local pickers = require("urlview.pickers")
 
 --- Searchs the provided context for links
@@ -17,7 +18,7 @@ function M.search(ctx, picker, opts)
 	local links = search[ctx](opts)
 	if links then
 		if vim.tbl_isempty(links) then
-			utils.log("No links found in context" .. ctx)
+			utils.log("No links found in context " .. ctx)
 		else
 			return pickers[picker](links, opts)
 		end
@@ -30,6 +31,9 @@ end
 function M.setup(user_config)
 	user_config = utils.fallback(user_config, {})
 	config = vim.tbl_deep_extend("force", config, user_config)
+
+	-- Register custom searches
+	search_helpers.register_custom_searches(config.custom_searches)
 end
 
 return M

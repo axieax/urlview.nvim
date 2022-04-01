@@ -1,6 +1,6 @@
 local M = {}
 
-local extract_links_from_content = require("urlview.search").content
+local extract_links_from_content = require("urlview.search.helpers").content
 
 function M.assert_no_match(content)
 	local result = extract_links_from_content(content)

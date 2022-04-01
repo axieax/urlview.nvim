@@ -46,6 +46,16 @@ require("urlview").setup({
 	navigate_method = "netrw",
 	-- Logs user warnings
 	debug = true,
+	-- Custom search captures
+	-- NOTE: captures follow Lua pattern matching (https://riptutorial.com/lua/example/20315/lua-pattern-matching)
+	custom_searches = {
+		-- KEY: search source name
+		-- VALUE: custom search function or table (map with keys capture, format)
+		jira = {
+			capture = "AXIE%-%d+",
+			format = "https://jira.axieax.com/browse/%s",
+		},
+	},
 })
 
 -- OPTIONAL: for Telescope picker support
