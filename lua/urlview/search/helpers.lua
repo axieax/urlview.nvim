@@ -42,22 +42,36 @@ function M.content(content)
 end
 
 local function default_custom_generator(patterns)
+	if not patterns.capture or not patterns.format then
+		return nil
+	end
+
 	return function(opts)
 		local content = opts.content or utils.get_buffer_content(opts.bufnr)
 		return utils.extract_pattern(content, patterns.capture, patterns.format)
 	end
 end
 
+--- Registers custom searchers
+---@param searchers table (map) of { source: patterns (function or table) }
 function M.register_custom_searches(searchers)
 	local search = require("urlview.search")
 	for source, patterns in pairs(searchers) do
 		if type(patterns) == "function" then
-			-- TODO: test
 			search[source] = patterns
 		elseif type(patterns) == "table" and not vim.tbl_islist(patterns) then
-			search[source] = default_custom_generator(patterns)
+			local func = default_custom_generator(patterns)
+			if func then
+				search[source] = func
+			else
+				utils.log(
+					"Unable to register custom searcher "
+						.. source
+						.. ": please ensure that the table has 'capture' and 'format' fields"
+				)
+			end
 		else
-			utils.log("Cannot register custom searcher " .. source .. ": invalid type (not a function or map table)")
+			utils.log("Unable to register custom searcher " .. source .. ": invalid type (not a function or map table)")
 		end
 	end
 end
