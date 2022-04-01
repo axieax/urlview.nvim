@@ -17,7 +17,7 @@ function M.search(ctx, picker, opts)
 	local links = search[ctx](opts)
 	if links then
 		if vim.tbl_isempty(links) then
-			utils.log("No links found in context" .. ctx)
+			utils.log("No links found in context " .. ctx)
 		else
 			return pickers[picker](links, opts)
 		end
@@ -30,6 +30,14 @@ end
 function M.setup(user_config)
 	user_config = utils.fallback(user_config, {})
 	config = vim.tbl_deep_extend("force", config, user_config)
+
+	-- Register custom searches
+	for searcher, patterns in pairs(config.custom_searches) do
+		search[searcher] = function(opts)
+			local content = opts.content or utils.get_buffer_content(opts.bufnr)
+			return utils.extract_pattern(content, patterns.capture, patterns.format)
+		end
+	end
 end
 
 return M

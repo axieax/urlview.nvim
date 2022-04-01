@@ -12,8 +12,7 @@ local www_pattern = "www%."
 ---@param opts table (map, optional) containing bufnr (number, optional)
 ---@return table (list) of extracted links
 function M.buffer(opts)
-	local bufnr = utils.fallback(opts.bufnr, 0)
-	local content = table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n")
+	local content = utils.get_buffer_content(opts.bufnr)
 	return M.content(content)
 end
 
