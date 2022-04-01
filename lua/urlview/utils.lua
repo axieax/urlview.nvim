@@ -5,22 +5,25 @@ local config = require("urlview.config")
 --- Opens the url in the browser
 ---@param url string
 function M.navigate_url(url)
-	if config.use_netrw then
+	local cmd = config.navigate_method
+	if cmd == "netrw" then
 		vim.cmd("call netrw#BrowseX('" .. url .. "',netrw#CheckIfRemote())")
-	else
-		-- supports MacOS, Linux, and FreeBSD
-		local cmd = nil
-		if vim.fn.has("mac") == 1 then -- MacOS
-			cmd = "open "
-		elseif vim.fn.has("linux") == 1 or vim.fn.has("bsd") then -- Linux and FreeBSD
-			cmd = "xdg-open "
-		end
+		return
+	end
 
-		if cmd then
-			os.execute(cmd .. vim.fn.shellescape(url, 1))
-		else
-			vim.notify("Unsupported OS for opening url from the command line", vim.log.levels.DEBUG)
+	if cmd == "auto" then
+		local os = vim.loop.os_uname().sysname
+		if os == "Darwin" then -- MacOS
+			cmd = "open"
+		elseif os == "Linux" or os == "FreeBSD" then -- Linux and FreeBSD
+			cmd = "xdg-open"
 		end
+	end
+
+	if cmd and vim.fn.executable(cmd) then
+		os.execute(cmd .. " " .. vim.fn.shellescape(url, 1))
+	else
+		vim.notify("Cannot use " .. cmd .. " to navigate links", vim.log.levels.DEBUG)
 	end
 end
 

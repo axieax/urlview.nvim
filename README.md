@@ -36,10 +36,16 @@ However, you can customise the default behaviour using the `setup` function:
 
 ```lua
 require("urlview").setup({
-  title = "URLs: ", -- prompt title
-  default_picker = "default", -- "default" (vim.ui.select) or "telescope"
-  use_netrw = true, -- use netrw to open urls, if false use xdg-open/open system command
-  debug = true, -- logs user errors
+	-- Prompt title
+	title = "Links: ",
+	-- Default picker to display links with
+	-- Options: "default" (vim.ui.select) or "telescope"
+	default_picker = "default",
+	-- Command or method to open links with
+	-- Options: "netrw", "auto" (default OS browser); or "firefox", "chromium" etc.
+	navigate_method = "netrw",
+	-- Logs user warnings
+	debug = true,
 })
 
 -- OPTIONAL: for Telescope picker support
