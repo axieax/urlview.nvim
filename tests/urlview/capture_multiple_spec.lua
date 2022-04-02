@@ -2,50 +2,47 @@ local extract_links_from_content = require("urlview.search.helpers").content
 local assert_tbl_same_any_order = require("tests.urlview.helpers").assert_tbl_same_any_order
 
 describe("multiple captures", function()
-	it("separate lines", function()
-		local content = [[
+  it("separate lines", function()
+    local content = [[
 			http://google.com
 			https://www.google.com
 		]]
-		local result = extract_links_from_content(content)
-		assert_tbl_same_any_order({ "http://google.com", "https://www.google.com" }, result)
-	end)
+    local result = extract_links_from_content(content)
+    assert_tbl_same_any_order({ "http://google.com", "https://www.google.com" }, result)
+  end)
 
-	it("same line", function()
-		local content = "http://google.com https://www.github.com"
-		local result = extract_links_from_content(content)
-		assert_tbl_same_any_order({ "http://google.com", "https://www.github.com" }, result)
-	end)
+  it("same line", function()
+    local content = "http://google.com https://www.github.com"
+    local result = extract_links_from_content(content)
+    assert_tbl_same_any_order({ "http://google.com", "https://www.github.com" }, result)
+  end)
 end)
 
 describe("unique captures", function()
-	it("same link", function()
-		local content = [[
+  it("same link", function()
+    local content = [[
 			http://google.com
 			http://google.com
 		]]
-		local result = extract_links_from_content(content)
-		assert_tbl_same_any_order({ "http://google.com" }, result)
-	end)
+    local result = extract_links_from_content(content)
+    assert_tbl_same_any_order({ "http://google.com" }, result)
+  end)
 
-	it("different prefix / uri protocol", function()
-		local content = [[
+  it("different prefix / uri protocol", function()
+    local content = [[
 			https://www.google.com
 			www.google.com
 		]]
-		local result = extract_links_from_content(content)
-		assert_tbl_same_any_order({ "https://www.google.com" }, result)
-	end)
+    local result = extract_links_from_content(content)
+    assert_tbl_same_any_order({ "https://www.google.com" }, result)
+  end)
 
-	it("different paths", function()
-		local content = [[
+  it("different paths", function()
+    local content = [[
 			https://www.google.com/search?q=vim
 			https://www.google.com/search?q=nvim
 		]]
-		local result = extract_links_from_content(content)
-		assert_tbl_same_any_order(
-			{ "https://www.google.com/search?q=vim", "https://www.google.com/search?q=nvim" },
-			result
-		)
-	end)
+    local result = extract_links_from_content(content)
+    assert_tbl_same_any_order({ "https://www.google.com/search?q=vim", "https://www.google.com/search?q=nvim" }, result)
+  end)
 end)

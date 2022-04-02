@@ -36,26 +36,26 @@ However, you can customise the default behaviour using the `setup` function:
 
 ```lua
 require("urlview").setup({
-	-- Prompt title
-	title = "Links: ",
-	-- Default picker to display links with
-	-- Options: "default" (vim.ui.select) or "telescope"
-	default_picker = "default",
-	-- Command or method to open links with
-	-- Options: "netrw", "auto" (default OS browser); or "firefox", "chromium" etc.
-	navigate_method = "netrw",
-	-- Logs user warnings
-	debug = true,
-	-- Custom search captures
-	-- NOTE: captures follow Lua pattern matching (https://riptutorial.com/lua/example/20315/lua-pattern-matching)
-	custom_searches = {
-		-- KEY: search source name
-		-- VALUE: custom search function or table (map with keys capture, format)
-		jira = {
-			capture = "AXIE%-%d+",
-			format = "https://jira.axieax.com/browse/%s",
-		},
-	},
+  -- Prompt title
+  title = "Links: ",
+  -- Default picker to display links with
+  -- Options: "default" (vim.ui.select) or "telescope"
+  default_picker = "default",
+  -- Command or method to open links with
+  -- Options: "netrw", "auto" (default OS browser); or "firefox", "chromium" etc.
+  navigate_method = "netrw",
+  -- Logs user warnings
+  debug = true,
+  -- Custom search captures
+  -- NOTE: captures follow Lua pattern matching (https://riptutorial.com/lua/example/20315/lua-pattern-matching)
+  custom_searches = {
+    -- KEY: search source name
+    -- VALUE: custom search function or table (map with keys capture, format)
+    jira = {
+      capture = "AXIE%-%d+",
+      format = "https://jira.axieax.com/browse/%s",
+    },
+  },
 })
 
 -- OPTIONAL: for Telescope picker support
