@@ -7,27 +7,28 @@ local search_helpers = require("urlview.search.helpers")
 ---@param opts table (map, optional) containing bufnr (number, optional)
 ---@return table (list) of extracted links
 function M.buffer(opts)
-	local content = utils.get_buffer_content(opts.bufnr)
-	return search_helpers.content(content)
+  local content = utils.get_buffer_content(opts.bufnr)
+  return search_helpers.content(content)
 end
 
 --- Extracts urls of packer.nvim plugins
 ---@return table (list) of extracted links
 function M.packer()
-	local links = {}
-	for _, info in pairs(packer_plugins or {}) do
-		table.insert(links, info.url)
-	end
-	return links
+  local links = {}
+  -- selene: allow(undefined_variable)
+  for _, info in pairs(packer_plugins or {}) do
+    table.insert(links, info.url)
+  end
+  return links
 end
 
 function M.__index(_, k)
-	if k ~= nil then
-		utils.log("Cannot search context " .. k)
-		return function()
-			return nil
-		end
-	end
+  if k ~= nil then
+    utils.log("Cannot search context " .. k)
+    return function()
+      return nil
+    end
+  end
 end
 
 return setmetatable(M, M)

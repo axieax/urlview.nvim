@@ -1,0 +1,49 @@
+name: default
+
+on:
+  pull_request:
+    push:
+      branches: [main]
+
+jobs:
+  stylua:
+    name: Check code style
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: JohnnyMorganz/stylua-action@1.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --color always --check .
+
+  selene:
+    name: Lint code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: NTBBloodbath/selene-action@v1.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --color always .
+
+  test:
+    name: Test Neovim stable
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        neovim-version: [stable, nightly]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: urlview.nvim
+      - uses: actions/checkout@v2
+        with:
+          repository: nvim-lua/plenary.nvim
+          path: plenary.nvim
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: ${{ matrix.neovim-version }}
+      - run: make test
+        working-directory: urlview.nvim
+        timeout-minutes: 1
