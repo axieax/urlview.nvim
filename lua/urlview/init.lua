@@ -30,7 +30,9 @@ end
 ---@param user_config table (optional)
 function M.setup(user_config)
   user_config = utils.fallback(user_config, {})
-  config = vim.tbl_deep_extend("force", config, user_config)
+  local raw_config = rawget(config, "_options")
+  local new_config = vim.tbl_deep_extend("force", raw_config, user_config)
+  rawset(config, "_options", new_config)
 
   -- Register custom searches
   search_helpers.register_custom_searches(config.custom_searches)
