@@ -1,5 +1,6 @@
--- Default config
-local config = {
+local M = {}
+
+local default_config = {
   -- Prompt title
   title = "Links: ",
   -- Default picker to display links with
@@ -14,4 +15,10 @@ local config = {
   custom_searches = {},
 }
 
-return config
+M._options = default_config
+
+return setmetatable(M, {
+  __index = function(_, k)
+    return M._options[k]
+  end,
+})
