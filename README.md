@@ -1,10 +1,18 @@
 # 🔎 urlview.nvim
 
-UrlView is a [Neovim](https://neovim.io) plugin which displays links from a variety of contexts (from a buffer, Packer plugin URLs), using the built-in `vim.ui.select` or [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) as a picker. These entries can also be selected to be brought up in your browser.
+UrlView is a [Neovim](https://neovim.io) plugin which displays links from a variety of contexts (e.g. from a buffer, [packer.nvim](https://github.com/wbthomason/packer.nvim) plugin URLs), using the built-in `vim.ui.select` or [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) as a picker. These entries can also be selected to be brought up in your browser.
 
 > Please note that currently, this plugin only detects URLs beginning with a HTTP(s) or www prefix, but there are plans to support a more general pattern, see [Roadmap](https://github.com/axieax/urlview.nvim/issues/3).
 
-![demo](https://user-images.githubusercontent.com/62098008/160542972-68278a4a-badd-4672-9d6b-ae9a3a669fd2.png)
+## 📸 Screenshots
+
+### 📋 Buffer Links
+
+![buffer-demo](https://user-images.githubusercontent.com/62098008/161416630-13cc04e4-8564-4129-9751-6805a1e86114.png)
+
+### 🔌 Packer Plugin Links
+
+![packer-demo](https://user-images.githubusercontent.com/62098008/161416712-0965ab25-e4de-458a-8a67-45cd7269fd50.png)
 
 ## ⚡ Requirements
 
@@ -36,8 +44,8 @@ However, you can customise the default behaviour using the `setup` function:
 
 ```lua
 require("urlview").setup({
-  -- Prompt title
-  title = "Links: ",
+  -- Prompt title (`<context> <default_title>`, e.g. `Buffer Links:`)
+  default_title = "Links:",
   -- Default picker to display links with
   -- Options: "default" (vim.ui.select) or "telescope"
   default_picker = "default",
@@ -66,11 +74,11 @@ require("telescope").load_extension("urlview")
 
 ## 🎨 Pickers
 
-### Default (vim.ui.select)
+### ✔️ Default (vim.ui.select)
 
 You can customise the appearance of `vim.ui.select` with plugins such as [dressing.nvim](https://github.com/stevearc/dressing.nvim). In the demo above, I used the [telescope](https://github.com/nvim-telescope/telescope.nvim) option, which further allows me to filter and fuzzy search through my entries.
 
-### Telescope
+### 🔭 Telescope
 
 - Additional requirements: [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
 - Make sure you have the following in your config:

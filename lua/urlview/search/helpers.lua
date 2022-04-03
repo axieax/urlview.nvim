@@ -1,7 +1,7 @@
 local M = {}
 
-local utils = require("urlview.utils")
 local config = require("urlview.config")
+local utils = require("urlview.utils")
 
 -- SEE: lua pattern matching (https://riptutorial.com/lua/example/20315/lua-pattern-matching)
 -- regex equivalent: [A-Za-z0-9@:%._+~#=/\-?&]*
@@ -11,9 +11,9 @@ local www_pattern = "www%."
 
 --- Extracts urls from the given content
 ---@param content string
----@return table (list) of extracted links
+---@return table (list) of strings (extracted links)
 function M.content(content)
-  ---@type table (set)
+  ---@type table (map) of string (url base pattern) to string (prefix / uri protocol)
   local captures = {}
 
   -- Extract URLs starting with http:// or https://
@@ -42,6 +42,9 @@ function M.content(content)
   return links
 end
 
+--- Generates a simple search function from a template table
+---@param patterns table (map) with `capture` and `format` keys
+---@return function
 local function default_custom_generator(patterns)
   if not patterns.capture or not patterns.format then
     return nil
@@ -66,13 +69,16 @@ function M.register_custom_searches(searchers)
         search[source] = func
       else
         utils.log(
-          "Unable to register custom searcher "
-            .. source
-            .. ": please ensure that the table has 'capture' and 'format' fields"
+          string.format(
+            "Unable to register custom searcher %s: please ensure that the table has 'capture' and 'format' fields",
+            source
+          )
         )
       end
     else
-      utils.log("Unable to register custom searcher " .. source .. ": invalid type (not a function or map table)")
+      utils.log(
+        string.format("Unable to register custom searcher %s: invalid type (not a function or map table)", source)
+      )
     end
   end
 end

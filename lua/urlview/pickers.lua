@@ -1,14 +1,12 @@
 local M = {}
 
-local config = require("urlview.config")
 local utils = require("urlview.utils")
 
---- Display the urls in the current buffer using vim.ui.select
----@param items table (list) of captures { url, prefix }
-function M.default(items)
-  local options = {
-    prompt = config.title,
-  }
+--- Displays items using the vim.ui.select picker
+---@param items table (list) of strings
+---@param opts table (map) of options
+function M.default(items, opts)
+  local options = { prompt = opts.title }
   local function on_choice(item, _)
     if item then
       utils.navigate_url(item)
@@ -18,8 +16,9 @@ function M.default(items)
   vim.ui.select(items, options, on_choice)
 end
 
---- Displays the urls in the current buffer using Telescope
----@param items table (list) of captures { url, prefix }
+--- Displays items using the Telescope picker
+---@param items table (list) of strings
+---@param opts table (map) of options
 function M.telescope(items, opts)
   local telescope = pcall(require, "telescope")
   if not telescope then
@@ -27,14 +26,14 @@ function M.telescope(items, opts)
     return M.default(items)
   end
 
-  local pickers = require("telescope.pickers")
-  local finders = require("telescope.finders")
   local actions = require("telescope.actions")
   local action_state = require("telescope.actions.state")
   local conf = require("telescope.config").values
+  local finders = require("telescope.finders")
+  local pickers = require("telescope.pickers")
 
   pickers.new(opts, {
-    prompt_title = config.title,
+    prompt_title = opts.title,
     finder = finders.new_table({
       results = items,
     }),
