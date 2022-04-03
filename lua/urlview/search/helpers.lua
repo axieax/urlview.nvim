@@ -1,6 +1,7 @@
 local M = {}
 
 local utils = require("urlview.utils")
+local config = require("urlview.config")
 
 -- SEE: lua pattern matching (https://riptutorial.com/lua/example/20315/lua-pattern-matching)
 -- regex equivalent: [A-Za-z0-9@:%._+~#=/\-?&]*
@@ -24,9 +25,8 @@ function M.content(content)
 
   -- Extract URLs starting with www, excluding already extracted http(s) URLs
   for capture in content:gmatch(www_pattern .. "%w" .. pattern) do
-    capture = "https://" .. capture
     if not captures[capture] then
-      captures[capture] = ""
+      captures[capture] = config.default_prefix
     end
   end
 
