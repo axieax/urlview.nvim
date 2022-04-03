@@ -17,15 +17,20 @@ local default_config = {
   custom_searches = {},
 }
 
-M._reset_config = function()
+--- Resets the internal config to the default options
+M._reset_defaults = function()
   M._options = default_config
 end
 
-M._reset_config()
+-- Used to auto-load the default config
+M._reset_defaults()
 
 return setmetatable(M, {
-  -- retrieve values from M._options
+  -- general get and set operations refer to the internal config table M._options
   __index = function(_, k)
     return M._options[k]
+  end,
+  __newindex = function(_, k, v)
+    M._options[k] = v
   end,
 })
