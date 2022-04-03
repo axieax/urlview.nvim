@@ -2,7 +2,7 @@ local M = {}
 
 local default_config = {
   -- Prompt title
-  title = "Links: ",
+  title = "Links:",
   -- Default picker to display links with
   -- Options: "default" (vim.ui.select) or "telescope"
   default_picker = "default",
