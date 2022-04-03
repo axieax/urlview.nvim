@@ -4,7 +4,7 @@ UrlView is a [Neovim](https://neovim.io) plugin which displays links from a vari
 
 > Please note that currently, this plugin only detects URLs beginning with a HTTP(s) or www prefix, but there are plans to support a more general pattern, see [Roadmap](https://github.com/axieax/urlview.nvim/issues/3).
 
-![demo](https://user-images.githubusercontent.com/62098008/160542972-68278a4a-badd-4672-9d6b-ae9a3a669fd2.png)
+![demo](https://user-images.githubusercontent.com/62098008/161414318-893c898e-924a-460c-96a4-0c04ad7b82c5.png)
 
 ## ⚡ Requirements
 
