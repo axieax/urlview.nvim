@@ -42,7 +42,7 @@ describe("unique captures", function()
     local result = extract_links_from_content(content)
     assert_tbl_same_any_order({ "https://www.google.com" }, result)
 
-    config._reset_config()
+    config._reset_defaults()
   end)
 
   it("different prefix / uri protocol, prefer specified", function()
@@ -57,7 +57,7 @@ describe("unique captures", function()
     local result = extract_links_from_content(content)
     assert_tbl_same_any_order({ "https://www.google.com" }, result)
 
-    config._reset_config()
+    config._reset_defaults()
   end)
 
   it("different paths", function()

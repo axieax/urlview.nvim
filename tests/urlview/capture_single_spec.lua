@@ -30,7 +30,7 @@ describe("url-only simple capture", function()
   end)
 
   after_each(function()
-    config._reset_config()
+    config._reset_defaults()
   end)
 
   it("http capture", function()
@@ -73,7 +73,7 @@ describe("url-only path capture", function()
   end)
 
   after_each(function()
-    config._reset_config()
+    config._reset_defaults()
   end)
 
   it("lol php capture", function()
