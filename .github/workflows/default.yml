@@ -27,7 +27,7 @@ jobs:
           args: --color always .
 
   test:
-    name: Test Neovim stable
+    name: Neovim test runner
     runs-on: ubuntu-latest
     strategy:
       matrix:
