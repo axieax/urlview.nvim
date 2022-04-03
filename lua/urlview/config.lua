@@ -1,8 +1,8 @@
 local M = {}
 
 local default_config = {
-  -- Prompt title
-  title = "Links:",
+  -- Prompt title (`<context> <default_title>`, e.g. `Buffer Links:`)
+  default_title = "Links:",
   -- Default picker to display links with
   -- Options: "default" (vim.ui.select) or "telescope"
   default_picker = "default",
@@ -24,6 +24,7 @@ end
 M._reset_config()
 
 return setmetatable(M, {
+  -- retrieve values from M._options
   __index = function(_, k)
     return M._options[k]
   end,

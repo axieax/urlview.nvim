@@ -1,7 +1,7 @@
 local urlview = require("urlview")
 local config = require("urlview.config")
-local extract_links_from_content = require("urlview.search.helpers").content
 local assert_tbl_same_any_order = require("tests.urlview.helpers").assert_tbl_same_any_order
+local extract_links_from_content = require("urlview.search.helpers").content
 
 describe("multiple captures", function()
   it("separate lines", function()

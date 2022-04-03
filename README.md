@@ -36,8 +36,8 @@ However, you can customise the default behaviour using the `setup` function:
 
 ```lua
 require("urlview").setup({
-  -- Prompt title
-  title = "Links:",
+  -- Prompt title (`<context> <default_title>`, e.g. `Buffer Links:`)
+  default_title = "Links:",
   -- Default picker to display links with
   -- Options: "default" (vim.ui.select) or "telescope"
   default_picker = "default",

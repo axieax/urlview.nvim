@@ -1,27 +1,31 @@
 local M = {}
 
 local config = require("urlview.config")
-local utils = require("urlview.utils")
+local pickers = require("urlview.pickers")
 local search = require("urlview.search")
 local search_helpers = require("urlview.search.helpers")
-local pickers = require("urlview.pickers")
+local utils = require("urlview.utils")
 
 --- Searchs the provided context for links
----@param ctx string where to search
+---@param ctx string where to search (default: search buffer)
 ---@param picker string (optional)
+---@param opts table (map, optional)
 function M.search(ctx, picker, opts)
   picker = utils.fallback(picker, config.default_picker)
   opts = utils.fallback(opts, {})
   ctx = utils.fallback(ctx, opts.ctx) or "buffer"
+  if not opts.title then
+    local should_capitalise = string.match(config.default_title, "^%u")
+    local ctx_title = utils.ternary(should_capitalise, ctx:gsub("^%l", string.upper), ctx)
+    opts.title = string.format("%s %s", ctx_title, config.default_title)
+  end
 
-  -- extract links from ctx
+  -- search ctx for links and display with picker
   local links = search[ctx](opts)
-  if links then
-    if vim.tbl_isempty(links) then
-      utils.log("No links found in context " .. ctx)
-    else
-      return pickers[picker](links, opts)
-    end
+  if links and not vim.tbl_isempty(links) then
+    pickers[picker](links, opts)
+  else
+    utils.log("No links found in context " .. ctx)
   end
 end
 
@@ -34,7 +38,6 @@ function M.setup(user_config)
   local new_config = vim.tbl_deep_extend("force", raw_config, user_config)
   rawset(config, "_options", new_config)
 
-  -- Register custom searches
   search_helpers.register_custom_searches(config.custom_searches)
 end
 
