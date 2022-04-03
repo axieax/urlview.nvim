@@ -6,7 +6,7 @@ local default_config = {
   -- Default picker to display links with
   -- Options: "default" (vim.ui.select) or "telescope"
   default_picker = "default",
-  -- set the default protocol for us to prefix URLs with if they don't start with http/https
+  -- Set the default protocol for us to prefix URLs with if they don't start with http/https
   default_prefix = "https://",
   -- Command or method to open links with
   -- Options: "netrw", "auto" (default OS browser); or "firefox", "chromium" etc.
