@@ -17,7 +17,11 @@ local default_config = {
   custom_searches = {},
 }
 
-M._options = default_config
+M._reset_config = function()
+  M._options = default_config
+end
+
+M._reset_config()
 
 return setmetatable(M, {
   __index = function(_, k)
