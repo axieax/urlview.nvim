@@ -1,3 +1,5 @@
+local urlview = require("urlview")
+local config = require("urlview.config")
 local assert_no_match = require("tests.urlview.helpers").assert_no_match
 local assert_single_match = require("tests.urlview.helpers").assert_single_match
 
@@ -20,49 +22,82 @@ describe("no capture", function()
 end)
 
 describe("url-only simple capture", function()
+  local default_prefix = "https://"
+  before_each(function()
+    urlview.setup({
+      default_prefix = default_prefix,
+    })
+  end)
+
+  after_each(function()
+    config._reset_config()
+  end)
+
   it("http capture", function()
-    assert_single_match("http://google.com")
+    local url = "http://google.com"
+    assert_single_match(url, url)
   end)
 
   it("https capture", function()
-    assert_single_match("https://google.com")
+    local url = "https://google.com"
+    assert_single_match(url, url)
   end)
 
   it("www capture", function()
-    assert_single_match("www.google.com")
+    local url = "www.google.com"
+    assert_single_match(url, default_prefix .. url)
   end)
 
   it("http www capture", function()
-    assert_single_match("http://www.google.com")
+    local url = "http://www.google.com"
+    assert_single_match(url, url)
   end)
 
   it("https www capture", function()
-    assert_single_match("https://www.google.com")
+    local url = "https://www.google.com"
+    assert_single_match(url, url)
   end)
 
   it("trailing slash", function()
-    assert_single_match("www.google.com/")
+    local url = "www.google.com/"
+    assert_single_match(url, default_prefix .. url)
   end)
 end)
 
 describe("url-only path capture", function()
+  local default_prefix = "http://"
+  before_each(function()
+    urlview.setup({
+      default_prefix = default_prefix,
+    })
+  end)
+
+  after_each(function()
+    config._reset_config()
+  end)
+
   it("lol php capture", function()
-    assert_single_match("https://who.even.uses/index.php")
+    local url = "https://who.even.uses/index.php"
+    assert_single_match(url, url)
   end)
 
   it("https path capture", function()
-    assert_single_match("https://google.com/path/to/idk")
+    local url = "https://google.com/path/to/idk"
+    assert_single_match(url, url)
   end)
 
   it("www path capture", function()
-    assert_single_match("www.google.com/path/to/idk")
+    local url = "www.google.com/path/to/idk"
+    assert_single_match(url, default_prefix .. url)
   end)
 
   it("url-encoded path query capture", function()
-    assert_single_match("www.google.com/P%40%2Bh%20t35T%2F/1dk%3F?q=%3Da%25%3B")
+    local url = "www.google.com/P%40%2Bh%20t35T%2F/1dk%3F?q=%3Da%25%3B"
+    assert_single_match(url, default_prefix .. url)
   end)
 
   it("query capture", function()
-    assert_single_match("https://example.com/path/to/idk?q=axie&ax")
+    local url = "https://example.com/path/to/idk?q=axie&ax"
+    assert_single_match(url, url)
   end)
 end)

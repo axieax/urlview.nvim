@@ -7,9 +7,9 @@ function M.assert_no_match(content)
   assert.equals(0, #result)
 end
 
-function M.assert_single_match(url)
+function M.assert_single_match(url, expected_url)
   local result = extract_links_from_content(url)
-  assert.same({ url }, result)
+  assert.same({ expected_url }, result)
 end
 
 function M.assert_tbl_same_any_order(expected, actual)

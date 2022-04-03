@@ -28,17 +28,17 @@ describe("custom Jira searcher (template table)", function()
 
   it("capture multiple", function()
     local content = [[
-				AXIE-1
-				AXIE-12
-				AXIE-123
-				AXIE-1234
-				AXIE-12345
-				AXIE-123456
-				AXIE-1234567
-				AXIE-12345678
-				AXIE-123456789
-				AXIE-1234567890
-			]]
+      AXIE-1
+      AXIE-12
+      AXIE-123
+      AXIE-1234
+      AXIE-12345
+      AXIE-123456
+      AXIE-1234567
+      AXIE-12345678
+      AXIE-123456789
+      AXIE-1234567890
+    ]]
     local links = search.jira({ content = content })
     assert_tbl_same_any_order({
       "https://jira.axieax.com/browse/AXIE-1",
@@ -56,14 +56,14 @@ describe("custom Jira searcher (template table)", function()
 
   it("invalid captures ignored", function()
     local content = [[
-				AXIE
-				AXIE1
-				AXIE--123
-				AXIE%-1
-				AXIE-!
-				AXIE-AXIE
-				AXIE-ax
-			]]
+    AXIE
+    AXIE1
+    AXIE--123
+    AXIE%-1
+    AXIE-!
+    AXIE-AXIE
+    AXIE-ax
+    ]]
     local links = search.jira({ content = content })
     assert_tbl_same_any_order({}, links)
   end)

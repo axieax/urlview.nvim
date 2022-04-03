@@ -6,6 +6,8 @@ local default_config = {
   -- Default picker to display links with
   -- Options: "default" (vim.ui.select) or "telescope"
   default_picker = "default",
+  -- Set the default protocol for us to prefix URLs with if they don't start with http/https
+  default_prefix = "https://",
   -- Command or method to open links with
   -- Options: "netrw", "auto" (default OS browser); or "firefox", "chromium" etc.
   navigate_method = "netrw",
@@ -15,7 +17,11 @@ local default_config = {
   custom_searches = {},
 }
 
-M._options = default_config
+M._reset_config = function()
+  M._options = default_config
+end
+
+M._reset_config()
 
 return setmetatable(M, {
   __index = function(_, k)
