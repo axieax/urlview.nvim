@@ -8,11 +8,11 @@ UrlView is a [Neovim](https://neovim.io) plugin which displays links from a vari
 
 ### 📋 Buffer Links
 
-![buffer-demo](https://user-images.githubusercontent.com/62098008/161416630-13cc04e4-8564-4129-9751-6805a1e86114.png)
+![buffer-demo](https://user-images.githubusercontent.com/62098008/161417569-e8103fc4-a009-4c4f-95a7-ea7e22cbb3df.png)
 
 ### 🔌 Packer Plugin Links
 
-![packer-demo](https://user-images.githubusercontent.com/62098008/161416712-0965ab25-e4de-458a-8a67-45cd7269fd50.png)
+![packer-demo](https://user-images.githubusercontent.com/62098008/161417652-fd514310-a926-4ec7-af28-b2cfa3aa4b19.png)
 
 ## ⚡ Requirements
 
