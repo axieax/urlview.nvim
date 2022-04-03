@@ -24,6 +24,7 @@ function M.content(content)
 
   -- Extract URLs starting with www, excluding already extracted http(s) URLs
   for capture in content:gmatch(www_pattern .. "%w" .. pattern) do
+    capture = "https://" .. capture
     if not captures[capture] then
       captures[capture] = ""
     end
