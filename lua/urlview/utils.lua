@@ -32,7 +32,7 @@ function M.navigate_url(url)
     return
   end
 
-  if cmd == "auto" then
+  if cmd == "system" then
     local os = vim.loop.os_uname().sysname
     if os == "Darwin" then -- MacOS
       cmd = "open"

@@ -52,7 +52,7 @@ require("urlview").setup({
   -- Set the default protocol for us to prefix URLs with if they don't start with http/https
   default_prefix = "https://",
   -- Command or method to open links with
-  -- Options: "netrw", "auto" (default OS browser); or "firefox", "chromium" etc.
+  -- Options: "netrw", "system" (default OS browser); or "firefox", "chromium" etc.
   navigate_method = "netrw",
   -- Logs user warnings
   debug = true,
