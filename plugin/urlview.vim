@@ -18,6 +18,7 @@ function! s:UrlViewCompletion(argLead, cmdLine, cursorPos)
     " opts completion
     let l:context = l:head[1]
     let l:accepted_opts = luaeval("require('urlview.search.validation')['" . l:context . "']()")
+    let l:accepted_opts = l:accepted_opts + ['title']
     let l:accepted_opts = map(l:accepted_opts, {_, v -> v:val . '='})
     return join(l:accepted_opts, "\n")
   endif
