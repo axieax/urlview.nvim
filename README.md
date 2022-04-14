@@ -2,7 +2,7 @@
 
 UrlView is a [Neovim](https://neovim.io) plugin which displays links from a variety of contexts (e.g. from a buffer, file, [packer.nvim](https://github.com/wbthomason/packer.nvim) plugin URLs), using the built-in `vim.ui.select` or [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) as a picker. These entries can also be selected to be brought up in your browser.
 
-> Please note that currently, this plugin only detects URLs beginning with a HTTP(s) or www prefix, but there are plans to support a more general pattern, see [Roadmap](https://github.com/axieax/urlview.nvim/issues/3).
+> Please note that currently, this plugin only detects URLs beginning with a HTTP(s) or www prefix, but there are plans to support a more general pattern, see [🗺️ Roadmap](https://github.com/axieax/urlview.nvim/issues/3).
 
 ## 📸 Screenshots
 
@@ -30,7 +30,7 @@ This plugin requires **Neovim 0.6+**. If necessary, please check out **Alternati
 
 ## 📦 Installation
 
-Free free to install this plugin manually or with your favourite Plugin Manager. As an example, using [packer.nvim](https://github.com/wbthomason/packer.nvim):
+Free free to install this plugin manually or with your favourite plugin manager. As an example, using [packer.nvim](https://github.com/wbthomason/packer.nvim):
 
 ```lua
 use("axieax/urlview.nvim")
@@ -67,9 +67,6 @@ require("urlview").setup({
     },
   },
 })
-
--- OPTIONAL: for Telescope picker support
-require("telescope").load_extension("urlview")
 ```
 
 ## 🎨 Pickers
@@ -81,13 +78,13 @@ You can customise the appearance of `vim.ui.select` with plugins such as [dressi
 ### 🔭 Telescope
 
 - Additional requirements: [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
-- Make sure you have the following in your config:
+- You can use Telescope as your `default_picker` using the `require("urlview").setup` function
+- Alternatively, you can specify a picker dynamically with `:UrlView <ctx> picker=telescope`
+- If you _really_ want access to `:Telescope urlview`, then add the following line to your config:
 
 ```lua
 require("telescope").load_extension("urlview")
 ```
-
-- You can now use Telescope as your picker with `:Telescope urlview`!
 
 ## 🛍️ Alternatives
 
@@ -95,4 +92,4 @@ require("telescope").load_extension("urlview")
 
 ## 🚧 Extras
 
-More features are continually being added to this plugin (see [Roadmap](https://github.com/axieax/urlview.nvim/issues/3)). Feel free to file an issue or create a PR for any features / fixes :)
+More features are continually being added to this plugin (see [🗺️ Roadmap](https://github.com/axieax/urlview.nvim/issues/3)). Feel free to file an issue or create a PR for any features / fixes :)
