@@ -71,8 +71,9 @@ end
 
 return setmetatable(M, {
   __index = function(_, _)
-    return function(_)
-      return {}
+    return function(opts)
+      -- if `opts` provided, return `opts`, otherwise return all possible accepted options
+      return utils.fallback(opts, {})
     end
   end,
 })
