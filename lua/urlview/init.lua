@@ -4,6 +4,7 @@ local config = require("urlview.config")
 local pickers = require("urlview.pickers")
 local search = require("urlview.search")
 local search_helpers = require("urlview.search.helpers")
+local search_validation = require("urlview.search.validation")
 local utils = require("urlview.utils")
 
 --- Searchs the provided context for links
@@ -21,12 +22,38 @@ function M.search(ctx, picker, opts)
   end
 
   -- search ctx for links and display with picker
+  opts = search_validation[ctx](opts)
   local links = search[ctx](opts)
   if links and not vim.tbl_isempty(links) then
     pickers[picker](links, opts)
   else
     utils.log("No links found in context " .. ctx)
   end
+end
+
+-- index of `opts` parameter in `M.search`
+local OPTS_INDEX = 3
+
+--- Processes arguments provided through the `UrlView` command for `M.search`
+function M.command_search(...)
+  local args = { ... }
+  local opts = {}
+  if #args >= OPTS_INDEX then
+    -- process provided options
+    for i = OPTS_INDEX, #args do
+      local equals_index = string.find(args[i], "=")
+      if equals_index then
+        local key = string.sub(args[i], 1, equals_index - 1)
+        local value = string.sub(args[i], equals_index + 1)
+        -- remove beginning and trailing quotes from value if present
+        if string.match(value, "^[\"']") and string.match(value, "[\"']$") then
+          value = string.sub(value, 2, -2)
+        end
+        opts[key] = value
+      end
+    end
+  end
+  M.search(args[1], args[2], opts)
 end
 
 --- Custom setup function

@@ -3,7 +3,9 @@ local M = {}
 local utils = require("urlview.utils")
 local search_helpers = require("urlview.search.helpers")
 
---- Extracts urls from the current buffer
+-- NOTE: make sure to add accepted params for `opts` to `urlview.search.validation` as well if needed
+
+--- Extracts urls from the current buffer or a given buffer
 ---@param opts table (map, optional)
 ---@return table (list) of strings (extracted links)
 function M.buffer(opts)
