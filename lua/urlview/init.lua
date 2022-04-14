@@ -9,12 +9,11 @@ local utils = require("urlview.utils")
 
 --- Searchs the provided context for links
 ---@param ctx string where to search (default: search buffer)
----@param picker string (optional)
 ---@param opts table (map, optional)
-function M.search(ctx, picker, opts)
-  picker = utils.fallback(picker, config.default_picker)
+function M.search(ctx, opts)
+  ctx = utils.fallback(ctx, "buffer")
   opts = utils.fallback(opts, {})
-  ctx = utils.fallback(ctx, opts.ctx) or "buffer"
+  local picker = utils.fallback(opts.picker, config.default_picker)
   if not opts.title then
     local should_capitalise = string.match(config.default_title, "^%u")
     local ctx_title = utils.ternary(should_capitalise, ctx:gsub("^%l", string.upper), ctx)
@@ -32,7 +31,7 @@ function M.search(ctx, picker, opts)
 end
 
 -- index of `opts` parameter in `M.search`
-local OPTS_INDEX = 3
+local OPTS_INDEX = 2
 
 --- Processes arguments provided through the `UrlView` command for `M.search`
 function M.command_search(...)
@@ -53,7 +52,7 @@ function M.command_search(...)
       end
     end
   end
-  M.search(args[1], args[2], opts)
+  M.search(args[1], opts)
 end
 
 --- Custom setup function
