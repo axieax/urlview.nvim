@@ -13,6 +13,14 @@ function M.buffer(opts)
   return search_helpers.content(content)
 end
 
+--- Extracts urls from a given file
+---@param opts table (map, optional)
+---@return table (list) of strings (extracted links)
+function M.file(opts)
+  local content = utils.fallback(utils.read_file(opts.filepath), "")
+  return search_helpers.content(content)
+end
+
 --- Extracts urls of packer.nvim plugins
 ---@return table (list) of strings (extracted links)
 function M.packer()

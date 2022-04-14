@@ -60,6 +60,15 @@ function M.buffer(opts)
   })
 end
 
+--- Validation for the "file" search context
+---@param opts table (map, optional) of user options
+---@return table (map) of updated user options if `opts` is provided, otherwise returns all possible accepted options as a table (list)
+function M.file(opts)
+  return verify_or_accept(opts, {
+    filepath = { "string", false },
+  })
+end
+
 return setmetatable(M, {
   __index = function(_, _)
     return function(_)

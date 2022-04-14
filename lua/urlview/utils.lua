@@ -10,6 +10,20 @@ function M.get_buffer_content(bufnr)
   return table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n")
 end
 
+--- Extracts content from a given file
+---@param filepath string @path to file
+---@return string|nil @content of file (or nil if file cannot be open)
+function M.read_file(filepath)
+  local f = io.open(vim.fn.expand(filepath), "r")
+  if f == nil then
+    M.log("Could not open file: " .. filepath)
+    return nil
+  end
+  local content = f:read("*all")
+  f:close()
+  return content
+end
+
 --- Extract @captures from @content and display them as @formats
 ---@param content string @content to extract from
 ---@param capture string @capture pattern to extract
