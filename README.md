@@ -1,6 +1,6 @@
 # 🔎 urlview.nvim
 
-UrlView is a [Neovim](https://neovim.io) plugin which displays links from a variety of contexts (e.g. from a buffer, file, [packer.nvim](https://github.com/wbthomason/packer.nvim) plugin URLs), using the built-in `vim.ui.select` or [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) as a picker. These entries can also be selected to be brought up in your browser.
+UrlView is a [Neovim](https://neovim.io) plugin which displays links from a variety of contexts (e.g. from a buffer, file, [packer.nvim](https://github.com/wbthomason/packer.nvim) and [vim-plug](https://github.com/junegunn/vim-plug) plugin URLs), using the built-in `vim.ui.select` or [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) as a picker. These entries can also be selected to be brought up in your browser.
 
 > Please note that currently, this plugin only detects URLs beginning with a HTTP(s) or www prefix, but there are plans to support a more general pattern, see [🗺️ Roadmap](https://github.com/axieax/urlview.nvim/issues/3).
 
@@ -8,9 +8,13 @@ UrlView is a [Neovim](https://neovim.io) plugin which displays links from a vari
 
 ### 📋 Buffer Links
 
+`:UrlView` or `:UrlView buffer`
+
 ![buffer-demo](https://user-images.githubusercontent.com/62098008/161417569-e8103fc4-a009-4c4f-95a7-ea7e22cbb3df.png)
 
 ### 🔌 Packer Plugin Links
+
+`:UrlView packer`
 
 ![packer-demo](https://user-images.githubusercontent.com/62098008/161417652-fd514310-a926-4ec7-af28-b2cfa3aa4b19.png)
 
