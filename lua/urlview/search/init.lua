@@ -32,6 +32,16 @@ function M.packer()
   return links
 end
 
+--- Extracts urls of vim-plug plugins
+---@return table (list) of strings (extracted links)
+function M.vimplug()
+  local links = {}
+  for _, info in pairs(vim.g.plugs or {}) do
+    table.insert(links, info.uri)
+  end
+  return links
+end
+
 return setmetatable(M, {
   -- error check for invalid searcher (still allow function calls, but return nil)
   __index = function(_, k)
