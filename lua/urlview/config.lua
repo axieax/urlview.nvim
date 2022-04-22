@@ -4,8 +4,8 @@ local default_config = {
   -- Prompt title (`<context> <default_title>`, e.g. `Buffer Links:`)
   default_title = "Links:",
   -- Default picker to display links with
-  -- Options: "default" (vim.ui.select) or "telescope"
-  default_picker = "default",
+  -- Options: "native" (vim.ui.select) or "telescope"
+  default_picker = "native",
   -- Set the default protocol for us to prefix URLs with if they don't start with http/https
   default_prefix = "https://",
   -- Command or method to open links with
