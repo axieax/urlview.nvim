@@ -5,7 +5,7 @@ local utils = require("urlview.utils")
 --- Displays items using the vim.ui.select picker
 ---@param items table (list) of strings
 ---@param opts table (map) of options
-function M.default(items, opts)
+function M.native(items, opts)
   local options = { prompt = opts.title }
   local function on_choice(item, _)
     if item then
@@ -22,8 +22,8 @@ end
 function M.telescope(items, opts)
   local telescope = pcall(require, "telescope")
   if not telescope then
-    utils.log("Telescope is not installed, defaulting to vim.ui.select picker.")
-    return M.default(items)
+    utils.log("Telescope is not installed, defaulting to native vim.ui.select picker.")
+    return M.native(items)
   end
 
   local actions = require("telescope.actions")
@@ -53,8 +53,8 @@ end
 
 function M.__index(_, k)
   if k ~= nil then
-    utils.log(k .. " is not a valid picker, defaulting to vim.ui.select picker.")
-    return M.default
+    utils.log(k .. " is not a valid picker, defaulting to native vim.ui.select picker.")
+    return M.native
   end
 end
 

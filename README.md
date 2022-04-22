@@ -51,8 +51,8 @@ require("urlview").setup({
   -- Prompt title (`<context> <default_title>`, e.g. `Buffer Links:`)
   default_title = "Links:",
   -- Default picker to display links with
-  -- Options: "default" (vim.ui.select) or "telescope"
-  default_picker = "default",
+  -- Options: "native" (vim.ui.select) or "telescope"
+  default_picker = "native",
   -- Set the default protocol for us to prefix URLs with if they don't start with http/https
   default_prefix = "https://",
   -- Command or method to open links with
@@ -75,7 +75,7 @@ require("urlview").setup({
 
 ## 🎨 Pickers
 
-### ✔️ Default (vim.ui.select)
+### ✔️ Native (vim.ui.select)
 
 You can customise the appearance of `vim.ui.select` with plugins such as [dressing.nvim](https://github.com/stevearc/dressing.nvim). In the demo above, I used the [telescope](https://github.com/nvim-telescope/telescope.nvim) option, which further allows me to filter and fuzzy search through my entries.
 
