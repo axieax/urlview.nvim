@@ -83,4 +83,12 @@ function M.register_custom_searches(searchers)
   end
 end
 
+--- Finds the plugin's url using the remote url for its local Git repository
+---@param path string @path to the plugin's local Git repository
+---@return string|nil @url of the plugin if found, otherwise nil
+function M.get_plugin_url(path)
+  local url = vim.fn.system(string.format("cd %s && git remote get-url origin", vim.fn.shellescape(path)))
+  return utils.ternary(vim.v.shell_error == 0, url:gsub("%.git\n$", ""), nil)
+end
+
 return M
