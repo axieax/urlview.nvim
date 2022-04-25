@@ -42,14 +42,6 @@ function M.packer()
     local opt_plugins, start_plugins = require("packer.plugin_utils").list_installed_plugins()
     local packer_root = require("packer").config.package_root
 
-    --- Finds the plugin's url using the remote url for its local Git repository
-    ---@param path string @path to the plugin's local Git repository
-    ---@return string|nil @url of the plugin if found, otherwise nil
-    local function get_plugin_url(path)
-      local url = vim.fn.system(string.format("cd %s && git remote get-url origin", vim.fn.shellescape(path)))
-      return utils.ternary(vim.v.shell_error == 0, url:gsub("%.git\n$", ""), nil)
-    end
-
     for _, name in ipairs(missing_plugins) do
       local url
       local start_path = string.format("%s/packer/start/%s", packer_root, name)
@@ -57,9 +49,9 @@ function M.packer()
 
       -- check if the plugin is in the `start` or `opt` directories
       if start_plugins[start_path] then
-        url = get_plugin_url(start_path)
+        url = search_helpers.git_remote_url(start_path)
       elseif opt_plugins[opt_path] then
-        url = get_plugin_url(opt_path)
+        url = search_helpers.git_remote_url(opt_path)
       end
 
       if url then
