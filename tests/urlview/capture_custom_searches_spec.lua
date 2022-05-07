@@ -12,6 +12,7 @@ describe("custom Jira searcher (template table)", function()
         },
       },
     })
+    assert.is.Not.Nil(search.jira)
   end)
 
   after_each(function()

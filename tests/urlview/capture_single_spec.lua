@@ -45,7 +45,7 @@ describe("url-only simple capture", function()
 
   it("www capture", function()
     local url = "www.google.com"
-    assert_single_match(url, default_prefix .. url)
+    assert_single_match(url, url)
   end)
 
   it("http www capture", function()
@@ -60,7 +60,7 @@ describe("url-only simple capture", function()
 
   it("trailing slash", function()
     local url = "www.google.com/"
-    assert_single_match(url, default_prefix .. url)
+    assert_single_match(url, url)
   end)
 end)
 
@@ -88,12 +88,12 @@ describe("url-only path capture", function()
 
   it("www path capture", function()
     local url = "www.google.com/path/to/idk"
-    assert_single_match(url, default_prefix .. url)
+    assert_single_match(url, url)
   end)
 
   it("url-encoded path query capture", function()
     local url = "www.google.com/P%40%2Bh%20t35T%2F/1dk%3F?q=%3Da%25%3B"
-    assert_single_match(url, default_prefix .. url)
+    assert_single_match(url, url)
   end)
 
   it("query capture", function()
