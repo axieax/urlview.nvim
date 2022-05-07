@@ -23,7 +23,7 @@ function M.search(ctx, opts)
   -- search ctx for links and display with picker
   opts = search_validation[ctx](opts)
   local links = search[ctx](opts)
-  links = utils.prepare_links(links)
+  links = utils.prepare_links(links, opts)
   if links and not vim.tbl_isempty(links) then
     pickers[picker](links, opts)
   else
@@ -48,6 +48,10 @@ function M.command_search(...)
         -- remove beginning and trailing quotes from value if present
         if string.match(value, "^[\"']") and string.match(value, "[\"']$") then
           value = string.sub(value, 2, -2)
+        end
+        -- type conversion
+        if vim.tbl_contains({ "unique", "sorted" }, key) then
+          value = utils.string_to_boolean(value)
         end
         opts[key] = value
       end

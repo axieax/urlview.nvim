@@ -23,7 +23,7 @@ local default_config = {
   -- Ensure links shown in the picker are unique (no duplicates)
   unique = true,
   -- Ensure links shown in the picker are sorted alphabetically
-  sort = true,
+  sorted = true,
   -- Logs user warnings (recommended for error detection)
   debug = true,
   -- Custom search captures

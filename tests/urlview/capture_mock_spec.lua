@@ -25,9 +25,6 @@ describe("mock vim.ui.select", function()
   local original_ui_select = vim.ui.select
 
   it("unique, sorted", function()
-    config.unique = true
-    config.sorted = true
-
     local content = "pears watermelon banana apple apple peach apricot watermelon"
     local expected = vim.tbl_map(function(v)
       return default_prefix .. v
@@ -37,7 +34,7 @@ describe("mock vim.ui.select", function()
       assert.same(expected, items)
     end
 
-    urlview.search("test", { content = content })
+    urlview.search("test", { content = content, unique = true, sorted = true })
     vim.ui.select = original_ui_select
   end)
 end)

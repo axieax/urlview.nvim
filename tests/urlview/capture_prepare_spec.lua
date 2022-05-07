@@ -5,12 +5,10 @@ local assert_tbl_same_any_order = require("tests.urlview.helpers").assert_tbl_sa
 local extract_links_from_content = require("urlview.search.helpers").content
 local prepare_links = require("urlview.utils").prepare_links
 
-describe("HTTP(s) protocol", function()
+describe("HTTP(s) protocol fill in", function()
   local default_prefix = "https://"
   before_each(function()
-    urlview.setup({
-      default_prefix = default_prefix,
-    })
+    urlview.setup({ default_prefix = default_prefix })
   end)
 
   after_each(function()
@@ -61,18 +59,14 @@ describe("unique links", function()
   local content = "1 1 2 2 3 3 4 4 5 5"
 
   it("keep duplicates", function()
-    config.unique = false
-
     local links = search.test({ content = content })
-    local prepared_links = prepare_links(links)
+    local prepared_links = prepare_links(links, { unique = false })
     assert_tbl_same_any_order({ "1", "1", "2", "2", "3", "3", "4", "4", "5", "5" }, prepared_links)
   end)
 
   it("filter duplicates", function()
-    config.unique = true
-
     local links = search.test({ content = content })
-    local prepared_links = prepare_links(links)
+    local prepared_links = prepare_links(links, { unique = true })
     assert.same({ "1", "2", "3", "4", "5" }, prepared_links)
   end)
 end)
@@ -80,16 +74,14 @@ end)
 describe("sorted links", function()
   local default_prefix = "https://"
   before_each(function()
-    urlview.setup({
-      default_prefix = default_prefix,
-    })
+    urlview.setup({ default_prefix = default_prefix, sort = true })
   end)
 
   after_each(function()
     config._reset_defaults()
   end)
 
-  it("full urls sorted alphabetically", function()
+  it("URLs missing protocol fixed and sorted alphabetically", function()
     local content = [[
     www.google.com
     https://google.com
@@ -114,6 +106,4 @@ describe("sorted links", function()
 
     assert.same(expected, prepared_links)
   end)
-
-  it("urls missing protocol fixed and sorted alphabetically", function() end)
 end)

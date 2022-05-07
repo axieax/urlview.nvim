@@ -65,8 +65,10 @@ end
 
 --- Prepare links before being displayed
 ---@param links table @list of extracted links
+---@param opts table @Optional options
 ---@return table @list of prepared links
-function M.prepare_links(links)
+function M.prepare_links(links, opts)
+  opts = M.fallback(opts, {})
   local new_links = {}
 
   -- Attach missing HTTP(s) protocol
@@ -80,7 +82,7 @@ function M.prepare_links(links)
   -- Filter duplicate links
   -- NOTE: links with different protocols / www prefix / trailing slashes
   -- are not filtered to ensure links do not break
-  if config.unique then
+  if M.fallback(opts.unique, config.unique) then
     local map = {}
     for _, link in ipairs(new_links) do
       map[link] = true
@@ -89,7 +91,7 @@ function M.prepare_links(links)
   end
 
   -- Sort links alphabetically (case insensitive)
-  if config.sort then
+  if M.fallback(opts.sorted, config.sorted) then
     table.sort(new_links, function(a, b)
       return a:lower() < b:lower()
     end)
@@ -122,6 +124,17 @@ function M.log(message)
   if config.debug then
     vim.notify(message, vim.log.levels.WARN)
   end
+end
+
+--- Converts a boolean to a string
+---@param value string @value to convert
+---@return boolean|nil @value as a boolean, or nil if not a boolean
+function M.string_to_boolean(value)
+  local bool_map = { ["true"] = true, ["false"] = false }
+  if not bool_map[value] then
+    M.log("Could not convert " .. value .. " to boolean")
+  end
+  return bool_map[value]
 end
 
 return M

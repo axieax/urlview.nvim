@@ -13,8 +13,7 @@ local function validate_type(value, expected_type)
     if expected_type == "number" then
       return tonumber(value)
     elseif expected_type == "boolean" then
-      local bool_map = { ["true"] = true, ["false"] = false }
-      return bool_map[value]
+      return utils.string_to_boolean(value)
     elseif expected_type == "string" then
       return tostring(value)
     end
