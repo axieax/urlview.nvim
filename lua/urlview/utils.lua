@@ -84,7 +84,7 @@ end
 ---@param message string @message to log
 function M.log(message)
   if config.debug then
-    vim.api.nvim_echo({ { message, "WarningMsg" } }, false, {})
+    vim.notify(message, vim.log.levels.WARN)
   end
 end
 

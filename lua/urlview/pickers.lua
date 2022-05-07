@@ -23,7 +23,7 @@ function M.telescope(items, opts)
   local telescope = pcall(require, "telescope")
   if not telescope then
     utils.log("Telescope is not installed, defaulting to native vim.ui.select picker.")
-    return M.native(items)
+    return M.native(items, opts)
   end
 
   local actions = require("telescope.actions")
