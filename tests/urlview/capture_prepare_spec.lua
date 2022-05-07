@@ -50,7 +50,7 @@ describe("unique links", function()
         },
       },
     })
-    assert.is.Not.Nil(search.test)
+    assert.is_not.Nil(search.test)
   end)
 
   after_each(function()
@@ -112,7 +112,7 @@ describe("sorted links", function()
       default_prefix .. "www.google.com",
     }
 
-    assert.are.same(expected, prepared_links)
+    assert.same(expected, prepared_links)
   end)
 
   it("urls missing protocol fixed and sorted alphabetically", function() end)

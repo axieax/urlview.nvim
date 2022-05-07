@@ -14,7 +14,7 @@ describe("mock vim.ui.select", function()
         },
       },
     })
-    assert.is.Not.Nil(search.test)
+    assert.is_not.Nil(search.test)
   end)
 
   after_each(function()
@@ -33,8 +33,8 @@ describe("mock vim.ui.select", function()
       return default_prefix .. v
     end, { "apple", "apricot", "banana", "peach", "pears", "watermelon" })
 
-    vim.ui.select = function(items, ...)
-      assert.are.same(expected, items)
+    vim.ui.select = function(items)
+      assert.same(expected, items)
     end
 
     urlview.search("test", { content = content })
