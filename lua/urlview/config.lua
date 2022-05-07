@@ -1,5 +1,14 @@
-local M = {}
+local M = {
+  _constants = {
+    -- SEE: lua pattern matching (https://riptutorial.com/lua/example/20315/lua-pattern-matching)
+    -- regex equivalent: [A-Za-z0-9@:%._+~#=/\-?&]*
+    pattern = "[%w@:%%._+~#=/%-?&]*",
+    http_pattern = "https?://",
+    www_pattern = "www%.",
+  },
+}
 
+-- NOTE: ensure this is in sync with README config
 local default_config = {
   -- Prompt title (`<context> <default_title>`, e.g. `Buffer Links:`)
   default_title = "Links:",
@@ -11,7 +20,11 @@ local default_config = {
   -- Command or method to open links with
   -- Options: "netrw", "system" (default OS browser); or "firefox", "chromium" etc.
   navigate_method = "netrw",
-  -- Logs user warnings
+  -- Ensure links shown in the picker are unique (no duplicates)
+  unique = true,
+  -- Ensure links shown in the picker are sorted alphabetically
+  sort = true,
+  -- Logs user warnings (recommended for error detection)
   debug = true,
   -- Custom search captures
   custom_searches = {},

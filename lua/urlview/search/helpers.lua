@@ -1,13 +1,7 @@
 local M = {}
 
-local config = require("urlview.config")
+local constants = require("urlview.config")._constants
 local utils = require("urlview.utils")
-
--- SEE: lua pattern matching (https://riptutorial.com/lua/example/20315/lua-pattern-matching)
--- regex equivalent: [A-Za-z0-9@:%._+~#=/\-?&]*
-local pattern = "[%w@:%%._+~#=/%-?&]*"
-local http_pattern = "https?://"
-local www_pattern = "www%."
 
 --- Extracts urls from the given content
 ---@param content string
@@ -16,17 +10,19 @@ function M.content(content)
   ---@type table (map) of string (url base pattern) to string (prefix / uri protocol)
   local captures = {}
 
+  -- NOTE: this method enforces unique matches regardless of config (before a general pattern is implemented)
+
   -- Extract URLs starting with http:// or https://
-  for capture in content:gmatch(http_pattern .. "%w" .. pattern) do
-    local prefix = capture:match(http_pattern)
-    local url = capture:gsub(http_pattern, "")
+  for capture in content:gmatch(constants.http_pattern .. "%w" .. constants.pattern) do
+    local prefix = capture:match(constants.http_pattern)
+    local url = capture:gsub(constants.http_pattern, "")
     captures[url] = prefix
   end
 
   -- Extract URLs starting with www, excluding already extracted http(s) URLs
-  for capture in content:gmatch(www_pattern .. "%w" .. pattern) do
+  for capture in content:gmatch(constants.www_pattern .. "%w" .. constants.pattern) do
     if not captures[capture] then
-      captures[capture] = config.default_prefix
+      captures[capture] = ""
     end
   end
 
