@@ -43,8 +43,14 @@ end
 function M.navigate_url(url)
   local cmd = config.navigate_method
   if cmd == "netrw" then
-    vim.cmd("call netrw#BrowseX('" .. url .. "',netrw#CheckIfRemote())")
-    return
+    local ok, res = pcall(vim.cmd, string.format("call netrw#BrowseX('%s', netrw#CheckIfRemote('%s'))", url, url))
+    if not ok and vim.startswith(res, "Vim(call):E117: Unknown function") then
+      -- lazily update default navigate method if netrw is disabled
+      config.navigate_method = "system"
+      cmd = "system"
+    else
+      return
+    end
   end
 
   if cmd == "system" then
@@ -122,7 +128,7 @@ end
 ---@param message string @message to log
 function M.log(message)
   if config.debug then
-    vim.notify(message, vim.log.levels.WARN)
+    vim.notify("[urlview.nvim] " .. message, vim.log.levels.WARN)
   end
 end
 
