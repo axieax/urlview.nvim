@@ -28,7 +28,8 @@ function M.packer()
   local missing_plugins = {}
   -- selene: allow(undefined_variable)
   for name, info in pairs(packer_plugins or {}) do
-    if info.url then
+    local is_file = vim.startswith(info.url, "/")
+    if info.url and not is_file then
       table.insert(links, info.url)
     else
       table.insert(missing_plugins, name)
