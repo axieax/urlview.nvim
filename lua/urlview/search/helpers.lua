@@ -83,7 +83,8 @@ end
 ---@param path string @path to a local Git repository
 ---@return string|nil @remote url of the repository if found, otherwise nil
 function M.git_remote_url(path)
-  local url = vim.fn.system(string.format("cd %s && git remote get-url origin", vim.fn.shellescape(path)))
+  path = vim.fn.shellescape(path)
+  local url = vim.fn.system(string.format("cd %s && git remote get-url origin", path))
   return utils.ternary(vim.v.shell_error == 0, url:gsub("%.git\n$", ""), nil)
 end
 

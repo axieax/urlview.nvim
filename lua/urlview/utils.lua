@@ -39,12 +39,13 @@ function M.extract_pattern(content, capture, format)
 end
 
 --- Opens the url in the browser
----@param url string
-function M.navigate_url(url)
+---@param raw_url string
+function M.navigate_url(raw_url)
+  local url = vim.fn.shellescape(raw_url)
   local cmd = config.navigate_method
   if cmd == "netrw" then
-    local ok, res = pcall(vim.cmd, string.format("call netrw#BrowseX('%s', netrw#CheckIfRemote('%s'))", url, url))
-    if not ok and vim.startswith(res, "Vim(call):E117: Unknown function") then
+    local ok, err = pcall(vim.cmd, string.format("call netrw#BrowseX(%s, netrw#CheckIfRemote(%s))", url, url))
+    if not ok and vim.startswith(err, "Vim(call):E117: Unknown function") then
       -- lazily update default navigate method if netrw is disabled
       config.navigate_method = "system"
       cmd = "system"
@@ -63,9 +64,13 @@ function M.navigate_url(url)
   end
 
   if cmd and vim.fn.executable(cmd) then
-    os.execute(cmd .. " " .. vim.fn.shellescape(url, 1))
+    -- NOTE: `vim.fn.system` shellescapes arguments
+    local err = vim.fn.system({ cmd, raw_url })
+    if err ~= "" then
+      M.log("could not navigate link with `navigate_method: system`:\n" .. err)
+    end
   else
-    vim.notify("Cannot use " .. cmd .. " to navigate links", vim.log.levels.DEBUG)
+    M.log(string.format("Cannot use %s to navigate links", cmd), vim.log.levels.DEBUG)
   end
 end
 
@@ -126,9 +131,11 @@ end
 
 --- Logs user warnings
 ---@param message string @message to log
-function M.log(message)
+---@param level integer|nil @log level, defaults to "warning"
+function M.log(message, level)
+  level = M.fallback(level, vim.log.levels.WARN)
   if config.debug then
-    vim.notify("[urlview.nvim] " .. message, vim.log.levels.WARN)
+    vim.notify("[urlview.nvim] " .. message, level)
   end
 end
 
