@@ -2,8 +2,8 @@ name: default
 
 on:
   pull_request:
-    push:
-      branches: [main]
+  push:
+    branches: [main]
 
 jobs:
   stylua:

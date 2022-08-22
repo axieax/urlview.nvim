@@ -32,23 +32,25 @@ function M.telescope(items, opts)
   local finders = require("telescope.finders")
   local pickers = require("telescope.pickers")
 
-  pickers.new(opts, {
-    prompt_title = opts.title,
-    finder = finders.new_table({
-      results = items,
-    }),
-    sorter = conf.generic_sorter(opts),
-    attach_mappings = function(prompt_bufnr, _)
-      actions.select_default:replace(function()
-        local selection = action_state.get_selected_entry()
-        actions.close(prompt_bufnr)
-        if selection[1] then
-          utils.navigate_url(selection[1])
-        end
-      end)
-      return true
-    end,
-  }):find()
+  pickers
+    .new(opts, {
+      prompt_title = opts.title,
+      finder = finders.new_table({
+        results = items,
+      }),
+      sorter = conf.generic_sorter(opts),
+      attach_mappings = function(prompt_bufnr, _)
+        actions.select_default:replace(function()
+          local selection = action_state.get_selected_entry()
+          actions.close(prompt_bufnr)
+          if selection[1] then
+            utils.navigate_url(selection[1])
+          end
+        end)
+        return true
+      end,
+    })
+    :find()
 end
 
 function M.__index(_, k)
