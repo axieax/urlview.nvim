@@ -1,9 +1,7 @@
 local M = {}
 
 -- NOTE: line numbers are 0-indexed, column numbers are 1-indexed
--- TODO: make everything 0-indexed
 -- BUG: prev_url jumps to end of url
--- BUG: same line incorrect
 local utils = require("urlview.utils")
 local search_helpers = require("urlview.search.helpers")
 
@@ -45,7 +43,7 @@ local function find_url(reversed)
   while line_no ~= line_last do
     local full_line = vim.fn.getline(line_no)
     col_no = utils.ternary(col_no == END_COL, #full_line, col_no)
-    local line = utils.ternary(reversed, full_line:sub(0, col_no), full_line:sub(col_no - 1))
+    local line = utils.ternary(reversed, full_line:sub(1, col_no), full_line:sub(col_no))
     print(line_no, col_no)
     local matches = search_helpers.content(line)
 
@@ -63,7 +61,8 @@ local function find_url(reversed)
       for _, index in ipairs(indices) do
         local valid = utils.ternary(reversed, index < col_no, index > col_no)
         if valid then
-          return { line_no, index }
+          -- NOTE: nvim_win_set_cursor takes a 0-indexed column number
+          return { line_no, index - 1 }
         end
       end
     end
@@ -77,7 +76,7 @@ function M.next_url()
   local pos = find_url(false)
   vim.pretty_print(pos)
   if pos then
-    vim.api.nvim_win_set_cursor(0, { pos[1], pos[2] - 1 })
+    vim.api.nvim_win_set_cursor(0, pos)
   end
 end
 
@@ -85,7 +84,7 @@ function M.prev_url()
   local pos = find_url(true)
   vim.pretty_print(pos)
   if pos then
-    vim.api.nvim_win_set_cursor(0, { pos[1], pos[2] - 1 })
+    vim.api.nvim_win_set_cursor(0, pos)
   end
 end
 
