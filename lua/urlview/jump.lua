@@ -97,13 +97,13 @@ function M.register_mappings(jump_opts)
   if type(jump_opts) ~= "table" then
     utils.log("Invalid type for option `jump` (expected: table with prev_url and next_url keys)")
   else
-    vim.api.nvim_set_keymap(
+    utils.keymap(
       "n",
       jump_opts.prev,
       [[<Cmd>lua require("urlview.jump").prev_url()<CR>]],
       { desc = "Previous URL", noremap = true }
     )
-    vim.api.nvim_set_keymap(
+    utils.keymap(
       "n",
       jump_opts.next,
       [[<Cmd>lua require("urlview.jump").next_url()<CR>]],
