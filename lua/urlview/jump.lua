@@ -1,7 +1,6 @@
 local M = {}
 
 -- NOTE: line numbers are 0-indexed, column numbers are 1-indexed
--- TODO: integrate with jump history <C-o>
 
 local utils = require("urlview.utils")
 local search_helpers = require("urlview.search.helpers")
@@ -70,6 +69,8 @@ local function goto_url(reversed)
         for _, index in ipairs(indices) do
           local valid = utils.ternary(reversed, index < col_no, index > col_no)
           if valid then
+            -- add to jump list
+            vim.cmd("normal! m'")
             -- NOTE: it seems nvim_win_set_cursor takes a 0-indexed column number
             local pos = { line_no, index - 1 }
             vim.api.nvim_win_set_cursor(0, pos)
