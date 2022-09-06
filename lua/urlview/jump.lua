@@ -1,6 +1,7 @@
 local M = {}
 
 -- NOTE: line numbers are 0-indexed, column numbers are 1-indexed
+-- TODO: integrate with jump history <C-o>
 
 local utils = require("urlview.utils")
 local search_helpers = require("urlview.search.helpers")
@@ -33,7 +34,10 @@ local function correct_start_col(line_start, col_start, reversed)
   return col_start
 end
 
-local function find_url(reversed)
+--- Forward / backward jump generator
+---@param reversed boolean @direction false for forward, true for backwards
+---@return function @when called, jumps to the URL in the given direction
+local function goto_url(reversed)
   local sort_function = utils.ternary(reversed, function(a, b)
     return a > b
   end, function(a, b)
@@ -66,7 +70,7 @@ local function find_url(reversed)
         for _, index in ipairs(indices) do
           local valid = utils.ternary(reversed, index < col_no, index > col_no)
           if valid then
-            -- NOTE: nvim_win_set_cursor takes a 0-indexed column number
+            -- NOTE: it seems nvim_win_set_cursor takes a 0-indexed column number
             local pos = { line_no, index - 1 }
             vim.api.nvim_win_set_cursor(0, pos)
             return
@@ -80,7 +84,21 @@ local function find_url(reversed)
   end
 end
 
-M.next_url = find_url(false)
-M.prev_url = find_url(true)
+--- Jump to the next URL
+M.next_url = goto_url(false)
+
+--- Jump to the previous URL
+M.prev_url = goto_url(true)
+
+--- Register URL jump mappings
+---@param jump_opts table
+function M.register_mappings(jump_opts)
+  if type(jump_opts) ~= "table" then
+    utils.log("Invalid type for option `jump` (expected: table with prev_url and next_url keys)")
+  else
+    vim.keymap.set("n", jump_opts.prev, M.prev_url, { desc = "Previous URL" })
+    vim.keymap.set("n", jump_opts.next, M.next_url, { desc = "Next URL" })
+  end
+end
 
 return M

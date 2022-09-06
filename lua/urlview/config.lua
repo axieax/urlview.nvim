@@ -27,6 +27,11 @@ local default_config = {
   sorted = true,
   -- Logs user warnings (recommended for error detection)
   debug = true,
+  -- Keymaps for jumping to previous / next URL in buffer
+  jump = {
+    prev = "[u",
+    next = "]u",
+  },
   -- Custom search captures
   custom_searches = {},
 }
