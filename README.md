@@ -35,13 +35,26 @@ This plugin requires **Neovim 0.6+**. If necessary, please check out **Alternati
 
 ## 🚀 Usage
 
+### Searching contexts
+
 1. Use the command `:UrlView` to see all the URLs in the current buffer.
 
-- For your convenience, feel free to set a keybind for this using `vim.api.nvim_set_keymap`
+- For your convenience, feel free to setup a keybind for this using `vim.api.nvim_set_keymap` (v0.6+) or `vim.keymap.set` (v0.7+)
+
+  ```lua
+  vim.keymap.set("n", "\\u", "<Cmd>UrlView<CR>", { desc = "view buffer URLs" })
+  vim.keymap.set("n", "\\U", "<Cmd>UrlView packer<CR>", { desc = "view plugin URLs" })
+  ```
+
 - You can also hit `:UrlView <tab>` to see additional contexts that you can search from
   - e.g. `:UrlView packer` to view links for installed [packer.nvim](https://github.com/wbthomason/packer.nvim) plugins
 
 2. You can optionally select a link to bring it up in your browser.
+
+### Buffer URL navigation
+
+1. You can use `[u` and `]u` (default bindings) to jump to the previous and next URL in the buffer respectively.
+2. This keymap can be altered under the `jump` config option.
 
 ## 📦 Installation
 
