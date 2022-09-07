@@ -7,6 +7,11 @@ local search_helpers = require("urlview.search.helpers")
 
 local END_COL = -1
 
+--- Return the starting positions of `match` in `line`
+---@param line string
+---@param match string
+---@param offset number @added to each position
+---@return table (list) of offsetted starting indicies
 local function line_match_positions(line, match, offset)
   local start, _ = line:find(vim.pesc(match))
   if start == nil then
@@ -18,13 +23,18 @@ local function line_match_positions(line, match, offset)
   return vim.list_extend({ index }, line_match_positions(line:sub(new_offset), match, new_offset))
 end
 
+--- Returns a starting column position not on a URL
+---@param line_start number @line number at cursor
+---@param col_start number @column number at cursor
+---@param reversed boolean @direction
+---@return number @corrected starting column
 local function correct_start_col(line_start, col_start, reversed)
   local full_line = vim.fn.getline(line_start)
   local matches = search_helpers.content(full_line)
   for _, match in ipairs(matches) do
     local positions = line_match_positions(full_line, match, 0)
     for _, position in ipairs(positions) do
-      -- if on a URL, move starting col to after the url
+      -- if on a URL, move column to be before / after the URL, based on direction
       if col_start >= position and col_start < position + #match then
         return utils.ternary(reversed, position - 1, position + #match)
       end
@@ -43,7 +53,9 @@ local function goto_url(reversed)
     return a < b
   end)
 
-  return function()
+  --- Finds the position of the previous / next URL
+  ---@return table|nil @position
+  local function find_url()
     local line_no = vim.fn.line(".")
     local col_no = vim.fn.col(".")
     local total_lines = vim.api.nvim_buf_line_count(0)
@@ -69,18 +81,23 @@ local function goto_url(reversed)
         for _, index in ipairs(indices) do
           local valid = utils.ternary(reversed, index < col_no, index > col_no)
           if valid then
-            -- add to jump list
-            vim.cmd("normal! m'")
-            -- NOTE: it seems nvim_win_set_cursor takes a 0-indexed column number
-            local pos = { line_no, index - 1 }
-            vim.api.nvim_win_set_cursor(0, pos)
-            return
+            return { line_no, index }
           end
         end
       end
 
       line_no = utils.ternary(reversed, line_no - 1, line_no + 1)
       col_no = utils.ternary(reversed, END_COL, 1)
+    end
+  end
+
+  return function()
+    local pos = find_url()
+    if pos then
+      -- add to jump list
+      vim.cmd("normal! m'")
+      -- NOTE: it seems nvim_win_set_cursor takes a 0-indexed column number
+      vim.api.nvim_win_set_cursor(0, { pos[1], pos[2] - 1 })
     end
   end
 end
