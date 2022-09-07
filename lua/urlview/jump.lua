@@ -43,56 +43,63 @@ local function correct_start_col(line_start, col_start, reversed)
   return col_start
 end
 
+local reversed_sort_function_lookup = {
+  -- reversed == true: descending sort
+  [true] = function(a, b)
+    return a > b
+  end,
+  -- reversed == false: ascending sort
+  [false] = function(a, b)
+    return a < b
+  end,
+}
+
+--- Finds the position of the previous / next URL
+---@param reversed boolean @direction false for forward, true for backwards
+---@return table|nil @position
+local function find_url(reversed)
+  local line_no = vim.fn.line(".")
+  local col_no = vim.fn.col(".")
+  local total_lines = vim.api.nvim_buf_line_count(0)
+  col_no = correct_start_col(line_no, col_no, reversed)
+
+  local sort_function = reversed_sort_function_lookup[reversed]
+  local line_last = utils.ternary(reversed, 0, total_lines)
+  while line_no ~= line_last do
+    local full_line = vim.fn.getline(line_no)
+    col_no = utils.ternary(col_no == END_COL, #full_line, col_no)
+    local line = utils.ternary(reversed, full_line:sub(1, col_no), full_line:sub(col_no))
+    local matches = search_helpers.content(line)
+
+    if not vim.tbl_isempty(matches) then
+      -- sorted table(list) of starting column numbers for URLs in line
+      -- normal order: ascending, reversed order: descending
+      local indices = {}
+      for _, match in ipairs(matches) do
+        local offset = utils.ternary(reversed, 0, col_no - 1)
+        vim.list_extend(indices, line_match_positions(line, match, offset))
+      end
+      table.sort(indices, sort_function)
+      -- find first valid (before or after current column)
+      for _, index in ipairs(indices) do
+        local valid = utils.ternary(reversed, index < col_no, index > col_no)
+        if valid then
+          return { line_no, index }
+        end
+      end
+    end
+
+    line_no = utils.ternary(reversed, line_no - 1, line_no + 1)
+    col_no = utils.ternary(reversed, END_COL, 1)
+  end
+end
+
 --- Forward / backward jump generator
 ---@param reversed boolean @direction false for forward, true for backwards
 ---@return function @when called, jumps to the URL in the given direction
 local function goto_url(reversed)
-  local sort_function = utils.ternary(reversed, function(a, b)
-    return a > b
-  end, function(a, b)
-    return a < b
-  end)
-
-  --- Finds the position of the previous / next URL
-  ---@return table|nil @position
-  local function find_url()
-    local line_no = vim.fn.line(".")
-    local col_no = vim.fn.col(".")
-    local total_lines = vim.api.nvim_buf_line_count(0)
-    col_no = correct_start_col(line_no, col_no, reversed)
-
-    local line_last = utils.ternary(reversed, 0, total_lines)
-    while line_no ~= line_last do
-      local full_line = vim.fn.getline(line_no)
-      col_no = utils.ternary(col_no == END_COL, #full_line, col_no)
-      local line = utils.ternary(reversed, full_line:sub(1, col_no), full_line:sub(col_no))
-      local matches = search_helpers.content(line)
-
-      if not vim.tbl_isempty(matches) then
-        -- sorted table(list) of starting column numbers for URLs in line
-        -- normal order: ascending, reversed order: descending
-        local indices = {}
-        for _, match in ipairs(matches) do
-          local offset = utils.ternary(reversed, 0, col_no - 1)
-          vim.list_extend(indices, line_match_positions(line, match, offset))
-        end
-        table.sort(indices, sort_function)
-        -- find first valid (before or after current column)
-        for _, index in ipairs(indices) do
-          local valid = utils.ternary(reversed, index < col_no, index > col_no)
-          if valid then
-            return { line_no, index }
-          end
-        end
-      end
-
-      line_no = utils.ternary(reversed, line_no - 1, line_no + 1)
-      col_no = utils.ternary(reversed, END_COL, 1)
-    end
-  end
-
   return function()
-    local pos = find_url()
+    local pos = find_url(reversed)
     if pos then
       -- add to jump list
       vim.cmd("normal! m'")
