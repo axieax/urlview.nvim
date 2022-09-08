@@ -55,11 +55,13 @@ local reversed_sort_function_lookup = {
 }
 
 --- Finds the position of the previous / next URL
+---@param winnr number @id of current window
 ---@param reversed boolean @direction false for forward, true for backwards
 ---@return table|nil @position
-local function find_url(reversed)
-  local line_no = vim.fn.line(".")
-  local col_no = vim.fn.col(".")
+local function find_url(winnr, reversed)
+  local line_no, col_no = unpack(vim.api.nvim_win_get_cursor(winnr))
+  -- TEMP: refactor to use 0-indexed col_no instead
+  col_no = col_no + 1
   local total_lines = vim.api.nvim_buf_line_count(0)
   col_no = correct_start_col(line_no, col_no, reversed)
 
@@ -99,12 +101,13 @@ end
 ---@return function @when called, jumps to the URL in the given direction
 local function goto_url(reversed)
   return function()
-    local pos = find_url(reversed)
-    if pos then
+    local winnr = vim.api.nvim_get_current_win()
+    local pos = find_url(winnr, reversed)
+    if pos and vim.api.nvim_win_is_valid(winnr) then
       -- add to jump list
       vim.cmd("normal! m'")
       -- NOTE: it seems nvim_win_set_cursor takes a 0-indexed column number
-      vim.api.nvim_win_set_cursor(0, { pos[1], pos[2] - 1 })
+      vim.api.nvim_win_set_cursor(winnr, { pos[1], pos[2] - 1 })
     end
   end
 end
