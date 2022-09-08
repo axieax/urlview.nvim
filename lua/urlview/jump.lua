@@ -1,6 +1,7 @@
 local M = {}
 
--- NOTE: line numbers are 0-indexed, column numbers are 1-indexed
+-- NOTE: line numbers are 1-indexed, column numbers are 1-indexed
+-- TODO: use 0-indexed column numbers
 
 local utils = require("urlview.utils")
 local search_helpers = require("urlview.search.helpers")
