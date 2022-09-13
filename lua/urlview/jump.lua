@@ -116,9 +116,7 @@ local function goto_url(reversed)
     end
 
     if vim.api.nvim_win_is_valid(winnr) then
-      -- add to jump list
-      vim.cmd("normal! m'")
-      -- NOTE: it seems nvim_win_set_cursor takes a 0-indexed column number
+      vim.cmd("normal! m'") -- add to jump list
       vim.api.nvim_win_set_cursor(winnr, pos)
     else
       utils.log(string.format("The %s URL was found in window number %s, which is no longer valid", direction, winnr))
