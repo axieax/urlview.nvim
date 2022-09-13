@@ -131,18 +131,22 @@ function M.register_mappings(jump_opts)
   if type(jump_opts) ~= "table" then
     utils.log("Invalid type for option `jump` (expected: table with prev_url and next_url keys)")
   else
-    utils.keymap(
-      "n",
-      jump_opts.prev,
-      [[<Cmd>lua require("urlview.jump").prev_url()<CR>]],
-      { desc = "Previous URL", noremap = true }
-    )
-    utils.keymap(
-      "n",
-      jump_opts.next,
-      [[<Cmd>lua require("urlview.jump").next_url()<CR>]],
-      { desc = "Next URL", noremap = true }
-    )
+    if jump_opts.prev ~= "" then
+      utils.keymap(
+        "n",
+        jump_opts.prev,
+        [[<Cmd>lua require("urlview.jump").prev_url()<CR>]],
+        { desc = "Previous URL", noremap = true }
+      )
+    end
+    if jump_opts.next ~= "" then
+      utils.keymap(
+        "n",
+        jump_opts.next,
+        [[<Cmd>lua require("urlview.jump").next_url()<CR>]],
+        { desc = "Next URL", noremap = true }
+      )
+    end
   end
 end
 
