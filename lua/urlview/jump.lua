@@ -13,15 +13,18 @@ local END_COL = -1
 ---@param match string
 ---@param offset number @added to each position
 ---@return table (list) of offsetted starting indicies
-local function line_match_positions(line, match, offset)
-  local start, _ = line:find(vim.pesc(match))
-  if start == nil then
-    return {}
-  end
+function M.line_match_positions(line, match, offset)
+  local res = {}
+  local init = 1
+  while true do
+    local start, finish = line:find(match, init, true)
+    if start == nil then
+      return res
+    end
 
-  local index = start + offset
-  local new_offset = index + #match
-  return vim.list_extend({ index }, line_match_positions(line:sub(new_offset), match, new_offset))
+    table.insert(res, start + offset)
+    init = finish
+  end
 end
 
 --- Returns a starting column position not on a URL
@@ -33,7 +36,7 @@ local function correct_start_col(line_start, col_start, reversed)
   local full_line = vim.fn.getline(line_start)
   local matches = search_helpers.content(full_line)
   for _, match in ipairs(matches) do
-    local positions = line_match_positions(full_line, match, 0)
+    local positions = M.line_match_positions(full_line, match, 0)
     for _, position in ipairs(positions) do
       -- if on a URL, move column to be before / after the URL, based on direction
       if col_start >= position and col_start < position + #match then
@@ -59,7 +62,7 @@ local reversed_sort_function_lookup = {
 ---@param winnr number @id of current window
 ---@param reversed boolean @direction false for forward, true for backwards
 ---@return table|nil @position
-local function find_url(winnr, reversed)
+function M.find_url(winnr, reversed)
   local line_no, col_no = unpack(vim.api.nvim_win_get_cursor(winnr))
   -- TEMP: refactor to use 0-indexed col_no instead
   col_no = col_no + 1
@@ -67,11 +70,11 @@ local function find_url(winnr, reversed)
   col_no = correct_start_col(line_no, col_no, reversed)
 
   local sort_function = reversed_sort_function_lookup[reversed]
-  local line_last = utils.ternary(reversed, 0, total_lines)
+  local line_last = utils.ternary(reversed, 0, total_lines + 1)
   while line_no ~= line_last do
     local full_line = vim.fn.getline(line_no)
     col_no = utils.ternary(col_no == END_COL, #full_line, col_no)
-    local line = utils.ternary(reversed, full_line:sub(1, col_no), full_line:sub(col_no))
+    local line = utils.ternary(reversed, full_line:sub(1, col_no - 1), full_line:sub(col_no))
     local matches = search_helpers.content(line)
 
     if not vim.tbl_isempty(matches) then
@@ -80,14 +83,14 @@ local function find_url(winnr, reversed)
       local indices = {}
       for _, match in ipairs(matches) do
         local offset = utils.ternary(reversed, 0, col_no - 1)
-        vim.list_extend(indices, line_match_positions(line, match, offset))
+        vim.list_extend(indices, M.line_match_positions(line, match, offset))
       end
       table.sort(indices, sort_function)
       -- find first valid (before or after current column)
       for _, index in ipairs(indices) do
         local valid = utils.ternary(reversed, index < col_no, index > col_no)
         if valid then
-          return { line_no, index }
+          return { line_no, index - 1 }
         end
       end
     end
@@ -104,7 +107,7 @@ local function goto_url(reversed)
   return function()
     local direction = utils.ternary(reversed, "previous", "next")
     local winnr = vim.api.nvim_get_current_win()
-    local pos = find_url(winnr, reversed)
+    local pos = M.find_url(winnr, reversed)
     if not pos then
       utils.log(string.format("Cannot find any %s URLs in buffer", direction))
       return
@@ -114,7 +117,7 @@ local function goto_url(reversed)
       -- add to jump list
       vim.cmd("normal! m'")
       -- NOTE: it seems nvim_win_set_cursor takes a 0-indexed column number
-      vim.api.nvim_win_set_cursor(winnr, { pos[1], pos[2] - 1 })
+      vim.api.nvim_win_set_cursor(winnr, pos)
     else
       utils.log(string.format("The %s URL was found in window number %s, which is no longer valid", direction, winnr))
     end
