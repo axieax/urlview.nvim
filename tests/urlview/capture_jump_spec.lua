@@ -161,4 +161,39 @@ describe("forwards jump", function()
       assert_tbl_same_ordered({ 1, url_start }, res)
     end
   end)
+
+  it("on last URL + no more", function()
+    local content = "abc https://www.google.com def"
+    local url_start = 4
+    create_buffer(content)
+    for col = url_start, #content do
+      set_cursor({ 1, col })
+      local res = jump_forwards()
+      assert.is_nil(res)
+    end
+  end)
+
+  it("multiline jump from anywhere in line", function()
+    local content = [[
+https://www.google.com
+https://www.github.com
+https://www.amazon.com
+https://www.reddit.com]]
+    local url_length = #"https://www.google.com"
+    create_buffer(content)
+    -- jumps to next line
+    for line = 1, 3 do
+      for col = 0, url_length do
+        set_cursor({ line, col })
+        local res = jump_forwards()
+        assert_tbl_same_ordered({ line + 1, 0 }, res)
+      end
+    end
+    -- last line
+    for col = 0, url_length do
+      set_cursor({ 4, col })
+      local res = jump_forwards()
+      assert.is_nil(res)
+    end
+  end)
 end)

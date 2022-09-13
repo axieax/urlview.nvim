@@ -90,7 +90,7 @@ function M.find_url(winnr, reversed)
       table.sort(indices, sort_function)
       -- find first valid (before or after current column)
       for _, index in ipairs(indices) do
-        local valid = utils.ternary(reversed, index < col_no, index > col_no)
+        local valid = utils.ternary(reversed, index <= col_no, index >= col_no)
         if valid then
           return { line_no, index - 1 }
         end
