@@ -1,4 +1,3 @@
-local urlview = require("urlview")
 local jump = require("urlview.jump")
 local utils = require("urlview.utils")
 local assert_tbl_same_ordered = require("tests.urlview.helpers").assert_tbl_same_ordered
@@ -79,7 +78,7 @@ describe("backwards jump", function()
     local content = ""
     create_buffer(content, { 1, 0 })
     local res = jump_backwards()
-    assert.Nil(res)
+    assert.is_nil(res)
   end)
 
   it("no URL", function()
@@ -88,7 +87,7 @@ describe("backwards jump", function()
     for col = 0, #content do
       set_cursor({ 1, col })
       local res = jump_backwards()
-      assert.Nil(res)
+      assert.is_nil(res)
     end
   end)
 
@@ -139,7 +138,7 @@ describe("forwards jump", function()
     local content = ""
     create_buffer(content, { 1, 0 })
     local res = jump_forwards()
-    assert.Nil(res)
+    assert.is_nil(res)
   end)
 
   it("no URL", function()
@@ -148,7 +147,7 @@ describe("forwards jump", function()
     for col = 0, #content do
       set_cursor({ 1, col })
       local res = jump_forwards()
-      assert.Nil(res)
+      assert.is_nil(res)
     end
   end)
 
