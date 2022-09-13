@@ -102,9 +102,11 @@ end
 ---@return function @when called, jumps to the URL in the given direction
 local function goto_url(reversed)
   return function()
+    local direction = utils.ternary(reversed, "previous", "next")
     local winnr = vim.api.nvim_get_current_win()
     local pos = find_url(winnr, reversed)
     if not pos then
+      utils.log(string.format("Cannot find any %s URLs in buffer", direction))
       return
     end
 
@@ -114,7 +116,7 @@ local function goto_url(reversed)
       -- NOTE: it seems nvim_win_set_cursor takes a 0-indexed column number
       vim.api.nvim_win_set_cursor(winnr, { pos[1], pos[2] - 1 })
     else
-      utils.log(string.format("Previous / next URL found in window number %s, which is no longer valid", winnr))
+      utils.log(string.format("The %s URL was found in window number %s, which is no longer valid", direction, winnr))
     end
   end
 end
