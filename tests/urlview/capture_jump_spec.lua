@@ -20,6 +20,10 @@ https://www.google.com
 https://www.github.com
 https://www.amazon.com
 https://www.reddit.com]],
+  multi_line_sandwich = [[
+
+https://www.google.com
+]],
 }
 
 describe("line_match_positions unit tests", function()
@@ -182,5 +186,25 @@ describe("forwards jump", function()
       local res = jump_forwards()
       assert.is_nil(res)
     end
+  end)
+
+  it("multiline sandwich", function()
+    local content = examples.multi_line_sandwich
+    local url_length = #examples.standard_url
+    create_buffer(content, { 1, 0 })
+
+    -- line 1 jumps to line 2
+    local res = jump_forwards()
+    assert_tbl_same_ordered({ 2, 0 }, res)
+
+    -- line 2 onwards invalid
+    for col = 0, url_length do
+      set_cursor({ 2, col })
+      res = jump_forwards()
+      assert.is_nil(res)
+    end
+    set_cursor({ 3, 0 })
+    res = jump_forwards()
+    assert.is_nil(res)
   end)
 end)
