@@ -16,7 +16,7 @@ local END_COL = -1
 function M.line_match_positions(line, match, offset)
   local res = {}
   local init = 1
-  while true do
+  while init <= #line do
     local start, finish = line:find(match, init, true)
     if start == nil then
       return res
@@ -25,6 +25,8 @@ function M.line_match_positions(line, match, offset)
     table.insert(res, start + offset)
     init = finish
   end
+
+  return res
 end
 
 --- Returns a starting column position not on a URL
