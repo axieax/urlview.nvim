@@ -1,61 +1,14 @@
 local jump = require("urlview.jump")
-local utils = require("urlview.utils")
 local assert_tbl_same_ordered = require("tests.urlview.helpers").assert_tbl_same_ordered
 
+local jump_helpers = require("tests.urlview.jump_helpers")
+local set_cursor = jump_helpers.set_cursor
+local create_buffer = jump_helpers.create_buffer
+local teardown_windows = jump_helpers.teardown_windows
+local jump_forwards = jump_helpers.jump_forwards
+local jump_backwards = jump_helpers.jump_backwards
+
 -- ASSUMPTION(cursor_pos): line numbers are 1-indexed, column numbers are 0-indexed
-
-local active_windows = {}
-
-local function set_cursor(pos)
-  vim.api.nvim_win_get_cursor = function()
-    return pos
-  end
-end
-
-local function create_buffer(content, cursor_pos)
-  local lines = vim.split(content, "\n")
-  local bufnr = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, lines)
-  local winnr =
-    vim.api.nvim_open_win(bufnr, false, { relative = "editor", row = 0, col = 0, width = 1, height = 1, zindex = 1 })
-  active_windows[winnr] = true
-
-  vim.fn.getline = function(line_no)
-    return lines[line_no]
-  end
-  vim.api.nvim_buf_line_count = function()
-    return #lines
-  end
-
-  utils.fallback(cursor_pos, { 1, 0 })
-  set_cursor(cursor_pos)
-end
-
-local function teardown_windows()
-  local windows = vim.tbl_keys(active_windows)
-  for _, winnr in ipairs(windows) do
-    if vim.api.nvim_win_is_valid(winnr) then
-      vim.api.nvim_win_close(winnr, true)
-      active_windows[winnr] = nil
-    end
-  end
-end
-
-local function jump_forwards()
-  local res = jump.find_url(0, false)
-  if res then
-    set_cursor(res)
-  end
-  return res
-end
-
-local function jump_backwards()
-  local res = jump.find_url(0, true)
-  if res then
-    set_cursor(res)
-  end
-  return res
-end
 
 describe("line_match_positions unit tests", function()
   it("multiple substrings", function()
