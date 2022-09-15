@@ -13,7 +13,7 @@ local jump_backwards = jump_helpers.jump_backwards
 local examples = {
   empty = "",
   invalid = "hello",
-  single_line_middle = "abc https://google.com def",
+  single_line_middle = "abc https://www.google.com def",
   standard_url = "https://www.google.com",
   multi_line_just_links = [[
 https://www.google.com
@@ -35,13 +35,52 @@ describe("line_match_positions unit tests", function()
   end)
 
   it("single URL", function()
-    local url = "https://www.google.com"
+    local url = examples.standard_url
     local res = jump.line_match_positions(url, url, 0)
     assert_tbl_same_ordered({ 1 }, res)
   end)
+
+  it("correct single index", function()
+    local url = examples.standard_url
+    local line = examples.single_line_middle
+    local res = jump.line_match_positions(line, url, 0)
+    assert_tbl_same_ordered({ 5 }, res)
+  end)
 end)
 
--- TODO: start column correction test
+describe("correct starting column", function()
+  -- TEMP: 1-indexed results
+  it("backwards no URL", function()
+    local line = examples.invalid
+    create_buffer(line)
+    for i = 0, #line do
+      set_cursor({ 1, i })
+      i = i + 1
+      local new_col = jump.correct_start_col(1, i, true)
+      assert.equals(i, new_col)
+    end
+  end)
+
+  -- it("backwards before URL", function()
+  --   local line = examples.single_line_middle
+  --   create_buffer(line)
+  --   local url_start = 4
+  --   for i = 0, url_start do
+  --     set_cursor({ 1, i })
+  --     i = i + 1
+  --     local new_col = jump.correct_start_col(1, i, true)
+  --     assert.equals(i, new_col)
+  --   end
+  -- end)
+
+  -- it("backwards on start of URL", function()
+  --   local line = examples.single_line_middle
+  --   local url_start = 4
+  --   create_buffer(line)
+  --   local new_col = jump.correct_start_col(1, url_start, true)
+  --   assert.equals(url_start - 1, new_col)
+  -- end)
+end)
 
 describe("backwards jump", function()
   after_each(teardown_windows)

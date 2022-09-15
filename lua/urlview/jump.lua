@@ -34,7 +34,7 @@ end
 ---@param col_start number @column number at cursor
 ---@param reversed boolean @direction
 ---@return number @corrected starting column
-local function correct_start_col(line_start, col_start, reversed)
+function M.correct_start_col(line_start, col_start, reversed)
   local full_line = vim.fn.getline(line_start)
   local matches = search_helpers.content(full_line)
   for _, match in ipairs(matches) do
@@ -69,7 +69,7 @@ function M.find_url(winnr, reversed)
   -- TEMP: refactor to use 0-indexed col_no instead
   col_no = col_no + 1
   local total_lines = vim.api.nvim_buf_line_count(0)
-  col_no = correct_start_col(line_no, col_no, reversed)
+  col_no = M.correct_start_col(line_no, col_no, reversed)
 
   local sort_function = reversed_sort_function_lookup[reversed]
   local line_last = utils.ternary(reversed, 0, total_lines + 1)
