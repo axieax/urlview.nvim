@@ -25,49 +25,13 @@ end
 ---@return table (list) of strings (extracted links)
 function M.packer()
   local links = {}
-  local missing_plugins = {}
   -- selene: allow(undefined_variable)
-  for name, info in pairs(packer_plugins or {}) do
+  for _, info in pairs(packer_plugins or {}) do
     local is_file = vim.startswith(info.url, "/")
-    if info.url and not is_file then
+    if not is_file then
       table.insert(links, info.url)
-    else
-      table.insert(missing_plugins, name)
     end
   end
-
-  -- find links for missing plugins
-  -- HACK: addresses https://github.com/axieax/urlview.nvim/issues/19
-  if not vim.tbl_isempty(missing_plugins) then
-    local failed_plugins = {}
-    local opt_plugins, start_plugins = require("packer.plugin_utils").list_installed_plugins()
-    local packer_root = require("packer").config.package_root
-
-    for _, name in ipairs(missing_plugins) do
-      local url
-      local start_path = string.format("%s/packer/start/%s", packer_root, name)
-      local opt_path = string.format("%s/packer/opt/%s", packer_root, name)
-
-      -- check if the plugin is in the `start` or `opt` directories
-      if start_plugins[start_path] then
-        url = search_helpers.git_remote_url(start_path)
-      elseif opt_plugins[opt_path] then
-        url = search_helpers.git_remote_url(opt_path)
-      end
-
-      if url then
-        table.insert(links, url)
-      else
-        table.insert(failed_plugins, name)
-      end
-    end
-
-    -- missing plugins whose url still cannot be found
-    if not vim.tbl_isempty(failed_plugins) then
-      utils.log("Failed to find links for plugins: " .. vim.inspect(failed_plugins))
-    end
-  end
-
   return links
 end
 
