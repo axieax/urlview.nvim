@@ -1,8 +1,19 @@
 # 🔎 urlview.nvim
 
-UrlView is a [Neovim](https://neovim.io) plugin which displays links from a variety of contexts (e.g. from a buffer, file, [packer.nvim](https://github.com/wbthomason/packer.nvim) and [vim-plug](https://github.com/junegunn/vim-plug) plugin URLs), using the built-in `vim.ui.select` or [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) as a picker. These entries can also be selected to be brought up in your browser, or copied to clipboard.
+UrlView is a plugin for the [Neovim](https://neovim.io) text editor which essentially:
 
-> Please note that currently, this plugin only detects URLs beginning with a HTTP(s) or www prefix for buffer and file search, but there are plans to support a more general pattern, see [🗺️ Roadmap](https://github.com/axieax/urlview.nvim/issues/3).
+1. Finds URLs from a variety of **search contexts** (e.g. from a buffer, file, [packer.nvim](https://github.com/wbthomason/packer.nvim) and [vim-plug](https://github.com/junegunn/vim-plug) plugin URLs)
+2. Displays these URLs in a **picker**, such as the built-in `vim.ui.select` or [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
+3. Performs **actions** on selected URLs, such as navigating to the URL in your preferred browser, or copying the link to your clipboard.
+
+Additional features or use cases include:
+
+- Easily visualise all the URLs in a buffer or file (e.g. links in your Markdown documents)
+- Quickly accessing the webpages for plugins managed by [packer.nvim](https://github.com/wbthomason/packer.nvim) or [vim-plug](https://github.com/junegunn/vim-plug) (life-saver for config updates)
+- Ability to register custom searchers (e.g. Jira ticket numbers), pickers and actions
+- Jumping to the previous or next URL _(coming soon!)_
+
+> Please note that currently, this plugin only detects URLs beginning with a `http(s)` or `www` prefix for buffer and file search, but there are plans to support a more general pattern (see [🗺️ Roadmap](https://github.com/axieax/urlview.nvim/issues/3)).
 
 ## 📸 Screenshots
 
@@ -102,3 +113,5 @@ require("telescope").load_extension("urlview")
 ## 🚧 Extras
 
 More features are continually being added to this plugin (see [🗺️ Roadmap](https://github.com/axieax/urlview.nvim/issues/3)). Feel free to file an issue or create a PR for any features / fixes :)
+
+You can also subscribe to [🙉 Breaking Changes](https://github.com/axieax/urlview.nvim/issues/37) to be updated on breaking changes to this plugin + resolution strategies.
