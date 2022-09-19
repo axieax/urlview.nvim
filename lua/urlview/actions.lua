@@ -2,6 +2,9 @@ local M = {}
 
 local utils = require("urlview.utils")
 
+--- Use command to open the URL
+---@param cmd string @name of executable to run
+---@param raw_url string @unescaped URL to be run by the executable
 local function shell_exec(cmd, raw_url)
   if cmd and vim.fn.executable(cmd) then
     -- NOTE: `vim.fn.system` shellescapes arguments
@@ -14,6 +17,8 @@ local function shell_exec(cmd, raw_url)
   end
 end
 
+--- Use `netrw` to navigate to a URL
+---@param raw_url string @unescaped URL
 function M.netrw(raw_url)
   local url = vim.fn.shellescape(raw_url)
   local ok, err = pcall(vim.cmd, string.format("call netrw#BrowseX(%s, netrw#CheckIfRemote(%s))", url, url))
@@ -23,6 +28,8 @@ function M.netrw(raw_url)
   end
 end
 
+--- Use the user's default browser to navigate to a URL
+---@param raw_url string @unescaped URL
 function M.system(raw_url)
   local os = vim.loop.os_uname().sysname
   if os == "Darwin" then -- MacOS
@@ -35,7 +42,7 @@ function M.system(raw_url)
 end
 
 --- Copy URL to clipboard
----@param raw_url string URL to be copied
+---@param raw_url string @unescaped URL
 function M.clipboard(raw_url)
   vim.api.nvim_command(string.format("let @+ = '%s'", raw_url))
   utils.log(string.format("URL %s copied to clipboard", raw_url))

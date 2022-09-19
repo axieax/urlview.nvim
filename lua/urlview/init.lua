@@ -65,12 +65,19 @@ function M.command_search(...)
   M.search(args[1], opts)
 end
 
+local function check_breaking()
+  if config.navigate_method then
+    utils.log("`config.navigate_method` has been deprecated for `config.default_action`")
+  end
+end
+
 --- Custom setup function
 --- Not required to be called unless user wants to modify the default config
 ---@param user_config table (optional)
 function M.setup(user_config)
   user_config = utils.fallback(user_config, {})
   config._options = vim.tbl_deep_extend("force", config._options, user_config)
+  check_breaking()
 
   search_helpers.register_custom_searches(config.custom_searches)
 end
