@@ -1,5 +1,6 @@
 local M = {}
 
+local actions = require("urlview.actions")
 local config = require("urlview.config")
 local pickers = require("urlview.pickers")
 local search = require("urlview.search")
@@ -13,6 +14,7 @@ local utils = require("urlview.utils")
 function M.search(ctx, opts)
   ctx = utils.fallback(ctx, "buffer")
   opts = utils.fallback(opts, {})
+  opts.action = utils.fallback(opts.action, config.default_action)
   local picker = utils.fallback(opts.picker, config.default_picker)
   if not opts.title then
     local should_capitalise = string.match(config.default_title, "^%u")
@@ -25,6 +27,9 @@ function M.search(ctx, opts)
   local links = search[ctx](opts)
   links = utils.prepare_links(links, opts)
   if links and not vim.tbl_isempty(links) then
+    if type(opts.action) == "string" then
+      opts.action = actions[opts.action]
+    end
     pickers[picker](links, opts)
   else
     utils.log("No links found in context " .. ctx)
@@ -60,12 +65,19 @@ function M.command_search(...)
   M.search(args[1], opts)
 end
 
+local function check_breaking()
+  if config.navigate_method then
+    utils.log("`config.navigate_method` has been deprecated for `config.default_action`")
+  end
+end
+
 --- Custom setup function
 --- Not required to be called unless user wants to modify the default config
 ---@param user_config table (optional)
 function M.setup(user_config)
   user_config = utils.fallback(user_config, {})
   config._options = vim.tbl_deep_extend("force", config._options, user_config)
+  check_breaking()
 
   search_helpers.register_custom_searches(config.custom_searches)
 end

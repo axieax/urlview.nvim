@@ -38,42 +38,6 @@ function M.extract_pattern(content, capture, format)
   return captures
 end
 
---- Opens the url in the browser
----@param raw_url string
-function M.navigate_url(raw_url)
-  local url = vim.fn.shellescape(raw_url)
-  local cmd = config.navigate_method
-  if cmd == "netrw" then
-    local ok, err = pcall(vim.cmd, string.format("call netrw#BrowseX(%s, netrw#CheckIfRemote(%s))", url, url))
-    if not ok and vim.startswith(err, "Vim(call):E117: Unknown function") then
-      -- lazily update default navigate method if netrw is disabled
-      config.navigate_method = "system"
-      cmd = "system"
-    else
-      return
-    end
-  end
-
-  if cmd == "system" then
-    local os = vim.loop.os_uname().sysname
-    if os == "Darwin" then -- MacOS
-      cmd = "open"
-    elseif os == "Linux" or os == "FreeBSD" then -- Linux and FreeBSD
-      cmd = "xdg-open"
-    end
-  end
-
-  if cmd and vim.fn.executable(cmd) then
-    -- NOTE: `vim.fn.system` shellescapes arguments
-    local err = vim.fn.system({ cmd, raw_url })
-    if err ~= "" then
-      M.log("could not navigate link with `navigate_method: system`:\n" .. err)
-    end
-  else
-    M.log(string.format("Cannot use %s to navigate links", cmd), vim.log.levels.DEBUG)
-  end
-end
-
 --- Prepare links before being displayed
 ---@param links table @list of extracted links
 ---@param opts table @Optional options
@@ -91,8 +55,7 @@ function M.prepare_links(links, opts)
   end
 
   -- Filter duplicate links
-  -- NOTE: links with different protocols / www prefix / trailing slashes
-  -- are not filtered to ensure links do not break
+  -- NOTE: links with different protocols / www prefix / trailing slashes are not filtered to ensure links do not break
   if M.fallback(opts.unique, config.unique) then
     local map = {}
     for _, link in ipairs(new_links) do
