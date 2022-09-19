@@ -48,12 +48,13 @@ function M.clipboard(raw_url)
   utils.log(string.format("URL %s copied to clipboard", raw_url))
 end
 
-function M.__index(_, k)
-  if k ~= nil then
-    return function(raw_url)
-      return shell_exec(k, raw_url)
+return setmetatable(M, {
+  -- execute action as command if it is not one of the above module keys
+  __index = function(_, k)
+    if k ~= nil then
+      return function(raw_url)
+        return shell_exec(k, raw_url)
+      end
     end
-  end
-end
-
-return setmetatable(M, M)
+  end,
+})

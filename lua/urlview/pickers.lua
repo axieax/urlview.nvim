@@ -53,11 +53,12 @@ function M.telescope(items, opts)
     :find()
 end
 
-function M.__index(_, k)
-  if k ~= nil then
-    utils.log(k .. " is not a valid picker, defaulting to native vim.ui.select picker.")
-    return M.native
-  end
-end
-
-return setmetatable(M, M)
+return setmetatable(M, {
+  -- use default `vim.ui.select` when provided an invalid picker
+  __index = function(_, k)
+    if k ~= nil then
+      utils.log(k .. " is not a valid picker, defaulting to native vim.ui.select picker.")
+      return M.native
+    end
+  end,
+})
