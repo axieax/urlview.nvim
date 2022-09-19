@@ -20,7 +20,7 @@ local default_config = {
   -- Command or method to open links with
   -- Options: "netrw", "system" (default OS browser); or "firefox", "chromium" etc.
   -- By default, this is "netrw", or "system" if netrw is disabled
-  navigate_method = "netrw",
+  default_action = "netrw",
   -- Ensure links shown in the picker are unique (no duplicates)
   unique = true,
   -- Ensure links shown in the picker are sorted alphabetically

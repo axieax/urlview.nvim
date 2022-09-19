@@ -9,7 +9,7 @@ function M.native(items, opts)
   local options = { prompt = opts.title }
   local function on_choice(item, _)
     if item then
-      utils.navigate_url(item)
+      opts.action(item)
     end
   end
 
@@ -44,7 +44,7 @@ function M.telescope(items, opts)
           local selection = action_state.get_selected_entry()
           actions.close(prompt_bufnr)
           if selection[1] then
-            utils.navigate_url(selection[1])
+            opts.action(selection[1])
           end
         end)
         return true
