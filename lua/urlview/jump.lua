@@ -40,9 +40,14 @@ function M.correct_start_col(line_start, col_start, reversed)
   for _, match in ipairs(matches) do
     local positions = M.line_match_positions(full_line, match, 0)
     for _, position in ipairs(positions) do
-      -- if on a URL, move column to be before / after the URL, based on direction
-      if col_start >= position and col_start < position + #match then
-        return utils.ternary(reversed, position - 1, position + #match)
+      local url_end = position + #match
+      local on_url = col_start >= position and col_start < url_end
+      -- edge case for going backwards with cursor at start of URL
+      if on_url and reversed and position == col_start then
+        return col_start - 1
+      -- generally if on a URL, move column to be after the URL
+      elseif on_url then
+        return url_end
       end
     end
   end

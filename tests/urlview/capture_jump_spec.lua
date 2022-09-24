@@ -54,32 +54,100 @@ describe("correct starting column", function()
     local line = examples.invalid
     create_buffer(line)
     for i = 0, #line do
-      set_cursor({ 1, i })
       i = i + 1
       local new_col = jump.correct_start_col(1, i, true)
       assert.equals(i, new_col)
     end
   end)
 
-  -- it("backwards before URL", function()
-  --   local line = examples.single_line_middle
-  --   create_buffer(line)
-  --   local url_start = 4
-  --   for i = 0, url_start do
-  --     set_cursor({ 1, i })
-  --     i = i + 1
-  --     local new_col = jump.correct_start_col(1, i, true)
-  --     assert.equals(i, new_col)
-  --   end
-  -- end)
+  it("backwards before URL", function()
+    local line = examples.single_line_middle
+    create_buffer(line)
+    local url_start = 4
+    for i = 0, url_start - 1 do
+      i = i + 1
+      local new_col = jump.correct_start_col(1, i, true)
+      assert.equals(i, new_col)
+    end
+  end)
 
-  -- it("backwards on start of URL", function()
-  --   local line = examples.single_line_middle
-  --   local url_start = 4
-  --   create_buffer(line)
-  --   local new_col = jump.correct_start_col(1, url_start, true)
-  --   assert.equals(url_start - 1, new_col)
-  -- end)
+  it("backwards on start of URL", function()
+    local line = examples.single_line_middle
+    local url_start = 4
+    url_start = url_start + 1
+    create_buffer(line)
+    local new_col = jump.correct_start_col(1, url_start, true)
+    assert.equals(url_start - 1, new_col)
+  end)
+
+  it("backwards on rest of URL", function()
+    local line = examples.single_line_middle
+    create_buffer(line)
+    local url_start = 4
+    local url_end = url_start + #examples.standard_url
+    url_end = url_end + 1
+    for i = url_start + 1, url_end - 1 do
+      i = i + 1
+      local new_col = jump.correct_start_col(1, i, true)
+      assert.equals(url_end, new_col)
+    end
+  end)
+
+  it("backwards after URL", function()
+    local line = examples.single_line_middle
+    local url_start = 4
+    local url_end = url_start + #examples.standard_url
+    for i = url_end, #line do
+      i = i + 1
+      local new_col = jump.correct_start_col(1, i, true)
+      assert.equals(i, new_col)
+    end
+  end)
+
+  it("forwards no URL", function()
+    local line = examples.invalid
+    create_buffer(line)
+    for i = 0, #line do
+      i = i + 1
+      local new_col = jump.correct_start_col(1, i, false)
+      assert.equals(i, new_col)
+    end
+  end)
+
+  it("forwards before URL", function()
+    local line = examples.single_line_middle
+    create_buffer(line)
+    local url_start = 4
+    for i = 0, url_start - 1 do
+      i = i + 1
+      local new_col = jump.correct_start_col(1, i, false)
+      assert.equals(i, new_col)
+    end
+  end)
+
+  it("forwards on URL", function()
+    local line = examples.single_line_middle
+    create_buffer(line)
+    local url_start = 4
+    local url_end = url_start + #examples.standard_url
+    url_end = url_end + 1
+    for i = url_start, url_end - 1 do
+      i = i + 1
+      local new_col = jump.correct_start_col(1, i, false)
+      assert.equals(url_end, new_col)
+    end
+  end)
+
+  it("forwards after URL", function()
+    local line = examples.single_line_middle
+    local url_start = 4
+    local url_end = url_start + #examples.standard_url
+    for i = url_end, #line do
+      i = i + 1
+      local new_col = jump.correct_start_col(1, i, false)
+      assert.equals(i, new_col)
+    end
+  end)
 end)
 
 describe("backwards jump", function()
