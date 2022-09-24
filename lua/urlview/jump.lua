@@ -44,7 +44,8 @@ function M.correct_start_col(line_start, col_start, reversed)
       local on_url = col_start >= position and col_start < url_end
       -- edge case for going backwards with cursor at start of URL
       if on_url and reversed and position == col_start then
-        return col_start - 1
+        -- TEMP: 1-index
+        return math.max(col_start - 1, 1)
       -- generally if on a URL, move column to be after the URL
       elseif on_url then
         return url_end
