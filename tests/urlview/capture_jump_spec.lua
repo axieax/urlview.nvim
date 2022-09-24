@@ -30,8 +30,14 @@ describe("line_match_positions unit tests", function()
   -- TEMP: 1-indexed results
   it("multiple substrings", function()
     local line = "abc abc abc"
-    local res = jump.line_match_positions(line, "abc", 0)
-    assert_tbl_same_ordered({ 1, 5, 9 }, res)
+    local expected_no_offset = { 1, 5, 9 }
+    for offset = 0, 100 do
+      local res = jump.line_match_positions(line, "abc", offset)
+      local expected = vim.tbl_map(function(x)
+        return x + offset
+      end, expected_no_offset)
+      assert_tbl_same_ordered(expected, res)
+    end
   end)
 
   it("single URL", function()
