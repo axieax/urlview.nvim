@@ -1,7 +1,6 @@
 local M = {}
 
--- NOTE: line numbers are 1-indexed, column numbers are 1-indexed
--- TODO: use 0-indexed column numbers
+-- NOTE: line numbers are 1-indexed, column numbers are 0-indexed
 
 local utils = require("urlview.utils")
 local search_helpers = require("urlview.search.helpers")
@@ -22,7 +21,7 @@ function M.line_match_positions(line, match, offset)
       return res
     end
 
-    table.insert(res, start + offset)
+    table.insert(res, start + offset - 1)
     init = finish
   end
 
@@ -44,8 +43,7 @@ function M.correct_start_col(line_start, col_start, reversed)
       local on_url = col_start >= position and col_start < url_end
       -- edge case for going backwards with cursor at start of URL
       if on_url and reversed and position == col_start then
-        -- TEMP: 1-index
-        return math.max(col_start - 1, 1)
+        return math.max(col_start - 1, 0)
       -- generally if on a URL, move column to be after the URL
       elseif on_url then
         return url_end
@@ -72,8 +70,6 @@ local reversed_sort_function_lookup = {
 ---@return table|nil @position
 function M.find_url(winnr, reversed)
   local line_no, col_no = unpack(vim.api.nvim_win_get_cursor(winnr))
-  -- TEMP: refactor to use 0-indexed col_no instead
-  col_no = col_no + 1
   local total_lines = vim.api.nvim_buf_line_count(0)
   col_no = M.correct_start_col(line_no, col_no, reversed)
 
@@ -82,7 +78,7 @@ function M.find_url(winnr, reversed)
   while line_no ~= line_last do
     local full_line = vim.fn.getline(line_no)
     col_no = utils.ternary(col_no == END_COL, #full_line, col_no)
-    local line = utils.ternary(reversed, full_line:sub(1, col_no - 1), full_line:sub(col_no))
+    local line = utils.ternary(reversed, full_line:sub(1, col_no), full_line:sub(col_no + 1))
     local matches = search_helpers.content(line)
 
     if not vim.tbl_isempty(matches) then
@@ -90,7 +86,7 @@ function M.find_url(winnr, reversed)
       -- normal order: ascending, reversed order: descending
       local indices = {}
       for _, match in ipairs(matches) do
-        local offset = utils.ternary(reversed, 0, col_no - 1)
+        local offset = utils.ternary(reversed, 0, col_no)
         vim.list_extend(indices, M.line_match_positions(line, match, offset))
       end
       table.sort(indices, sort_function)
@@ -98,13 +94,13 @@ function M.find_url(winnr, reversed)
       for _, index in ipairs(indices) do
         local valid = utils.ternary(reversed, index <= col_no, index >= col_no)
         if valid then
-          return { line_no, index - 1 }
+          return { line_no, index }
         end
       end
     end
 
     line_no = utils.ternary(reversed, line_no - 1, line_no + 1)
-    col_no = utils.ternary(reversed, END_COL, 1)
+    col_no = utils.ternary(reversed, END_COL, 0)
   end
 end
 

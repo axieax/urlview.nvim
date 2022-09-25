@@ -30,7 +30,7 @@ describe("line_match_positions unit tests", function()
   -- TEMP: 1-indexed results
   it("multiple substrings", function()
     local line = "abc abc abc"
-    local expected_no_offset = { 1, 5, 9 }
+    local expected_no_offset = { 0, 4, 8 }
     for offset = 0, 100 do
       local res = jump.line_match_positions(line, "abc", offset)
       local expected = vim.tbl_map(function(x)
@@ -43,14 +43,14 @@ describe("line_match_positions unit tests", function()
   it("single URL", function()
     local url = examples.standard_url
     local res = jump.line_match_positions(url, url, 0)
-    assert_tbl_same_ordered({ 1 }, res)
+    assert_tbl_same_ordered({ 0 }, res)
   end)
 
   it("correct single index", function()
     local url = examples.standard_url
     local line = examples.single_line_middle
     local res = jump.line_match_positions(line, url, 0)
-    assert_tbl_same_ordered({ 5 }, res)
+    assert_tbl_same_ordered({ 4 }, res)
   end)
 end)
 
@@ -60,7 +60,6 @@ describe("correct starting column", function()
     local line = examples.invalid
     create_buffer(line)
     for col = 0, #line do
-      col = col + 1
       local new_col = jump.correct_start_col(1, col, true)
       assert.equals(col, new_col)
     end
@@ -71,7 +70,6 @@ describe("correct starting column", function()
     create_buffer(line)
     local url_start = 4
     for col = 0, url_start - 1 do
-      col = col + 1
       local new_col = jump.correct_start_col(1, col, true)
       assert.equals(col, new_col)
     end
@@ -80,7 +78,6 @@ describe("correct starting column", function()
   it("backwards on start of URL", function()
     local line = examples.single_line_middle
     local url_start = 4
-    url_start = url_start + 1
     create_buffer(line)
     local new_col = jump.correct_start_col(1, url_start, true)
     assert.equals(url_start - 1, new_col)
@@ -91,9 +88,7 @@ describe("correct starting column", function()
     create_buffer(line)
     local url_start = 4
     local url_end = url_start + #examples.standard_url
-    url_end = url_end + 1
     for col = url_start + 1, url_end - 1 do
-      col = col + 1
       local new_col = jump.correct_start_col(1, col, true)
       assert.equals(url_end, new_col)
     end
@@ -104,7 +99,6 @@ describe("correct starting column", function()
     local url_start = 4
     local url_end = url_start + #examples.standard_url
     for col = url_end, #line do
-      col = col + 1
       local new_col = jump.correct_start_col(1, col, true)
       assert.equals(col, new_col)
     end
@@ -114,7 +108,6 @@ describe("correct starting column", function()
     local line = examples.invalid
     create_buffer(line)
     for col = 0, #line do
-      col = col + 1
       local new_col = jump.correct_start_col(1, col, false)
       assert.equals(col, new_col)
     end
@@ -125,7 +118,6 @@ describe("correct starting column", function()
     create_buffer(line)
     local url_start = 4
     for col = 0, url_start - 1 do
-      col = col + 1
       local new_col = jump.correct_start_col(1, col, false)
       assert.equals(col, new_col)
     end
@@ -136,9 +128,7 @@ describe("correct starting column", function()
     create_buffer(line)
     local url_start = 4
     local url_end = url_start + #examples.standard_url
-    url_end = url_end + 1
     for col = url_start, url_end - 1 do
-      col = col + 1
       local new_col = jump.correct_start_col(1, col, false)
       assert.equals(url_end, new_col)
     end
@@ -149,7 +139,6 @@ describe("correct starting column", function()
     local url_start = 4
     local url_end = url_start + #examples.standard_url
     for col = url_end, #line do
-      col = col + 1
       local new_col = jump.correct_start_col(1, col, false)
       assert.equals(col, new_col)
     end
@@ -170,7 +159,6 @@ describe("backwards jump", function()
     local content = examples.invalid
     create_buffer(content)
     for col = 0, #content do
-      col = col + 1
       set_cursor({ 1, col })
       local res = jump_backwards()
       assert.is_nil(res)
@@ -183,21 +171,21 @@ describe("backwards jump", function()
     local res = jump_backwards()
     assert.is_nil(res)
 
-    for col = 0, #content do
-      col = col + 1
+    for col = 1, #content do
       set_cursor({ 1, col })
       res = jump_backwards()
       assert_tbl_same_ordered({ 1, 0 }, res)
     end
   end)
 
-  it("simple jump start of single line", function()
-    local content = "https://www.google.com some random content"
+  it("simple jump to start of URL", function()
+    local content = examples.single_line_middle
+    local url_start = 4
     create_buffer(content)
-    for col = 22, #content do
+    for col = url_start + 1, #content do
       set_cursor({ 1, col })
       local res = jump_backwards()
-      assert_tbl_same_ordered({ 1, 0 }, res)
+      assert_tbl_same_ordered({ 1, url_start }, res)
     end
   end)
 
