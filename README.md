@@ -11,7 +11,7 @@ Additional features or use cases include:
 - Easily visualise all the URLs in a buffer or file (e.g. links in your Markdown documents)
 - Quickly accessing the webpages for plugins managed by [packer.nvim](https://github.com/wbthomason/packer.nvim) or [vim-plug](https://github.com/junegunn/vim-plug) (life-saver for config updates)
 - Ability to register custom searchers (e.g. Jira ticket numbers), pickers and actions
-- Jumping to the previous or next URL _(coming soon!)_
+- Jumping to the previous or next URL
 
 > Please note that currently, this plugin only detects URLs beginning with a `http(s)` or `www` prefix for buffer and file search, but there are plans to support a more general pattern (see [🗺️ Roadmap](https://github.com/axieax/urlview.nvim/issues/3)).
 
