@@ -62,7 +62,7 @@ end
 ---@param level integer|nil @log level, defaults to "warning"
 function M.log(message, level)
   level = M.fallback(level, vim.log.levels.WARN)
-  if level >= config.debug_level_min then
+  if level >= config.log_level_min then
     vim.notify("[urlview.nvim] " .. message, level)
   end
 end

@@ -67,12 +67,13 @@ function M.command_search(...)
 end
 
 local function check_breaking()
-  if config.navigate_method then
-    utils.log(
-      [[`config.navigate_method` has been deprecated for `config.default_action`
-    Please see https://github.com/axieax/urlview.nvim/issues/37#issuecomment-1251246520]],
-      vim.log.levels.WARN
-    )
+  if config.navigate_method ~= nil then
+    utils.log([[`config.navigate_method` has been deprecated for `config.default_action`
+    Please see https://github.com/axieax/urlview.nvim/issues/37#issuecomment-1251246520]])
+  end
+  if config.debug ~= nil then
+    utils.log([[`config.debug` has been deprecated for `config.log_level_min`
+    Please see https://github.com/axieax/urlview.nvim/issues/37#issuecomment-1257113527]])
   end
 end
 
