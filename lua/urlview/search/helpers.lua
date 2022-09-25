@@ -3,6 +3,32 @@ local M = {}
 local constants = require("urlview.config")._constants
 local utils = require("urlview.utils")
 
+--- Extracts content from a given buffer
+---@param bufnr number (optional)
+---@return string @content of buffer
+function M.get_buffer_content(bufnr)
+  bufnr = utils.fallback(bufnr, 0)
+  if not vim.api.nvim_buf_is_valid(bufnr) then
+    utils.log(string.format("Invalid buffer number provided: %s", bufnr), vim.log.levels.ERROR)
+    return ""
+  end
+  return table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n")
+end
+
+--- Extracts content from a given file
+---@param filepath string @path to file
+---@return string @content of file (or empty string if file cannot be open)
+function M.read_file(filepath)
+  local f, err = io.open(vim.fn.expand(filepath), "r")
+  if f == nil then
+    utils.log(err, vim.log.levels.ERROR)
+    return ""
+  end
+  local content = f:read("*all")
+  f:close()
+  return content
+end
+
 --- Extracts urls from the given content
 ---@param content string
 ---@return table (list) of strings (extracted links)
@@ -38,6 +64,19 @@ function M.content(content)
   return links
 end
 
+--- Extract @captures from @content and display them as @formats
+---@param content string @content to extract from
+---@param capture string @capture pattern to extract
+---@param format string @format pattern to display
+---@return table @list of extracted links
+function M.extract_pattern(content, capture, format)
+  local captures = {}
+  for c in content:gmatch(capture) do
+    table.insert(captures, string.format(format, c))
+  end
+  return captures
+end
+
 --- Generates a simple search function from a template table
 ---@param patterns table (map) with `capture` and `format` keys
 ---@return function|nil
@@ -47,8 +86,8 @@ local function default_custom_generator(patterns)
   end
 
   return function(opts)
-    local content = opts.content or utils.get_buffer_content(opts.bufnr)
-    return utils.extract_pattern(content, patterns.capture, patterns.format)
+    local content = opts.content or M.get_buffer_content(opts.bufnr)
+    return M.extract_pattern(content, patterns.capture, patterns.format)
   end
 end
 
@@ -68,24 +107,17 @@ function M.register_custom_searches(searchers)
           string.format(
             "Unable to register custom searcher %s: please ensure that the table has 'capture' and 'format' fields",
             source
-          )
+          ),
+          vim.log.levels.WARN
         )
       end
     else
       utils.log(
-        string.format("Unable to register custom searcher %s: invalid type (not a function or map table)", source)
+        string.format("Unable to register custom searcher %s: invalid type (not a function or map table)", source),
+        vim.log.levels.WARN
       )
     end
   end
-end
-
---- Finds the remote url of a local Git respository
----@param path string @path to a local Git repository
----@return string|nil @remote url of the repository if found, otherwise nil
-function M.git_remote_url(path)
-  path = vim.fn.shellescape(path)
-  local url = vim.fn.system(string.format("cd %s && git remote get-url origin", path))
-  return utils.ternary(vim.v.shell_error == 0, url:gsub("%.git\n$", ""), nil)
 end
 
 return M

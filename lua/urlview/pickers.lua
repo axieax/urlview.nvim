@@ -22,7 +22,7 @@ end
 function M.telescope(items, opts)
   local telescope = pcall(require, "telescope")
   if not telescope then
-    utils.log("Telescope is not installed, defaulting to native vim.ui.select picker.")
+    utils.log("Telescope is not installed, defaulting to native vim.ui.select picker.", vim.log.levels.INFO)
     return M.native(items, opts)
   end
 
@@ -57,7 +57,7 @@ return setmetatable(M, {
   -- use default `vim.ui.select` when provided an invalid picker
   __index = function(_, k)
     if k ~= nil then
-      utils.log(k .. " is not a valid picker, defaulting to native vim.ui.select picker.")
+      utils.log(k .. " is not a valid picker, defaulting to native vim.ui.select picker.", vim.log.levels.INFO)
       return M.native
     end
   end,

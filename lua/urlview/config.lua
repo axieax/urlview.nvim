@@ -25,8 +25,8 @@ local default_config = {
   unique = true,
   -- Ensure links shown in the picker are sorted alphabetically
   sorted = true,
-  -- Logs user warnings (recommended for error detection)
-  debug = true,
+  -- Minimum log level (recommended at least `vim.log.levels.WARN` for error detection warnings)
+  log_level_min = vim.log.levels.INFO,
   -- Keymaps for jumping to previous / next URL in buffer
   jump = {
     prev = "[u",
