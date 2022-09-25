@@ -27,7 +27,6 @@ https://www.google.com
 }
 
 describe("line_match_positions unit tests", function()
-  -- TEMP: 1-indexed results
   it("multiple substrings", function()
     local line = "abc abc abc"
     local expected_no_offset = { 0, 4, 8 }
@@ -55,7 +54,6 @@ describe("line_match_positions unit tests", function()
 end)
 
 describe("correct starting column", function()
-  -- TEMP: 1-indexed results
   it("backwards no URL", function()
     local line = examples.invalid
     create_buffer(line)
@@ -178,6 +176,17 @@ describe("backwards jump", function()
     end
   end)
 
+  it("invalid jump before URL and start of URL", function()
+    local content = examples.single_line_middle
+    local url_start = 4
+    create_buffer(content)
+    for col = 0, url_start do
+      set_cursor({ 1, col })
+      local res = jump_backwards()
+      assert.is_nil(res)
+    end
+  end)
+
   it("simple jump to start of URL", function()
     local content = examples.single_line_middle
     local url_start = 4
@@ -189,34 +198,57 @@ describe("backwards jump", function()
     end
   end)
 
-  -- it("same line double URL after first without gap", function()
-  --   local content = "https://www.google.com https://www.github.com"
-  --   local url1_start = 0
-  --   local url2_start = 23
-  --   create_buffer(content)
-  --   for col = url2_start - 1, #content do
-  --     set_cursor({ 1, col })
-  --     local res = jump_backwards()
-  --     assert_tbl_same_ordered({ 1, url1_start }, res)
-  --   end
-  -- end)
-  --
-  -- it("same line double URL after first with gap", function()
-  --   local content = " https://www.google.com https://www.github.com "
-  --   local url1_start = 1
-  --   local url2_start = 24
-  --   create_buffer(content)
-  --   for col = url2_start - 1, #content do
-  --     set_cursor({ 1, col })
-  --     local res = jump_backwards()
-  --     assert_tbl_same_ordered({ 1, url1_start }, res)
-  --   end
-  -- end)
+  it("multiline jump from anywhere in line", function()
+    local content = examples.multi_line_just_links
+    local url_length = #examples.standard_url
+    create_buffer(content)
 
-  -- it("same line one URL on URL", function()
-  --   local content = [[https://www.google.com]]
-  --   -- multiple starting positions
-  -- end)
+    -- invalid jump
+    set_cursor({ 1, 0 })
+    local res = jump_backwards()
+    assert.is_nil(res)
+
+    -- jump to start of previous URL
+    local line_last = 4
+    for line = 1, line_last do
+      local expected = { line, 0 }
+      for col = 1, url_length do
+        set_cursor({ line, col })
+        res = jump_backwards()
+        assert_tbl_same_ordered(expected, res)
+      end
+      if line ~= line_last then
+        set_cursor({ line + 1, 0 })
+        assert_tbl_same_ordered(expected, res)
+      end
+    end
+  end)
+
+  it("multiline sandwich", function()
+    local content = examples.multi_line_sandwich
+    local url_length = #examples.standard_url
+    create_buffer(content)
+
+    -- invalid jumps
+    for line = 1, 2 do
+      set_cursor({ line, 0 })
+      local res = jump_backwards()
+      assert.is_nil(res)
+    end
+
+    -- jumps to correct position
+    local expected = { 2, 0 }
+    for col = 1, url_length do
+      set_cursor({ 2, col })
+      local res = jump_backwards()
+      assert_tbl_same_ordered(expected, res)
+    end
+
+    -- line 3 jumps to line 2
+    set_cursor({ 3, 0 })
+    local res = jump_backwards()
+    assert_tbl_same_ordered(expected, res)
+  end)
 end)
 
 describe("forwards jump", function()
