@@ -60,3 +60,6 @@ type = "any"
 
 [[assert.stub.args]]
 type = "any"
+
+[[assert.is_nil.args]]
+type = "any"

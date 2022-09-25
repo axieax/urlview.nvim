@@ -2,10 +2,11 @@ local M = {}
 
 local actions = require("urlview.actions")
 local config = require("urlview.config")
-local pickers = require("urlview.pickers")
+local jump = require("urlview.jump")
 local search = require("urlview.search")
 local search_helpers = require("urlview.search.helpers")
 local search_validation = require("urlview.search.validation")
+local pickers = require("urlview.pickers")
 local utils = require("urlview.utils")
 
 --- Searchs the provided context for links
@@ -81,6 +82,7 @@ function M.setup(user_config)
   check_breaking()
 
   search_helpers.register_custom_searches(config.custom_searches)
+  jump.register_mappings(config.jump)
 end
 
 return M

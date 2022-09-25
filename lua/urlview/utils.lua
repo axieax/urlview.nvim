@@ -113,4 +113,17 @@ function M.string_to_boolean(value)
   return bool_map[value]
 end
 
+function M.keymap(mode, lhs, rhs, opts)
+  if vim.keymap then
+    if opts.noremap ~= nil then
+      opts.remap = not opts.noremap
+      opts.noremap = nil
+    end
+    vim.keymap.set(mode, lhs, rhs, opts)
+  else
+    opts.desc = nil
+    vim.api.nvim_set_keymap(mode, lhs, rhs, opts)
+  end
+end
+
 return M

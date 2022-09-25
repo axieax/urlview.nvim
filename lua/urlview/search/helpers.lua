@@ -40,7 +40,7 @@ end
 
 --- Generates a simple search function from a template table
 ---@param patterns table (map) with `capture` and `format` keys
----@return function
+---@return function|nil
 local function default_custom_generator(patterns)
   if not patterns.capture or not patterns.format then
     return nil
