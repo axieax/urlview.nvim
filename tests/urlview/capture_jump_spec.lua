@@ -249,6 +249,20 @@ describe("backwards jump", function()
     local res = jump_backwards()
     assert_tbl_same_ordered(expected, res)
   end)
+
+  it("jump chain", function()
+    local content = examples.multi_line_just_links
+    local url_length = #examples.standard_url
+    create_buffer(content, { 4, url_length })
+
+    for line = 4, 1, -1 do
+      local res = jump_backwards()
+      assert_tbl_same_ordered({ line, 0 }, res)
+    end
+
+    local res = jump_backwards()
+    assert.is_nil(res)
+  end)
 end)
 
 describe("forwards jump", function()
@@ -340,6 +354,19 @@ describe("forwards jump", function()
     end
     set_cursor({ 3, 0 })
     res = jump_forwards()
+    assert.is_nil(res)
+  end)
+
+  it("jump chain", function()
+    local content = examples.multi_line_just_links
+    create_buffer(content, { 1, 0 })
+
+    for line = 1, 3 do
+      local res = jump_forwards()
+      assert_tbl_same_ordered({ line + 1, 0 }, res)
+    end
+
+    local res = jump_forwards()
     assert.is_nil(res)
   end)
 end)
