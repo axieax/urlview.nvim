@@ -37,11 +37,14 @@ local function verify_or_accept(opts, accepted_opts)
     local expected_type, is_optional = unpack(expected_v)
     local user_option = opts[expected_key]
     if not is_optional and user_option == nil then
-      utils.log(string.format("Missing required option `%s`", expected_key))
+      utils.log(string.format("Missing required option `%s`", expected_key), vim.log.levels.WARN)
     elseif user_option ~= nil then
       new_opts[expected_key] = validate_type(user_option, expected_type)
       if new_opts[expected_key] == nil then
-        utils.log(string.format("Invalid type for option `%s` (expected: %s)", expected_key, expected_type))
+        utils.log(
+          string.format("Invalid type for option `%s` (expected: %s)", expected_key, expected_type),
+          vim.log.levels.WARN
+        )
       end
     end
   end

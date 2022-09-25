@@ -10,10 +10,13 @@ local function shell_exec(cmd, raw_url)
     -- NOTE: `vim.fn.system` shellescapes arguments
     local err = vim.fn.system({ cmd, raw_url })
     if err ~= "" then
-      utils.log(string.format("Could not navigate link with `%s`:\n%s", cmd, err))
+      utils.log(string.format("Could not navigate link with `%s`:\n%s", cmd, err), vim.log.levels.ERROR)
     end
   else
-    utils.log(string.format("Cannot use %s to navigate links", cmd), vim.log.levels.DEBUG)
+    utils.log(
+      string.format("Cannot use command `%s` to navigate links (either empty or non-executable)", cmd),
+      vim.log.levels.ERROR
+    )
   end
 end
 
@@ -37,7 +40,10 @@ function M.system(raw_url)
   elseif os == "Linux" or os == "FreeBSD" then -- Linux and FreeBSD
     shell_exec("xdg-open", raw_url)
   else
-    utils.log("Unsupported operating system for `system` action. Please raise a GitHub issue for " .. os)
+    utils.log(
+      "Unsupported operating system for `system` action. Please raise a GitHub issue for " .. os,
+      vim.log.levels.WARN
+    )
   end
 end
 
@@ -45,7 +51,7 @@ end
 ---@param raw_url string @unescaped URL
 function M.clipboard(raw_url)
   vim.api.nvim_command(string.format("let @+ = '%s'", raw_url))
-  utils.log(string.format("URL %s copied to clipboard", raw_url))
+  utils.log(string.format("URL %s copied to clipboard", raw_url), vim.log.levels.INFO)
 end
 
 return setmetatable(M, {

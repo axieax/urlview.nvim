@@ -3,41 +3,6 @@ local M = {}
 local config = require("urlview.config")
 local constants = config._constants
 
---- Extracts content from a given buffer
----@param bufnr number (optional)
----@return string @content of buffer
-function M.get_buffer_content(bufnr)
-  bufnr = M.fallback(bufnr, 0)
-  return table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n")
-end
-
---- Extracts content from a given file
----@param filepath string @path to file
----@return string|nil @content of file (or nil if file cannot be open)
-function M.read_file(filepath)
-  local f = io.open(vim.fn.expand(filepath), "r")
-  if f == nil then
-    M.log("Could not open file: " .. filepath)
-    return nil
-  end
-  local content = f:read("*all")
-  f:close()
-  return content
-end
-
---- Extract @captures from @content and display them as @formats
----@param content string @content to extract from
----@param capture string @capture pattern to extract
----@param format string @format pattern to display
----@return table @list of extracted links
-function M.extract_pattern(content, capture, format)
-  local captures = {}
-  for c in content:gmatch(capture) do
-    table.insert(captures, string.format(format, c))
-  end
-  return captures
-end
-
 --- Prepare links before being displayed
 ---@param links table @list of extracted links
 ---@param opts table @Optional options
@@ -97,7 +62,7 @@ end
 ---@param level integer|nil @log level, defaults to "warning"
 function M.log(message, level)
   level = M.fallback(level, vim.log.levels.WARN)
-  if config.debug then
+  if level >= config.debug_level_min then
     vim.notify("[urlview.nvim] " .. message, level)
   end
 end

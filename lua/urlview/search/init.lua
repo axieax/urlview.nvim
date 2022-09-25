@@ -9,7 +9,7 @@ local search_helpers = require("urlview.search.helpers")
 ---@param opts table (map, optional)
 ---@return table (list) of strings (extracted links)
 function M.buffer(opts)
-  local content = utils.get_buffer_content(opts.bufnr)
+  local content = search_helpers.get_buffer_content(opts.bufnr)
   return search_helpers.content(content)
 end
 
@@ -17,7 +17,7 @@ end
 ---@param opts table (map, optional)
 ---@return table (list) of strings (extracted links)
 function M.file(opts)
-  local content = utils.fallback(utils.read_file(opts.filepath), "")
+  local content = search_helpers.read_file(opts.filepath)
   return search_helpers.content(content)
 end
 
@@ -49,7 +49,7 @@ return setmetatable(M, {
   -- error check for invalid searcher (still allow function calls, but return nil)
   __index = function(_, k)
     if k ~= nil then
-      utils.log("Cannot search context " .. k)
+      utils.log("Cannot search context " .. k, vim.log.levels.WARN)
       return function()
         return nil
       end

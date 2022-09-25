@@ -113,7 +113,7 @@ local function goto_url(reversed)
     local winnr = vim.api.nvim_get_current_win()
     local pos = M.find_url(winnr, reversed)
     if not pos then
-      utils.log(string.format("Cannot find any %s URLs in buffer", direction))
+      utils.log(string.format("Cannot find any %s URLs in buffer", direction), vim.log.levels.INFO)
       return
     end
 
@@ -121,7 +121,10 @@ local function goto_url(reversed)
       vim.cmd("normal! m'") -- add to jump list
       vim.api.nvim_win_set_cursor(winnr, pos)
     else
-      utils.log(string.format("The %s URL was found in window number %s, which is no longer valid", direction, winnr))
+      utils.log(
+        string.format("The %s URL was found in window number %s, which is no longer valid", direction, winnr),
+        vim.log.levels.WARN
+      )
     end
   end
 end
@@ -136,7 +139,7 @@ M.prev_url = goto_url(true)
 ---@param jump_opts table
 function M.register_mappings(jump_opts)
   if type(jump_opts) ~= "table" then
-    utils.log("Invalid type for option `jump` (expected: table with prev_url and next_url keys)")
+    utils.log("Invalid type for option `jump` (expected: table with prev_url and next_url keys)", vim.log.levels.WARN)
   else
     if jump_opts.prev ~= "" then
       utils.keymap(
