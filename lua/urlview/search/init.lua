@@ -46,12 +46,12 @@ function M.vimplug()
 end
 
 return setmetatable(M, {
-  -- error check for invalid searcher (still allow function calls, but return nil)
+  -- error check for invalid searcher (still allow function calls, but return empty table)
   __index = function(_, k)
     if k ~= nil then
       utils.log("Cannot search context " .. k, vim.log.levels.WARN)
       return function()
-        return nil
+        return {}
       end
     end
   end,
