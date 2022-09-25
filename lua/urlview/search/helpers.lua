@@ -7,7 +7,11 @@ local utils = require("urlview.utils")
 ---@param bufnr number (optional)
 ---@return string @content of buffer
 function M.get_buffer_content(bufnr)
-  bufnr = M.fallback(bufnr, 0)
+  bufnr = utils.fallback(bufnr, 0)
+  if not vim.api.nvim_buf_is_valid(bufnr) then
+    utils.log(string.format("Invalid buffer number provided: %s", bufnr), vim.log.levels.ERROR)
+    return ""
+  end
   return table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n")
 end
 
@@ -17,7 +21,7 @@ end
 function M.read_file(filepath)
   local f, err = io.open(vim.fn.expand(filepath), "r")
   if f == nil then
-    M.log(err, vim.log.levels.ERROR)
+    utils.log(err, vim.log.levels.ERROR)
     return ""
   end
   local content = f:read("*all")

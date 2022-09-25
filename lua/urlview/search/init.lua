@@ -6,7 +6,7 @@ local search_helpers = require("urlview.search.helpers")
 -- NOTE: make sure to add accepted params for `opts` to `urlview.search.validation` as well if needed
 
 --- Extracts urls from the current buffer or a given buffer
----@param opts table (map, optional)
+---@param opts table (map)
 ---@return table (list) of strings (extracted links)
 function M.buffer(opts)
   local content = search_helpers.get_buffer_content(opts.bufnr)
@@ -14,7 +14,7 @@ function M.buffer(opts)
 end
 
 --- Extracts urls from a given file
----@param opts table (map, optional)
+---@param opts table (map)
 ---@return table (list) of strings (extracted links)
 function M.file(opts)
   local content = search_helpers.read_file(opts.filepath)
