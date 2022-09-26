@@ -1,14 +1,3 @@
-local M = {
-  _constants = {
-    -- SEE: lua pattern matching (https://riptutorial.com/lua/example/20315/lua-pattern-matching)
-    -- regex equivalent: [A-Za-z0-9@:%._+~#=/\-?&]*
-    pattern = "[%w@:%%._+~#=/%-?&]*",
-    http_pattern = "https?://",
-    www_pattern = "www%.",
-  },
-}
-
--- NOTE: ensure this is in sync with README config
 local default_config = {
   -- Prompt title (`<context> <default_title>`, e.g. `Buffer Links:`)
   default_title = "Links:",
@@ -36,20 +25,4 @@ local default_config = {
   custom_searches = {},
 }
 
---- Resets the internal config to the default options
-M._reset_defaults = function()
-  M._options = default_config
-end
-
--- Used to auto-load the default config
-M._reset_defaults()
-
-return setmetatable(M, {
-  -- general get and set operations refer to the internal config table M._options
-  __index = function(_, k)
-    return M._options[k]
-  end,
-  __newindex = function(_, k, v)
-    M._options[k] = v
-  end,
-})
+return default_config

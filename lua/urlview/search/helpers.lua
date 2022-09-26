@@ -1,6 +1,6 @@
 local M = {}
 
-local constants = require("urlview.config")._constants
+local constants = require("urlview.config.constants")
 local utils = require("urlview.utils")
 
 --- Extracts content from a given buffer

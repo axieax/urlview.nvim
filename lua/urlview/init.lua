@@ -1,7 +1,9 @@
 local M = {}
 
 local actions = require("urlview.actions")
+local command = require("urlview.command")
 local config = require("urlview.config")
+local config_helpers = require("urlview.config.helpers")
 local jump = require("urlview.jump")
 local search = require("urlview.search")
 local search_helpers = require("urlview.search.helpers")
@@ -37,35 +39,6 @@ function M.search(ctx, opts)
   end
 end
 
--- index of `opts` parameter in `M.search`
-local OPTS_INDEX = 2
-
---- Processes arguments provided through the `UrlView` command for `M.search`
-function M.command_search(...)
-  local args = { ... }
-  local opts = {}
-  if #args >= OPTS_INDEX then
-    -- process provided options
-    for i = OPTS_INDEX, #args do
-      local equals_index = string.find(args[i], "=")
-      if equals_index then
-        local key = string.sub(args[i], 1, equals_index - 1)
-        local value = string.sub(args[i], equals_index + 1)
-        -- remove beginning and trailing quotes from value if present
-        if string.match(value, "^[\"']") and string.match(value, "[\"']$") then
-          value = string.sub(value, 2, -2)
-        end
-        -- type conversion
-        if vim.tbl_contains({ "unique", "sorted" }, key) then
-          value = utils.string_to_boolean(value)
-        end
-        opts[key] = value
-      end
-    end
-  end
-  M.search(args[1], opts)
-end
-
 local function check_breaking()
   if config.navigate_method ~= nil then
     utils.log([[`config.navigate_method` has been deprecated for `config.default_action`
@@ -77,12 +50,19 @@ local function check_breaking()
   end
 end
 
+local function autoload()
+  config_helpers.reset_defaults()
+  command.register_command()
+end
+
+autoload()
+
 --- Custom setup function
 --- Not required to be called unless user wants to modify the default config
 ---@param user_config table (optional)
 function M.setup(user_config)
   user_config = utils.fallback(user_config, {})
-  config._options = vim.tbl_deep_extend("force", config._options, user_config)
+  config_helpers.update_config(user_config)
   check_breaking()
 
   search_helpers.register_custom_searches(config.custom_searches)
