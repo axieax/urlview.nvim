@@ -118,11 +118,6 @@ You can customise the appearance of `vim.ui.select` with plugins such as [dressi
 - Additional requirements: [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
 - You can use Telescope as your `default_picker` using the `require("urlview").setup` function
 - Alternatively, you can specify a picker dynamically with `:UrlView <ctx> picker=telescope`
-- If you _really_ want access to `:Telescope urlview`, then add the following line to your config:
-
-```lua
-require("telescope").load_extension("urlview")
-```
 
 ## 🛍️ Alternatives
 
