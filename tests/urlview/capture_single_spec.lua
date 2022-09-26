@@ -1,5 +1,5 @@
 local urlview = require("urlview")
-local config = require("urlview.config")
+local reset_config = require("urlview.config.helpers").reset_defaults
 local assert_no_match = require("tests.urlview.helpers").assert_no_match
 local assert_single_match = require("tests.urlview.helpers").assert_single_match
 
@@ -30,7 +30,7 @@ describe("url-only simple capture", function()
   end)
 
   after_each(function()
-    config._reset_defaults()
+    reset_config()
   end)
 
   it("http capture", function()
@@ -73,7 +73,7 @@ describe("url-only path capture", function()
   end)
 
   after_each(function()
-    config._reset_defaults()
+    reset_config()
   end)
 
   it("lol php capture", function()

@@ -1,6 +1,6 @@
 local urlview = require("urlview")
-local config = require("urlview.config")
 local search = require("urlview.search")
+local reset_config = require("urlview.config.helpers").reset_defaults
 local assert_tbl_same_any_order = require("tests.urlview.helpers").assert_tbl_same_any_order
 local extract_links_from_content = require("urlview.search.helpers").content
 local prepare_links = require("urlview.utils").prepare_links
@@ -12,7 +12,7 @@ describe("HTTP(s) protocol fill in", function()
   end)
 
   after_each(function()
-    config._reset_defaults()
+    reset_config()
   end)
 
   it("link with http protocol", function()
@@ -53,7 +53,7 @@ describe("unique links", function()
 
   after_each(function()
     search.test = nil
-    config._reset_defaults()
+    reset_config()
   end)
 
   local content = "1 1 2 2 3 3 4 4 5 5"
@@ -78,7 +78,7 @@ describe("sorted links", function()
   end)
 
   after_each(function()
-    config._reset_defaults()
+    reset_config()
   end)
 
   it("URLs missing protocol fixed and sorted alphabetically", function()

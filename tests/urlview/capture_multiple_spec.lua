@@ -1,7 +1,7 @@
 local urlview = require("urlview")
-local config = require("urlview.config")
-local assert_tbl_same_any_order = require("tests.urlview.helpers").assert_tbl_same_any_order
 local extract_links_from_content = require("urlview.search.helpers").content
+local reset_config = require("urlview.config.helpers").reset_defaults
+local assert_tbl_same_any_order = require("tests.urlview.helpers").assert_tbl_same_any_order
 
 describe("multiple captures", function()
   it("separate lines", function()
@@ -42,7 +42,7 @@ describe("unique captures", function()
     local result = extract_links_from_content(content)
     assert_tbl_same_any_order({ "https://www.google.com" }, result)
 
-    config._reset_defaults()
+    reset_config()
   end)
 
   it("different prefix / uri protocol, prefer specified", function()
@@ -57,7 +57,7 @@ describe("unique captures", function()
     local result = extract_links_from_content(content)
     assert_tbl_same_any_order({ "https://www.google.com" }, result)
 
-    config._reset_defaults()
+    reset_config()
   end)
 
   it("different paths", function()
