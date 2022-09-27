@@ -1,6 +1,4 @@
 local jump = require("urlview.jump")
-local assert_tbl_same_ordered = require("tests.urlview.helpers").assert_tbl_same_ordered
-
 local jump_helpers = require("tests.urlview.jump_helpers")
 local set_cursor = jump_helpers.set_cursor
 local create_buffer = jump_helpers.create_buffer
@@ -35,21 +33,21 @@ describe("line_match_positions unit tests", function()
       local expected = vim.tbl_map(function(x)
         return x + offset
       end, expected_no_offset)
-      assert_tbl_same_ordered(expected, res)
+      vim.deep_equal(expected, res)
     end
   end)
 
   it("single URL", function()
     local url = examples.standard_url
     local res = jump.line_match_positions(url, url, 0)
-    assert_tbl_same_ordered({ 0 }, res)
+    vim.deep_equal({ 0 }, res)
   end)
 
   it("correct single index", function()
     local url = examples.standard_url
     local line = examples.single_line_middle
     local res = jump.line_match_positions(line, url, 0)
-    assert_tbl_same_ordered({ 4 }, res)
+    vim.deep_equal({ 4 }, res)
   end)
 end)
 
@@ -172,7 +170,7 @@ describe("backwards jump", function()
     for col = 1, #content do
       set_cursor({ 1, col })
       res = jump_backwards()
-      assert_tbl_same_ordered({ 1, 0 }, res)
+      vim.deep_equal({ 1, 0 }, res)
     end
   end)
 
@@ -194,7 +192,7 @@ describe("backwards jump", function()
     for col = url_start + 1, #content do
       set_cursor({ 1, col })
       local res = jump_backwards()
-      assert_tbl_same_ordered({ 1, url_start }, res)
+      vim.deep_equal({ 1, url_start }, res)
     end
   end)
 
@@ -215,11 +213,11 @@ describe("backwards jump", function()
       for col = 1, url_length do
         set_cursor({ line, col })
         res = jump_backwards()
-        assert_tbl_same_ordered(expected, res)
+        vim.deep_equal(expected, res)
       end
       if line ~= line_last then
         set_cursor({ line + 1, 0 })
-        assert_tbl_same_ordered(expected, res)
+        vim.deep_equal(expected, res)
       end
     end
   end)
@@ -241,13 +239,13 @@ describe("backwards jump", function()
     for col = 1, url_length do
       set_cursor({ 2, col })
       local res = jump_backwards()
-      assert_tbl_same_ordered(expected, res)
+      vim.deep_equal(expected, res)
     end
 
     -- line 3 jumps to line 2
     set_cursor({ 3, 0 })
     local res = jump_backwards()
-    assert_tbl_same_ordered(expected, res)
+    vim.deep_equal(expected, res)
   end)
 
   it("jump chain", function()
@@ -257,7 +255,7 @@ describe("backwards jump", function()
 
     for line = 4, 1, -1 do
       local res = jump_backwards()
-      assert_tbl_same_ordered({ line, 0 }, res)
+      vim.deep_equal({ line, 0 }, res)
     end
 
     local res = jump_backwards()
@@ -302,7 +300,7 @@ describe("forwards jump", function()
     for col = 0, url_start - 1 do
       set_cursor({ 1, col })
       local res = jump_forwards()
-      assert_tbl_same_ordered({ 1, url_start }, res)
+      vim.deep_equal({ 1, url_start }, res)
     end
   end)
 
@@ -326,7 +324,7 @@ describe("forwards jump", function()
       for col = 0, url_length do
         set_cursor({ line, col })
         local res = jump_forwards()
-        assert_tbl_same_ordered({ line + 1, 0 }, res)
+        vim.deep_equal({ line + 1, 0 }, res)
       end
     end
     -- last line
@@ -344,7 +342,7 @@ describe("forwards jump", function()
 
     -- line 1 jumps to line 2
     local res = jump_forwards()
-    assert_tbl_same_ordered({ 2, 0 }, res)
+    vim.deep_equal({ 2, 0 }, res)
 
     -- line 2 onwards invalid
     for col = 0, url_length do
@@ -363,7 +361,7 @@ describe("forwards jump", function()
 
     for line = 1, 3 do
       local res = jump_forwards()
-      assert_tbl_same_ordered({ line + 1, 0 }, res)
+      vim.deep_equal({ line + 1, 0 }, res)
     end
 
     local res = jump_forwards()
