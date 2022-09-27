@@ -44,6 +44,7 @@ local function command_completion(_, line)
   if nargs == 0 then
     -- search context completion
     local contexts = vim.tbl_keys(search_contexts)
+    utils.alphabetical_sort(contexts)
     return contexts
   else
     -- opts completion
