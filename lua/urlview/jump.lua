@@ -142,10 +142,14 @@ function M.register_mappings(jump_opts)
     utils.log("Invalid type for option `jump` (expected: table with prev_url and next_url keys)", vim.log.levels.WARN)
   else
     if jump_opts.prev ~= "" then
-      vim.keymap.set("n", jump_opts.prev, M.prev_url, { desc = "Previous URL" })
+      vim.keymap.set("n", jump_opts.prev, function()
+        require("urlview.jump").prev_url()
+      end, { desc = "Previous URL" })
     end
     if jump_opts.next ~= "" then
-      vim.keymap.set("n", jump_opts.next, M.next_url, { desc = "Next URL" })
+      vim.keymap.set("n", jump_opts.next, function()
+        require("urlview.jump").next_url()
+      end, { desc = "Next URL" })
     end
   end
 end
