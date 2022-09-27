@@ -1,7 +1,7 @@
 local M = {}
 
 local config = require("urlview.config")
-local default_config = require("urlview.config.default") -- TODO: check if this works
+local default_config = require("urlview.config.default")
 
 function M.reset_defaults()
   config._options = default_config

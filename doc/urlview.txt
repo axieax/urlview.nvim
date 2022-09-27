@@ -1,0 +1,127 @@
+*urlview.txt*             Find and display URLs from a variety of search contexts
+
+================================================================================
+Table of Contents                                             *urlview.contents*
+
+    INTRODUCTION .......................................... |urlview|
+    CONFIGURATION ......................................... |urlview.config|
+    USAGE ................................................. |urlview.usage|
+    SEARCH ................................................ |urlview.search|
+    PICKERS ............................................... |urlview.pickers|
+    ACTIONS ............................................... |urlview.actions|
+
+
+================================================================================
+INTRODUCTION                                                           *urlview*
+
+
+================================================================================
+CONFIGURATION                                                   *urlview.config*
+
+                                                  *urlview.config-default_title*
+{default_title}                                       string (default: "Links:")
+
+Forms part of the prompt title for the picker (`<context> <default_title>`). For
+example, for the buffer search context with a default_title of "Links:", the
+picker title becomes "Buffer Links:". The capitalisation of the first letter
+in the default_title determines the capitalisation of the search context in
+the prompt title as well. For example, a default_title of "links" will result
+in a prompt title of "buffer links".
+
+                                                 *urlview.config-default_picker*
+{default_picker}                                      string (default: "native")
+
+Default picker for `:UrlView` commands. This should be any one of the pickers in
+|urlview.pickers|.
+
+                                                 *urlview.config-default_prefix*
+{default_prefix}                                    string (default: "https://")
+
+Default prefix for URLs missing a HTTP protocol (e.g. "www.google.com" becomes
+"https://www.google.com"). Such a protocol is required for |urlview.actions|
+to be able to navigate to URLs. Another suggested option is "http://",
+although it is less secure than the default HTTPS protocol.
+
+                                                 *urlview.config-default_action*
+{default_action}                                       string (default: "netrw")
+
+Default action to take upon selecting a URL from a picker. This should be any
+one of the actions in |urlview.actions|.
+
+                                                         *urlview.config-unique*
+{unique}                                                 boolean (default: true)
+
+Enable to ensure links shown in the picker are unique (i.e. no duplicates).
+
+                                                         *urlview.config-sorted*
+{sorted}                                                 boolean (default: true)
+
+Enable to ensure links shown in the picker are sorted alphabetically.
+
+                                                  *urlview.config-log_level_min*
+{log_level_min}    `vim.log.levels` enum or int (default: `vim.log.levels.INFO`)
+
+Minimum log level for output from this plugin. Lower logging levels will be
+ignored. >
+vim.log.levels = {
+  TRACE = 0,
+  DEBUG = 1,
+  INFO = 2,
+  WARN = 3
+  ERROR = 4,
+}
+<
+
+The default value of `vim.log.levels.INFO` means that INFO, WARN and ERROR
+logs will all be displayed. Similarly, a log_level_min value of
+`vim.log.levels.WARN` means that only WARN and ERROR logs will be displayed.
+It is recommended for this value to be at least `vim.log.levels.WARN` to
+ensure warnings are appropriately logged. Setting this value to `5` will
+effectively suppress all logs.
+
+                                                           *urlview.config-jump*
+{jump}                                                               table (map)
+
+Registers keymaps for jumps to the previous or next URL in the buffer.
+
+Fields:
+
+    {prev}                                                string (default: "[u")
+    Mapping to jump to the previous URL in the buffer. Set to "" to disable.
+
+    {next}                                                string (default: "]u")
+    Mapping to jump to the previous URL in the buffer. Set to "" to disable.
+
+
+================================================================================
+USAGE                                                            *urlview.usage*
+
+For normal usage, interaction with this plugin is mostly achieved through the
+`:UrlView` command. This command provides completion to assist with specifying
+appropriate search contexts and respective options.
+
+Calling `:UrlView` without any additional arguments is the same as calling
+`:UrlView buffer`, which finds URLs in the current buffer with the default
+options configured ( |default_title|, |default_picker|, |default_action|,
+|unique|, |sorted|, etc. ).
+
+The command expects arguments in the format `:UrlView <ctx> <options...>`,
+e.g. >
+  :UrlView buffer bufnr=1
+  :UrlView file filepath=/etc/hosts picker=telescope
+<
+
+
+================================================================================
+SEARCH                                                          *urlview.search*
+
+
+================================================================================
+PICKERS                                                        *urlview.pickers*
+
+
+================================================================================
+ACTIONS                                                        *urlview.actions*
+
+
+ vim:tw=78:ts=8:noet:ft=help:norl:
