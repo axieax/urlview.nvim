@@ -28,7 +28,7 @@ function M.search(ctx, opts)
   -- search ctx for links and display with picker
   opts = search_validation[ctx](opts)
   local links = search[ctx](opts)
-  links = utils.prepare_links(links, opts)
+  links = utils.process_links(links, opts)
   if links and not vim.tbl_isempty(links) then
     if type(opts.action) == "string" then
       opts.action = actions[opts.action]

@@ -3,7 +3,7 @@ local search = require("urlview.search")
 local reset_config = require("urlview.config.helpers").reset_defaults
 local assert_tbl_same_any_order = require("tests.urlview.helpers").assert_tbl_same_any_order
 local extract_links_from_content = require("urlview.search.helpers").content
-local prepare_links = require("urlview.utils").prepare_links
+local prepare_links = require("urlview.utils").process_links
 
 describe("HTTP(s) protocol fill in", function()
   local default_prefix = "https://"

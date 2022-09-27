@@ -9,11 +9,11 @@ function M.alphabetical_sort(tbl)
   end)
 end
 
---- Prepare links before being displayed
+--- Processes links before being displayed
 ---@param links table @list of extracted links
 ---@param opts table @Optional options
 ---@return table @list of prepared links
-function M.prepare_links(links, opts)
+function M.process_links(links, opts)
   opts = M.fallback(opts, {})
   local new_links = {}
 
