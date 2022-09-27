@@ -32,7 +32,7 @@
 ## ⚡ Requirements
 
 - This plugin supports **Neovim v0.7** or later.
-- Please find the appropriate _\*-compat_ tag if you need legacy support for previous Neovim versions, such as v0.6-compat for nvim v0.6, although these versions will no longer receive any new updates or features.
+- Please find the appropriate _\*-compat_ Git tag if you need legacy support for previous Neovim versions, such as [v0.6-compat](https://github.com/axieax/urlview.nvim/tree/v0.6-compat) for nvim v0.6, although these versions will no longer receive any new updates or features.
 - For Neovim versions prior to v0.6 or Vanilla [Vim](https://www.vim.org/) support, please check out [urlview.vim](https://github.com/strboul/urlview.vim) as an alternative plugin.
 
 ## 🚀 Usage
