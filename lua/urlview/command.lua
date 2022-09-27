@@ -60,8 +60,9 @@ end
 
 function M.register_command()
   vim.api.nvim_create_user_command("UrlView", command_search, {
-    nargs = "*",
+    desc = "Find URLs in the current buffer or another search context",
     complete = command_completion,
+    nargs = "*",
   })
 end
 
