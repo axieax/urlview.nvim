@@ -115,6 +115,32 @@ e.g. >
 ================================================================================
 SEARCH                                                          *urlview.search*
 
+`urlview.search` provides functions which finds and extracts URLs from a
+particular search context. The default search contexts can be found by the
+exposed functions in the `urlview.search` module (or `urlview/search/init.lua`).
+
+Buffer Search Context                                    *urlview.search-buffer*
+
+The buffer search context finds URLs in a specific buffer (current by
+default). To search a particular buffer, provide the desired buffer number
+with `:UrlView buffer bufnr=<bufnr>`.
+
+File Search Context                                        *urlview.search-file*
+
+The file search context allows a user to find URLs in a particular file. This
+requires passing in the parameter `filepath` for URLs in the desired file to be
+searched, for example with `:UrlView file filepath="/etc/hosts"`.
+
+Packer Search Context                                    *urlview.search-packer*
+
+This search context resolves Git repository URLs for plugins installed with
+the packer.nvim plugin manager.
+
+vim-plug Search Context                                *urlview.search-vim_plug*
+
+This search context resolves Git repository URLs for plugins installed with
+the vim-plug plugin manager.
+
 Registering a custom search context                      *urlview.search-custom*
 
 Custom search contexts can be registered for searching with `:UrlView <ctx>`.

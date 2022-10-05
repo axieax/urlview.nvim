@@ -1,4 +1,3 @@
-local urlview = require("urlview")
 local search = require("urlview.search")
 local search_helpers = require("urlview.search.helpers")
 local assert_tbl_same_any_order = require("tests.urlview.helpers").assert_tbl_same_any_order
