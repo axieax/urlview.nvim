@@ -1,0 +1,300 @@
+*urlview.txt*             Find and display URLs from a variety of search contexts
+
+================================================================================
+Table of Contents                                             *urlview.contents*
+
+    INTRODUCTION .......................................... |urlview|
+    CONFIGURATION ......................................... |urlview.config|
+    USAGE ................................................. |urlview.usage|
+    SEARCH ................................................ |urlview.search|
+    PICKERS ............................................... |urlview.pickers|
+    ACTIONS ............................................... |urlview.actions|
+
+
+================================================================================
+INTRODUCTION                                                           *urlview*
+
+✨ urlview.nvim is essentially a plugin which:
+
+1. Finds URLs from a variety of |urlview.search| contexts
+2. Displays these URLs in one of the |urlview.pickers|
+3. Performs |urlview.actions| on selected URLs from the pickers
+
+
+================================================================================
+CONFIGURATION                                                   *urlview.config*
+
+urlview.nvim supports plug-n-play, meaning the default config is automatically
+set up. However, the default options can be configured using the
+`require("urlview").setup` function, with the configuration options below.
+
+                                                  *urlview.config-default_title*
+{default_title}                                       string (default: "Links:")
+
+Forms part of the prompt title for the picker (`<context> <default_title>`). For
+example, for the buffer search context with a default_title of "Links:", the
+picker title becomes "Buffer Links:". The capitalisation of the first letter
+in the default_title determines the capitalisation of the search context in
+the prompt title as well. For example, a default_title of "links" will result
+in a prompt title of "buffer links".
+
+                                                 *urlview.config-default_picker*
+{default_picker}                                      string (default: "native")
+
+Default picker for `:UrlView` commands. This should be any one of the pickers in
+|urlview.pickers|.
+
+                                                 *urlview.config-default_prefix*
+{default_prefix}                                    string (default: "https://")
+
+Default prefix for URLs missing a HTTP protocol (e.g. "www.google.com" becomes
+"https://www.google.com"). Such a protocol is required for |urlview.actions|
+to be able to navigate to URLs. Another suggested option is "http://",
+although it is less secure than the default HTTPS protocol.
+
+                                                 *urlview.config-default_action*
+{default_action}                                       string (default: "netrw")
+
+Default action to take upon selecting a URL from a picker. This should be any
+one of the actions in |urlview.actions|.
+
+                                                         *urlview.config-unique*
+{unique}                                                 boolean (default: true)
+
+Enable to ensure links shown in the picker are unique (i.e. no duplicates).
+
+                                                         *urlview.config-sorted*
+{sorted}                                                 boolean (default: true)
+
+Enable to ensure links shown in the picker are sorted alphabetically.
+
+                                                  *urlview.config-log_level_min*
+{log_level_min}    `vim.log.levels` enum or int (default: `vim.log.levels.INFO`)
+
+Minimum log level for output from this plugin. Lower logging levels will be
+ignored. >
+vim.log.levels = {
+  TRACE = 0,
+  DEBUG = 1,
+  INFO = 2,
+  WARN = 3
+  ERROR = 4,
+}
+<
+
+The default value of `vim.log.levels.INFO` means that INFO, WARN and ERROR
+logs will all be displayed. Similarly, a log_level_min value of
+`vim.log.levels.WARN` means that only WARN and ERROR logs will be displayed.
+It is recommended for this value to be at least `vim.log.levels.WARN` to
+ensure warnings are appropriately logged. Setting this value to `5` will
+effectively suppress all logs.
+
+                                                           *urlview.config-jump*
+{jump}                                                               table (map)
+
+Registers keymaps for jumps to the previous or next URL in the buffer.
+
+Fields:
+
+    {prev}                                                string (default: "[u")
+    Mapping to jump to the previous URL in the buffer. Set to "" to disable.
+
+    {next}                                                string (default: "]u")
+    Mapping to jump to the previous URL in the buffer. Set to "" to disable.
+
+
+================================================================================
+USAGE                                                            *urlview.usage*
+
+For normal usage, interaction with this plugin is mostly achieved through the
+`:UrlView` command. This command provides completion to assist with specifying
+appropriate search contexts and respective options.
+
+Calling `:UrlView` without any additional arguments is the same as calling
+`:UrlView buffer`, which finds URLs in the current buffer with the default
+options configured ( |default_title|, |default_picker|, |default_action|,
+|unique|, |sorted|, etc. ).
+
+The command expects arguments in the format `:UrlView <ctx> <options...>`,
+e.g. >
+  :UrlView buffer bufnr=1
+  :UrlView file filepath=/etc/hosts picker=telescope
+  :UrlView packer sorted=false
+<
+
+
+================================================================================
+SEARCH                                                          *urlview.search*
+
+`urlview.search` provides functions which finds and extracts URLs from a
+particular search context. The default search contexts can be found by the
+exposed functions in the `urlview.search` module (or `urlview/search/init.lua`).
+
+Buffer Search Context                                    *urlview.search-buffer*
+
+The buffer search context finds URLs in a specific buffer (current by
+default). To search a particular buffer, provide the desired buffer number
+with `:UrlView buffer bufnr=<bufnr>`.
+
+File Search Context                                        *urlview.search-file*
+
+The file search context allows a user to find URLs in a particular file. This
+requires passing in the parameter `filepath` for URLs in the desired file to be
+searched, for example with `:UrlView file filepath="/etc/hosts"`.
+
+Packer Search Context                                    *urlview.search-packer*
+
+This search context resolves Git repository URLs for plugins installed with
+the packer.nvim plugin manager.
+
+vim-plug Search Context                                *urlview.search-vim_plug*
+
+This search context resolves Git repository URLs for plugins installed with
+the vim-plug plugin manager.
+
+Registering a custom search context                      *urlview.search-custom*
+
+Custom search contexts can be registered for searching with `:UrlView <ctx>`.
+The `generate_custom_search` function from the `urlview.search.helpers` module
+can be used to quickly generate a function for capturing a Lua pattern and
+formatting it with `string.format`. The following link is very helpful for
+understanding basic Lua patterns:
+
+- https://riptutorial.com/lua/example/20315/lua-pattern-matching
+
+This function can then be assigned to the `urlview.search` module for use as a
+search context to be selected with the `:UrlView` command (with completion).
+
+Here is an example which finds Jira ticket numbers in the format of "AXIE-"
+followed by any number (capture field). This entire pattern gets captured and
+can then be embedded into the format string in the format field, allowing
+a user to directly navigate to the Jira ticket in their browser. >
+local search = require("urlview.search")
+local search_helpers = require("urlview.search.helpers")
+search["jira"] = search_helpers.generate_custom_search({
+  capture = "AXIE%-%d+",
+  format = "https://jira.axieax.com/browse/%s",
+})
+<
+
+This allows for captures such as "AXIE-1", "AXIE-17", "AXIE-132". Feel free to
+adjust the `capture` field to suit your needs.
+
+A custom function can also be registered for a search context, as well as
+additional parameters with something like >
+local search = require("urlview.search")
+search["fruits"] = function(opts)
+  local fruits = { "apple", "banana", "watermelon" }
+  if opts.include_tomato then
+    table.insert(fruits, "tomato")
+  end
+  return fruits
+end
+<
+
+Additional parameters can be passed into the custom search context using the
+`:UrlView` command, for example `:UrlView fruits include_tomato` or `:UrlView
+fruits include_tomato=true`. Other types also work.
+
+Please see `urlview/search/init.lua` for more examples. If you have a useful
+custom search context, feel free to share it in
+https://github.com/axieax/urlview.nvim/discussions/40 for others to use (and
+potentially make it a built-in search context)!
+
+
+================================================================================
+PICKERS                                                        *urlview.pickers*
+
+`urlview.pickers` are used to display the results from |urlview.search|.
+
+vim.ui.select                                           *urlview.pickers-native*
+
+This picker uses the built-in function `vim.ui.select` to display results. It
+is recommended to use a UI-extension for `vim.ui.select` for enhanced
+functionality (similar to |urlview.pickers-telescope|), including customising
+popup locations and behaviour, and searching (even fuzzy-searching) through
+results. An example of such a plugin is dressing.nvim
+(https://github.com/stevearc/dressing.nvim).
+
+telescope                                            *urlview.pickers-telescope*
+
+This picker uses the Telescope plugin
+(https://github.com/nvim-telescope/telescope.nvim) as a picker to display
+results. Please note that this requires installing Telescope as a plugin in
+order for it to be used as a picker.
+
+Registering a custom picker                             *urlview.pickers-custom*
+
+A recommendation for registering a custom picker is to first check out a
+`vim.ui.select` UI-extension such as dressing.nvim
+(https://github.com/stevearc/dressing.nvim) to see if your desired picker can
+be used for the native picker (e.g. nui, fzf).
+
+In the case that you want to write your own picker, you can register it by
+adding it as a function to the `urlview.pickers` module.>
+local pickers = require("urlview.pickers")
+pickers["fzf"] = function(items, opts)
+  -- TODO
+end
+<
+
+Please check out `urlview/pickers.lua` for examples on how to do this.
+
+
+================================================================================
+ACTIONS                                                        *urlview.actions*
+
+`urlview.actions` determine the behaviour when a URL is selected with one of
+the |urlview.pickers|.
+
+netrw                                                    *urlview.actions-netrw*
+
+The `netrw` action uses the built-in netrw feature to open a given URL in your
+browser. However, some users may have this feature disabled, either explicitly
+or due to "netrw hijack" behaviour from file-explorer Neovim plugins. Due to
+this, if urlview detects that netrw is disabled, it will use
+|urlview.actions-system| as a fallback by default.
+
+system                                                  *urlview.actions-system*
+
+This action opens URL in your system's default browser depending on your
+operating system. If your system is not supported, please raise a GitHub issue
+to have it included as a built-in options. Otherwise, specify a custom action
+( |urlview.actions-custom|) for your use case.
+
+clipboard                                            *urlview.actions-clipboard*
+
+This action copies selected URLs to the system clipboard (specifically to
+Neovim's {+} register).
+
+Registering a custom action                             *urlview.actions-custom*
+
+There are two main types of custom actions:
+
+1. Execute a shell command which takes in your URL as an argument
+
+This is the main use case for custom actions - specifying a browser such as
+`chromium` or `firefox` to open your URL with. By default, this executes the
+provided shell command and passes in the URL as an argument, such as >
+  $ chromium 'https://www.google.com'
+<
+which launches Google in the chromium browser. This can be any executable (be
+sure to find the correct path to your desired application).
+
+2. Lua function
+
+With urlview.nvim's principle of extensibility in mind, you can also register a
+custom action as a Lua function by adding it to the `urlview.actions` module,
+like so: >
+local actions = require("urlview.actions")
+actions["spectate"] = function(raw_url)
+  -- TODO
+end
+<
+
+Please refer to `urlview/actions.lua` for examples, and feel free to create a
+GitHub issue or pull request to add your custom Lua function action as a
+built-in action if you think others can use it as well!
+
+
+ vim:tw=78:ts=8:noet:ft=help:norl:

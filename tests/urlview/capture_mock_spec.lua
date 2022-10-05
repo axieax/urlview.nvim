@@ -1,5 +1,5 @@
 local urlview = require("urlview")
-local config = require("urlview.config")
+local reset_config = require("urlview.config.helpers").reset_defaults
 local search = require("urlview.search")
 
 describe("mock vim.ui.select", function()
@@ -19,7 +19,7 @@ describe("mock vim.ui.select", function()
 
   after_each(function()
     search.test = nil
-    config._reset_defaults()
+    reset_config()
   end)
 
   local original_ui_select = vim.ui.select

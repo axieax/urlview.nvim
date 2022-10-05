@@ -19,11 +19,4 @@ function M.assert_tbl_same_any_order(expected, actual)
   end
 end
 
-function M.assert_tbl_same_ordered(expected, actual)
-  assert.same(#expected, #actual)
-  for i, e in ipairs(expected) do
-    assert.same(e, actual[i])
-  end
-end
-
 return M

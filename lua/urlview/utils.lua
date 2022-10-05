@@ -1,13 +1,19 @@
 local M = {}
 
 local config = require("urlview.config")
-local constants = config._constants
+local constants = require("urlview.config.constants")
 
---- Prepare links before being displayed
+function M.alphabetical_sort(tbl)
+  table.sort(tbl, function(a, b)
+    return a:lower() < b:lower()
+  end)
+end
+
+--- Processes links before being displayed
 ---@param links table @list of extracted links
 ---@param opts table @Optional options
 ---@return table @list of prepared links
-function M.prepare_links(links, opts)
+function M.process_links(links, opts)
   opts = M.fallback(opts, {})
   local new_links = {}
 
@@ -31,9 +37,7 @@ function M.prepare_links(links, opts)
 
   -- Sort links alphabetically (case insensitive)
   if M.fallback(opts.sorted, config.sorted) then
-    table.sort(new_links, function(a, b)
-      return a:lower() < b:lower()
-    end)
+    M.alphabetical_sort(new_links)
   end
 
   return new_links
@@ -71,24 +75,12 @@ end
 ---@param value string @value to convert
 ---@return boolean|nil @value as a boolean, or nil if not a boolean
 function M.string_to_boolean(value)
+  value = value:lower()
   local bool_map = { ["true"] = true, ["false"] = false }
   if not bool_map[value] then
     M.log("Could not convert " .. value .. " to boolean")
   end
   return bool_map[value]
-end
-
-function M.keymap(mode, lhs, rhs, opts)
-  if vim.keymap then
-    if opts.noremap ~= nil then
-      opts.remap = not opts.noremap
-      opts.noremap = nil
-    end
-    vim.keymap.set(mode, lhs, rhs, opts)
-  else
-    opts.desc = nil
-    vim.api.nvim_set_keymap(mode, lhs, rhs, opts)
-  end
 end
 
 return M

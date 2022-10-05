@@ -1,10 +1,11 @@
 local M = {}
 
 local actions = require("urlview.actions")
+local command = require("urlview.command")
 local config = require("urlview.config")
+local config_helpers = require("urlview.config.helpers")
 local jump = require("urlview.jump")
 local search = require("urlview.search")
-local search_helpers = require("urlview.search.helpers")
 local search_validation = require("urlview.search.validation")
 local pickers = require("urlview.pickers")
 local utils = require("urlview.utils")
@@ -26,7 +27,7 @@ function M.search(ctx, opts)
   -- search ctx for links and display with picker
   opts = search_validation[ctx](opts)
   local links = search[ctx](opts)
-  links = utils.prepare_links(links, opts)
+  links = utils.process_links(links, opts)
   if links and not vim.tbl_isempty(links) then
     if type(opts.action) == "string" then
       opts.action = actions[opts.action]
@@ -35,35 +36,6 @@ function M.search(ctx, opts)
   else
     utils.log("No links found in context " .. ctx, vim.log.levels.INFO)
   end
-end
-
--- index of `opts` parameter in `M.search`
-local OPTS_INDEX = 2
-
---- Processes arguments provided through the `UrlView` command for `M.search`
-function M.command_search(...)
-  local args = { ... }
-  local opts = {}
-  if #args >= OPTS_INDEX then
-    -- process provided options
-    for i = OPTS_INDEX, #args do
-      local equals_index = string.find(args[i], "=")
-      if equals_index then
-        local key = string.sub(args[i], 1, equals_index - 1)
-        local value = string.sub(args[i], equals_index + 1)
-        -- remove beginning and trailing quotes from value if present
-        if string.match(value, "^[\"']") and string.match(value, "[\"']$") then
-          value = string.sub(value, 2, -2)
-        end
-        -- type conversion
-        if vim.tbl_contains({ "unique", "sorted" }, key) then
-          value = utils.string_to_boolean(value)
-        end
-        opts[key] = value
-      end
-    end
-  end
-  M.search(args[1], opts)
 end
 
 local function check_breaking()
@@ -75,17 +47,27 @@ local function check_breaking()
     utils.log([[`config.debug` has been deprecated for `config.log_level_min`
     Please see https://github.com/axieax/urlview.nvim/issues/37#issuecomment-1257113527]])
   end
+  if config.custom_searches ~= nil then
+    utils.log([[Registering custom search contexts with `config.custom_searches` has been deprecated
+    Please see https://github.com/axieax/urlview.nvim/issues/37#issuecomment-1268023592]])
+  end
 end
+
+local function autoload()
+  config_helpers.reset_defaults()
+  command.register_command()
+end
+
+autoload()
 
 --- Custom setup function
 --- Not required to be called unless user wants to modify the default config
 ---@param user_config table (optional)
 function M.setup(user_config)
   user_config = utils.fallback(user_config, {})
-  config._options = vim.tbl_deep_extend("force", config._options, user_config)
+  config_helpers.update_config(user_config)
   check_breaking()
 
-  search_helpers.register_custom_searches(config.custom_searches)
   jump.register_mappings(config.jump)
 end
 
