@@ -1,11 +1,11 @@
-<h2 align="center">🔎 urlview.nvim</h2>
+<h1 align="center">🔎 urlview.nvim</h1>
 <p align="center"><i>Find and display URLs from a variety of search contexts</i></p>
 <p align="center">
   <a href="https://github.com/neovim/neovim">
     <img alt="Neovim Version" src="https://img.shields.io/static/v1?label=&message=%3E%3D0.7&style=for-the-badge&logo=neovim&color=green&labelColor=302D41"/>
   </a>
   <a href="https://github.com/axieax/urlview.nvim/stargazers">
-    <img alt="Repo Stars" src="https://img.shields.io/github/stars/axieax/urlview.nvim?style=for-the-badge&color=yellow&label=🌟&labelColor=302D41"/>
+    <img alt="Repo Stars" src="https://img.shields.io/github/stars/axieax/urlview.nvim?style=for-the-badge&color=yellow&label=%F0%9F%8C%9F&labelColor=302D41"/>
   </a>
   <a href="https://github.com/axieax/urlview.nvim">
     <img alt="Repo Size" src="https://img.shields.io/github/repo-size/axieax/urlview.nvim?label=&color=orange&logo=codesandbox&style=for-the-badge&logoColor=lightgray&labelColor=302D41"/>
