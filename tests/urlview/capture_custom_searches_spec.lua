@@ -1,16 +1,13 @@
 local urlview = require("urlview")
 local search = require("urlview.search")
+local search_helpers = require("urlview.search.helpers")
 local assert_tbl_same_any_order = require("tests.urlview.helpers").assert_tbl_same_any_order
 
 describe("custom Jira searcher (template table)", function()
   before_each(function()
-    urlview.setup({
-      custom_searches = {
-        jira = {
-          capture = "AXIE%-%d+",
-          format = "https://jira.axieax.com/browse/%s",
-        },
-      },
+    search.jira = search_helpers.generate_custom_search({
+      capture = "AXIE%-%d+",
+      format = "https://jira.axieax.com/browse/%s",
     })
     assert.is_not.Nil(search.jira)
   end)
@@ -74,13 +71,9 @@ describe("overwrite default searcher", function()
   local builtin_search_buffer = search.buffer
 
   before_each(function()
-    urlview.setup({
-      custom_searches = {
-        buffer = {
-          capture = "l.ve",
-          format = "i-%s-testing",
-        },
-      },
+    search.buffer = search_helpers.generate_custom_search({
+      capture = "l.ve",
+      format = "i-%s-testing",
     })
   end)
 
@@ -108,13 +101,9 @@ end)
 
 describe("custom function", function()
   before_each(function()
-    urlview.setup({
-      custom_searches = {
-        test = function(opts)
-          return { opts.a or "default", opts.b or "default", opts.c or "default" }
-        end,
-      },
-    })
+    search.test = function(opts)
+      return { opts.a or "default", opts.b or "default", opts.c or "default" }
+    end
   end)
 
   after_each(function()

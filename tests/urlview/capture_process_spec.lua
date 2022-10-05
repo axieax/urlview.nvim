@@ -1,9 +1,10 @@
 local urlview = require("urlview")
 local search = require("urlview.search")
+local search_helpers = require("urlview.search.helpers")
 local reset_config = require("urlview.config.helpers").reset_defaults
 local assert_tbl_same_any_order = require("tests.urlview.helpers").assert_tbl_same_any_order
-local extract_links_from_content = require("urlview.search.helpers").content
 local prepare_links = require("urlview.utils").process_links
+local extract_links_from_content = search_helpers.content
 
 describe("HTTP(s) protocol fill in", function()
   local default_prefix = "https://"
@@ -41,12 +42,10 @@ describe("unique links", function()
   before_each(function()
     urlview.setup({
       default_prefix = "",
-      custom_searches = {
-        test = {
-          capture = "%d",
-          format = "%s",
-        },
-      },
+    })
+    search.test = search_helpers.generate_custom_search({
+      capture = "%d",
+      format = "%s",
     })
     assert.is_not.Nil(search.test)
   end)
