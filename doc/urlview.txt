@@ -109,6 +109,7 @@ The command expects arguments in the format `:UrlView <ctx> <options...>`,
 e.g. >
   :UrlView buffer bufnr=1
   :UrlView file filepath=/etc/hosts picker=telescope
+  :UrlView packer sorted=false
 <
 
 
@@ -190,8 +191,44 @@ custom search context, feel free to share it in
 https://github.com/axieax/urlview.nvim/discussions/40 for others to use (and
 potentially make it a built-in search context)!
 
+
 ================================================================================
 PICKERS                                                        *urlview.pickers*
+
+`urlview.pickers` are used to display the results from `urlview.search`.
+
+vim.ui.select                                           *urlview.pickers-native*
+
+This picker uses the built-in function `vim.ui.select` to display results. It
+is recommended to use a UI-extension for `vim.ui.select` for enhanced
+functionality (similar to |urlview.pickers-telescope|), including customising
+popup locations and behaviour, and searching (even fuzzy-searching) through
+results. An example of such a plugin is dressing.nvim
+(https://github.com/stevearc/dressing.nvim).
+
+telescope                                            *urlview.pickers-telescope*
+
+This picker uses the Telescope plugin
+(https://github.com/nvim-telescope/telescope.nvim) as a picker to display
+results. Please note that this requires installing Telescope as a plugin in
+order for it to be used as a picker.
+
+Registering a custom picker                             *urlview.pickers-custom*
+
+A recommendation for registering a custom picker is to first check out a
+`vim.ui.select` UI-extension such as dressing.nvim
+(https://github.com/stevearc/dressing.nvim) to see if your desired picker can
+be used for the native picker (e.g. nui, fzf).
+
+In the case that you want to write your own picker, you can register it by
+adding it as a function to the `urlview.pickers` module.>
+local pickers = require("urlview.pickers")
+pickers["fzf"] = function(items, opts)
+  -- TODO
+end
+<
+
+Please check out `urlview/pickers.lua` for examples on how to do this.
 
 
 ================================================================================
