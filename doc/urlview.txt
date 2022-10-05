@@ -14,9 +14,19 @@ Table of Contents                                             *urlview.contents*
 ================================================================================
 INTRODUCTION                                                           *urlview*
 
+✨ urlview.nvim is essentially a plugin which:
+
+1. Finds URLs from a variety of |urlview.search| contexts
+2. Displays these URLs in one of the |urlview.pickers|
+3. Performs |urlview.actions| on selected URLs from the pickers
+
 
 ================================================================================
 CONFIGURATION                                                   *urlview.config*
+
+urlview.nvim supports plug-n-play, meaning the default config is automatically
+set up. However, the default options can be configured using the
+`require("urlview").setup` function, with the configuration options below.
 
                                                   *urlview.config-default_title*
 {default_title}                                       string (default: "Links:")
