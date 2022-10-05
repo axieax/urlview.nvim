@@ -21,8 +21,6 @@ local default_config = {
     prev = "[u",
     next = "]u",
   },
-  -- Custom search captures
-  custom_searches = {},
 }
 
 return default_config

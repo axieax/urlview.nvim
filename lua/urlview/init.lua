@@ -49,7 +49,7 @@ local function check_breaking()
   end
   if config.custom_searches ~= nil then
     utils.log([[Registering custom search contexts with `config.custom_searches` has been deprecated
-    Please see https://github.com/axieax/urlview.nvim/issues/37]])
+    Please see https://github.com/axieax/urlview.nvim/issues/37#issuecomment-1268023592]])
   end
 end
 
