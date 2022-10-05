@@ -1,4 +1,16 @@
-# 🔎 urlview.nvim
+<h2 align="center">🔎 urlview.nvim</h2>
+<p align="center"><i>Find and display URLs from a variety of search contexts</i></p>
+<p align="center">
+  <a href="https://github.com/neovim/neovim">
+    <img alt="Neovim Version" src="https://img.shields.io/static/v1?label=&message=%3E%3D0.7&style=for-the-badge&logo=neovim&color=green&labelColor=302D41"/>
+  </a>
+  <a href="https://github.com/axieax/urlview.nvim/stargazers">
+    <img alt="Repo Stars" src="https://img.shields.io/github/stars/axieax/urlview.nvim?style=for-the-badge&color=yellow&label=🌟&labelColor=302D41"/>
+  </a>
+  <a href="https://github.com/axieax/urlview.nvim">
+		<img alt="Repo Size" src="https://img.shields.io/github/repo-size/axieax/urlview.nvim?label=&color=orange&logo=codesandbox&style=for-the-badge&logoColor=lightgray&labelColor=302D41"/>
+  </a>
+</p>
 
 ✨ UrlView is an extensible plugin for the [Neovim](https://neovim.io) text editor which essentially:
 
@@ -9,7 +21,7 @@
 🎯 Additional features and example use cases include:
 
 - Easily visualise all the URLs in a buffer or file (e.g. links in your Markdown documents)
-- Quickly accessing the webpages for plugins managed by [packer.nvim](https://github.com/wbthomason/packer.nvim) or [vim-plug](https://github.com/junegunn/vim-plug) (life-saver for config updates or finding plugin documentation)
+- Quickly accessing repo webpages for installed Neovim plugins (life-saver for config updates or browsing plugin documentation)
 - Ability to register custom searchers (e.g. Jira ticket numbers), pickers and actions
 - Jumping to the previous or next URL in the active buffer
 
@@ -78,7 +90,7 @@ require("urlview").setup({
 })
 ```
 
-Please check out the documentation for additional details.
+Please check out the [documentation](doc/urlview.txt) for additional details.
 
 ## 🎨 Pickers
 
@@ -89,7 +101,7 @@ You can customise the appearance of `vim.ui.select` with plugins such as [dressi
 ### 🔭 Telescope
 
 - Optional picker option
-- Additional requirements: [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
+- Additional requirements (only if you're using this picker): [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
 - You can use Telescope as your `default_picker` using the `require("urlview").setup` function
 - Alternatively, you can specify a picker dynamically with `:UrlView <ctx> picker=telescope`
 
