@@ -195,7 +195,7 @@ potentially make it a built-in search context)!
 ================================================================================
 PICKERS                                                        *urlview.pickers*
 
-`urlview.pickers` are used to display the results from `urlview.search`.
+`urlview.pickers` are used to display the results from |urlview.search|.
 
 vim.ui.select                                           *urlview.pickers-native*
 
@@ -233,6 +233,58 @@ Please check out `urlview/pickers.lua` for examples on how to do this.
 
 ================================================================================
 ACTIONS                                                        *urlview.actions*
+
+`urlview.actions` determine the behaviour when a URL is selected with one of
+the |urlview.pickers|.
+
+netrw                                                    *urlview.actions-netrw*
+
+The `netrw` action uses the built-in netrw feature to open a given URL in your
+browser. However, some users may have this feature disabled, either explicitly
+or due to "netrw hijack" behaviour from file-explorer Neovim plugins. Due to
+this, if urlview detects that netrw is disabled, it will use
+|urlview.actions-system| as a fallback by default.
+
+system                                                  *urlview.actions-system*
+
+This action opens URL in your system's default browser depending on your
+operating system. If your system is not supported, please raise a GitHub issue
+to have it included as a built-in options. Otherwise, specify a custom action
+( |urlview.actions-custom|) for your use case.
+
+clipboard                                            *urlview.actions-clipboard*
+
+This action copies selected URLs to the system clipboard (specifically to
+Neovim's {+} register).
+
+Registering a custom action                             *urlview.actions-custom*
+
+There are two main types of custom actions:
+
+1. Execute a shell command which takes in your URL as an argument
+
+This is the main use case for custom actions - specifying a browser such as
+`chromium` or `firefox` to open your URL with. By default, this executes the
+provided shell command and passes in the URL as an argument, such as >
+  $ chromium 'https://www.google.com'
+<
+which launches Google in the chromium browser. This can be any executable (be
+sure to find the correct path to your desired application).
+
+2. Lua function
+
+With urlview.nvim's principle of extensibility in mind, you can also register a
+custom action as a Lua function by adding it to the `urlview.actions` module,
+like so: >
+local actions = require("urlview.actions")
+actions["spectate"] = function(raw_url)
+  -- TODO
+end
+<
+
+Please refer to `urlview/actions.lua` for examples, and feel free to create a
+GitHub issue or pull request to add your custom Lua function action as a
+built-in action if you think others can use it as well!
 
 
  vim:tw=78:ts=8:noet:ft=help:norl:
