@@ -8,7 +8,7 @@
     <img alt="Repo Stars" src="https://img.shields.io/github/stars/axieax/urlview.nvim?style=for-the-badge&color=yellow&label=🌟&labelColor=302D41"/>
   </a>
   <a href="https://github.com/axieax/urlview.nvim">
-		<img alt="Repo Size" src="https://img.shields.io/github/repo-size/axieax/urlview.nvim?label=&color=orange&logo=codesandbox&style=for-the-badge&logoColor=lightgray&labelColor=302D41"/>
+    <img alt="Repo Size" src="https://img.shields.io/github/repo-size/axieax/urlview.nvim?label=&color=orange&logo=codesandbox&style=for-the-badge&logoColor=lightgray&labelColor=302D41"/>
   </a>
 </p>
 
@@ -22,7 +22,7 @@
 
 - Easily visualise all the URLs in a buffer or file (e.g. links in your Markdown documents)
 - Quickly accessing repo webpages for installed Neovim plugins (life-saver for config updates or browsing plugin documentation)
-- Ability to register custom searchers (e.g. Jira ticket numbers), pickers and actions
+- Ability to register custom searchers (e.g. Jira ticket numbers), pickers and actions (please see [docs](doc/urlview.txt) or `:h urlview.search-custom`)
 - Jumping to the previous or next URL in the active buffer
 
 > Please note that currently, this plugin only detects URLs beginning with a `http(s)` or `www` prefix for buffer and file search, but there are plans to support a more general pattern (see [🗺️ Roadmap](https://github.com/axieax/urlview.nvim/issues/3)).
@@ -90,7 +90,7 @@ require("urlview").setup({
 })
 ```
 
-Please check out the [documentation](doc/urlview.txt) for additional details.
+Please check out the [documentation](doc/urlview.txt) for configuration options and details.
 
 ## 🎨 Pickers
 

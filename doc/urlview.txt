@@ -115,6 +115,54 @@ e.g. >
 ================================================================================
 SEARCH                                                          *urlview.search*
 
+Registering a custom search context                      *urlview.search-custom*
+
+Custom search contexts can be registered for searching with `:UrlView <ctx>`.
+The `generate_custom_search` function from the `urlview.search.helpers` module
+can be used to quickly generate a function for capturing a Lua pattern and
+formatting it with `string.format`. The following link is very helpful for
+understanding basic Lua patterns:
+
+- https://riptutorial.com/lua/example/20315/lua-pattern-matching
+
+This function can then be assigned to the `urlview.search` module for use as a
+search context to be selected with the `:UrlView` command (with completion).
+
+Here is an example which finds Jira ticket numbers in the format of "AXIE-"
+followed by any number (capture field). This entire pattern gets captured and
+can then be embedded into the format string in the format field, allowing
+a user to directly navigate to the Jira ticket in their browser. >
+local search = require("urlview.search")
+local search_helpers = require("urlview.search.helpers")
+search["jira"] = search_helpers.generate_custom_search({
+  capture = "AXIE%-%d+",
+  format = "https://jira.axieax.com/browse/%s",
+})
+<
+
+This allows for captures such as "AXIE-1", "AXIE-17", "AXIE-132". Feel free to
+adjust the `capture` field to suit your needs.
+
+A custom function can also be registered for a search context, as well as
+additional parameters with something like >
+local search = require("urlview.search")
+search["fruits"] = function(opts)
+  local fruits = { "apple", "banana", "watermelon" }
+  if opts.include_tomato then
+    table.insert(fruits, "tomato")
+  end
+  return fruits
+end
+<
+
+Additional parameters can be passed into the custom search context using the
+`:UrlView` command, for example `:UrlView fruits include_tomato` or `:UrlView
+fruits include_tomato=true`. Other types also work.
+
+Please see `urlview/search/init.lua` for more examples. If you have a useful
+custom search context, feel free to share it in
+https://github.com/axieax/urlview.nvim/discussions/40 for others to use (and
+potentially make it a built-in search context)!
 
 ================================================================================
 PICKERS                                                        *urlview.pickers*

@@ -75,6 +75,7 @@ end
 ---@param value string @value to convert
 ---@return boolean|nil @value as a boolean, or nil if not a boolean
 function M.string_to_boolean(value)
+  value = value:lower()
   local bool_map = { ["true"] = true, ["false"] = false }
   if not bool_map[value] then
     M.log("Could not convert " .. value .. " to boolean")

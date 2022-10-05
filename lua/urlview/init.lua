@@ -48,6 +48,10 @@ local function check_breaking()
     utils.log([[`config.debug` has been deprecated for `config.log_level_min`
     Please see https://github.com/axieax/urlview.nvim/issues/37#issuecomment-1257113527]])
   end
+  if config.custom_searches ~= nil then
+    utils.log([[Registering custom search contexts with `config.custom_searches` has been deprecated
+    Please see https://github.com/axieax/urlview.nvim/issues/37]])
+  end
 end
 
 local function autoload()
@@ -65,7 +69,6 @@ function M.setup(user_config)
   config_helpers.update_config(user_config)
   check_breaking()
 
-  search_helpers.register_custom_searches(config.custom_searches)
   jump.register_mappings(config.jump)
 end
 

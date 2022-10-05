@@ -78,45 +78,20 @@ function M.extract_pattern(content, capture, format)
 end
 
 --- Generates a simple search function from a template table
----@param patterns table (map) with `capture` and `format` keys
+---@param pattern table (map) with `capture` and `format` keys
 ---@return function|nil
-local function default_custom_generator(patterns)
-  if not patterns.capture or not patterns.format then
+function M.generate_custom_search(pattern)
+  if not pattern.capture or not pattern.format then
+    utils.log(
+      "Unable to generate custom search: please ensure that the table has 'capture' and 'format' fields",
+      vim.log.levels.WARN
+    )
     return nil
   end
 
   return function(opts)
     local content = opts.content or M.get_buffer_content(opts.bufnr)
-    return M.extract_pattern(content, patterns.capture, patterns.format)
-  end
-end
-
---- Registers custom searchers
----@param searchers table (map) of { source: patterns (function or table) }
-function M.register_custom_searches(searchers)
-  local search = require("urlview.search")
-  for source, patterns in pairs(searchers) do
-    if type(patterns) == "function" then
-      search[source] = patterns
-    elseif type(patterns) == "table" and not vim.tbl_islist(patterns) then
-      local func = default_custom_generator(patterns)
-      if func then
-        search[source] = func
-      else
-        utils.log(
-          string.format(
-            "Unable to register custom searcher %s: please ensure that the table has 'capture' and 'format' fields",
-            source
-          ),
-          vim.log.levels.WARN
-        )
-      end
-    else
-      utils.log(
-        string.format("Unable to register custom searcher %s: invalid type (not a function or map table)", source),
-        vim.log.levels.WARN
-      )
-    end
+    return M.extract_pattern(content, pattern.capture, pattern.format)
   end
 end
 

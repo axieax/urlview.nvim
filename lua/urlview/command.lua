@@ -23,7 +23,7 @@ local function command_search(res)
         value = inner
       end
       -- type conversion
-      if vim.tbl_contains({ "unique", "sorted" }, key) then
+      if vim.tbl_contains({ "true", "false" }, value:lower()) then
         value = utils.string_to_boolean(value)
       end
       opts[key] = value
