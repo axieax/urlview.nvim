@@ -79,6 +79,7 @@ vim.log.levels = {
   INFO = 2,
   WARN = 3
   ERROR = 4,
+  OFF = 5,  -- Neovim v0.8+
 }
 <
 
@@ -86,8 +87,9 @@ The default value of `vim.log.levels.INFO` means that INFO, WARN and ERROR
 logs will all be displayed. Similarly, a log_level_min value of
 `vim.log.levels.WARN` means that only WARN and ERROR logs will be displayed.
 It is recommended for this value to be at least `vim.log.levels.WARN` to
-ensure warnings are appropriately logged. Setting this value to `5` will
-effectively suppress all logs.
+ensure warnings are appropriately logged. Setting this value to
+`vim.log.levels.OFF` (requires Neovim 0.8+) or `5` will effectively suppress
+all logs.
 
                                                            *urlview.config-jump*
 {jump}                                                               table (map)
