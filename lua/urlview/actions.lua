@@ -6,9 +6,17 @@ local utils = require("urlview.utils")
 ---@param cmd string @name of executable to run
 ---@param raw_url string @unescaped URL to be run by the executable
 local function shell_exec(cmd, raw_url)
-  if cmd and vim.fn.executable(cmd) then
-    -- NOTE: `vim.fn.system` shellescapes arguments
-    local err = vim.fn.system({ cmd, raw_url })
+  -- NOTE: `vim.fn.system` shellescapes arguments
+  local function exec()
+    -- HACK: `start` cmd itself doesn't exist but lives under `cmd`
+    if utils.os:match("Windows") then
+      return true, vim.fn.system({ "cmd", "/c", cmd, raw_url })
+    end
+    return vim.fn.executable(cmd) == 1, vim.fn.system({ cmd, raw_url })
+  end
+
+  local is_executable, err = exec()
+  if is_executable then
     if err ~= "" then
       utils.log(string.format("Could not navigate link with `%s`:\n%s", cmd, err), vim.log.levels.ERROR)
     end
@@ -34,11 +42,12 @@ end
 --- Use the user's default browser to navigate to a URL
 ---@param raw_url string @unescaped URL
 function M.system(raw_url)
-  local os = vim.loop.os_uname().sysname
-  if os == "Darwin" then -- MacOS
+  if utils.os == "Darwin" then -- MacOS
     shell_exec("open", raw_url)
-  elseif os == "Linux" or os == "FreeBSD" then -- Linux and FreeBSD
+  elseif utils.os == "Linux" or utils.os == "FreeBSD" then -- Linux and FreeBSD
     shell_exec("xdg-open", raw_url)
+  elseif utils.os:match("Windows") then -- Windows
+    shell_exec("start", raw_url)
   else
     utils.log(
       "Unsupported operating system for `system` action. Please raise a GitHub issue for " .. os,
