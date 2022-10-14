@@ -1,4 +1,5 @@
 local M = {}
+M.os = vim.loop.os_uname().sysname
 
 local config = require("urlview.config")
 local constants = require("urlview.config.constants")

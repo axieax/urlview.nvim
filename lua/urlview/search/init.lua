@@ -27,8 +27,8 @@ function M.packer()
   local links = {}
   -- selene: allow(undefined_variable)
   for _, info in pairs(packer_plugins or {}) do
-    local is_file = vim.startswith(info.url, "/")
-    if not is_file then
+    local fs_stat = vim.loop.fs_stat(info.url)
+    if not fs_stat or vim.tbl_isempty(fs_stat) then
       table.insert(links, info.url)
     end
   end
