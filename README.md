@@ -5,10 +5,10 @@
     <img alt="Neovim Version" src="https://img.shields.io/static/v1?label=&message=%3E%3D0.7&style=for-the-badge&logo=neovim&color=green&labelColor=302D41"/>
   </a>
   <a href="https://github.com/axieax/urlview.nvim/stargazers">
-    <img alt="Repo Stars" src="https://img.shields.io/github/stars/axieax/urlview.nvim?style=for-the-badge&color=yellow&label=%F0%9F%8C%9F&labelColor=302D41"/>
+    <img alt="Repo Stars" src="https://img.shields.io/github/stars/axieax/urlview.nvim?style=for-the-badge&color=yellow&label=%E2%AD%90&labelColor=302D41"/>
   </a>
   <a href="https://github.com/axieax/urlview.nvim">
-    <img alt="Repo Size" src="https://img.shields.io/github/repo-size/axieax/urlview.nvim?label=&color=orange&logo=codesandbox&style=for-the-badge&logoColor=lightgray&labelColor=302D41"/>
+    <img alt="Repo Size" src="https://img.shields.io/github/repo-size/axieax/urlview.nvim?label=&color=orange&logo=hackthebox&style=for-the-badge&logoColor=lightgray&labelColor=302D41"/>
   </a>
 </p>
 
