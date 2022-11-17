@@ -1,2 +1,2 @@
 test:
-	nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory tests/urlview {minimal_init = 'tests/minimal.vim'}"
+	nvim --headless --noplugin -u tests/init.vim -c "PlenaryBustedDirectory tests/urlview {minimal_init = 'tests/init.vim'}"
