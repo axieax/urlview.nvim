@@ -25,8 +25,8 @@ end
 ---@return table (list) of strings (extracted links)
 function M.packer()
   local links = {}
-  -- selene: allow(undefined_variable)
-  for _, info in pairs(packer_plugins or {}) do
+  -- selene: allow(global_usage)
+  for _, info in pairs(_G.packer_plugins or {}) do
     local fs_stat = vim.loop.fs_stat(info.url)
     if not fs_stat or vim.tbl_isempty(fs_stat) then
       table.insert(links, info.url)
