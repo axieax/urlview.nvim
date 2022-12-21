@@ -77,6 +77,23 @@ function M.extract_pattern(content, capture, format)
   return captures
 end
 
+--- Extract Git links from @plugins_spec
+---@param plugins_spec table @map of specs for plugins
+---@param key string @key in plugin_spec containing the Git URL
+---@return table @list of extracted links
+function M.extract_plugins_spec(plugins_spec, key)
+  local function filter_files(plugin_url)
+    local fs_stat = vim.loop.fs_stat(plugin_url)
+    return not fs_stat or vim.tbl_isempty(fs_stat)
+  end
+
+  local function extract_key(plugin_spec)
+    return plugin_spec[key]
+  end
+
+  return vim.tbl_filter(filter_files, vim.tbl_map(extract_key, vim.tbl_values(plugins_spec or {})))
+end
+
 --- Generates a simple search function from a template table
 ---@param pattern table (map) with `capture` and `format` keys
 ---@return function|nil

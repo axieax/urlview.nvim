@@ -24,25 +24,24 @@ end
 --- Extracts urls of packer.nvim plugins
 ---@return table (list) of strings (extracted links)
 function M.packer()
-  local links = {}
   -- selene: allow(global_usage)
-  for _, info in pairs(_G.packer_plugins or {}) do
-    local fs_stat = vim.loop.fs_stat(info.url)
-    if not fs_stat or vim.tbl_isempty(fs_stat) then
-      table.insert(links, info.url)
-    end
-  end
-  return links
+  local plugins = _G.packer_plugins or {}
+  return search_helpers.extract_plugins_spec(plugins, "url")
+end
+
+--- Extracts urls of lazy.nvim plugins
+---@return table (list) of strings (extracted links)
+function M.lazy()
+  local ok, lazy_config = pcall(require, "lazy.core.config")
+  local plugins = ok and lazy_config.plugins or {}
+  return search_helpers.extract_plugins_spec(plugins, "url")
 end
 
 --- Extracts urls of vim-plug plugins
 ---@return table (list) of strings (extracted links)
 function M.vimplug()
-  local links = {}
-  for _, info in pairs(vim.g.plugs or {}) do
-    table.insert(links, info.uri)
-  end
-  return links
+  local plugins = vim.g.plugs or {}
+  return search_helpers.extract_plugins_spec(plugins, "uri")
 end
 
 return setmetatable(M, {
