@@ -32,9 +32,10 @@ end
 --- Extracts urls of lazy.nvim plugins
 ---@return table (list) of strings (extracted links)
 function M.lazy()
-  local ok, lazy_config = pcall(require, "lazy.core.config")
-  local plugins = ok and lazy_config.plugins or {}
-  return search_helpers.extract_plugins_spec(plugins, "url")
+  local ok, lazy = pcall(require, "lazy")
+  local plugins = ok and lazy.plugins() or {}
+  local results = search_helpers.extract_plugins_spec(plugins, "url")
+  return search_helpers.remove_git_url_suffix(results)
 end
 
 --- Extracts urls of vim-plug plugins
