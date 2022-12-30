@@ -91,7 +91,17 @@ function M.extract_plugins_spec(plugins_spec, key)
     return plugin_spec[key]
   end
 
-  return vim.tbl_filter(filter_files, vim.tbl_map(extract_key, vim.tbl_values(plugins_spec or {})))
+  local plugins = vim.tbl_map(extract_key, vim.tbl_values(plugins_spec or {}))
+  return vim.tbl_filter(filter_files, plugins)
+end
+
+--- Removes `.git` extension from @links
+---@param links table (list) of URLs
+---@return table (list) of links without the `.git` extension
+function M.remove_git_url_suffix(links)
+  return vim.tbl_map(function(link)
+    return link:gsub("%.git$", "")
+  end, links)
 end
 
 --- Generates a simple search function from a template table
