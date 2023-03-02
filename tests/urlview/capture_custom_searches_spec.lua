@@ -129,3 +129,65 @@ describe("custom function", function()
     assert_tbl_same_any_order({ "a", "b", "c" }, result)
   end)
 end)
+
+describe("register custom search", function()
+  it("captures git uris", function()
+    search.git = search_helpers.generate_custom_search({
+      capture = "git@[^%s]+%.git",
+    })
+
+    local content = [[
+      git@github.com:axieax/urlview.nvim.git
+      git@github.com:axieax/typo.nvim.git
+    ]]
+
+    local links = search.git({ content = content })
+    assert_tbl_same_any_order({
+      "git@github.com:axieax/urlview.nvim.git",
+      "git@github.com:axieax/typo.nvim.git",
+    }, links)
+    search.git = nil
+  end)
+
+  it("captures ssh uris iwthout the prefix", function()
+    search.ssh = search_helpers.generate_custom_search({
+      capture = "ssh://([^%s]+)",
+    })
+
+    local content = [[
+      ssh://git@github.com:axieax/urlview.nvim.git
+      ssh://git@github.com:axieax/typo.nvim.git
+      ssh://192.168.1.1
+      ssh://192.168.1.1:4000
+    ]]
+
+    local links = search.ssh({ content = content })
+    assert_tbl_same_any_order({
+      "git@github.com:axieax/urlview.nvim.git",
+      "git@github.com:axieax/typo.nvim.git",
+      "192.168.1.1",
+      "192.168.1.1:4000",
+    }, links)
+    search.ssh = nil
+  end)
+
+  it("captures ftp uris", function()
+    search.ftp = search_helpers.generate_custom_search({
+      capture = "ftp://[^%s]+",
+    })
+
+    local content = [[
+      ftp://ftp.example.com
+      ftp://user@host/%2Ffoo/bar.txt
+      ftp://user:password@server/pathname;type=a
+    ]]
+
+    local links = search.ftp({ content = content })
+    assert_tbl_same_any_order({
+      "ftp://ftp.example.com",
+      "ftp://user@host/%2Ffoo/bar.txt",
+      "ftp://user:password@server/pathname;type=a",
+    }, links)
+    search.ftp = nil
+  end)
+end)

@@ -159,8 +159,8 @@ Registering a custom search context                      *urlview.search-custom*
 Custom search contexts can be registered for searching with `:UrlView <ctx>`.
 The `generate_custom_search` function from the `urlview.search.helpers` module
 can be used to quickly generate a function for capturing a Lua pattern and
-formatting it with `string.format`. The following link is very helpful for
-understanding basic Lua patterns:
+optionally formatting it with `string.format`. The following resource is very
+helpful for understanding basic Lua patterns:
 
 - https://riptutorial.com/lua/example/20315/lua-pattern-matching
 

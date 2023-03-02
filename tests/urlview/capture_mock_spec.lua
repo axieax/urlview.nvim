@@ -1,18 +1,15 @@
 local urlview = require("urlview")
 local reset_config = require("urlview.config.helpers").reset_defaults
 local search = require("urlview.search")
+local search_helpers = require("urlview.search.helpers")
 
 describe("mock vim.ui.select", function()
   local default_prefix = "test-"
   before_each(function()
-    urlview.setup({
-      default_prefix = default_prefix,
-      custom_searches = {
-        test = {
-          capture = "%w+",
-          format = "%s",
-        },
-      },
+    urlview.setup({ default_prefix = default_prefix })
+    search.test = search_helpers.generate_custom_search({
+      capture = "%w+",
+      format = "%s",
     })
     assert.is_not.Nil(search.test)
   end)

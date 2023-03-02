@@ -67,12 +67,13 @@ end
 --- Extract @captures from @content and display them as @formats
 ---@param content string @content to extract from
 ---@param capture string @capture pattern to extract
----@param format string @format pattern to display
+---@param format string @Optional format pattern to display
 ---@return table @list of extracted links
 function M.extract_pattern(content, capture, format)
   local captures = {}
   for c in content:gmatch(capture) do
-    table.insert(captures, string.format(format, c))
+    local fmt = format and string.format(format, c) or c
+    table.insert(captures, fmt)
   end
   return captures
 end
@@ -105,14 +106,11 @@ function M.remove_git_url_suffix(links)
 end
 
 --- Generates a simple search function from a template table
----@param pattern table (map) with `capture` and `format` keys
+---@param pattern table (map) with `capture` key and optional `format` key
 ---@return function|nil
 function M.generate_custom_search(pattern)
-  if not pattern.capture or not pattern.format then
-    utils.log(
-      "Unable to generate custom search: please ensure that the table has 'capture' and 'format' fields",
-      vim.log.levels.WARN
-    )
+  if not pattern.capture then
+    utils.log("Unable to generate custom search: please ensure that the table has 'capture' field", vim.log.levels.WARN)
     return nil
   end
 
