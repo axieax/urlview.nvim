@@ -139,7 +139,10 @@ M.prev_url = goto_url(true)
 ---@param jump_opts table
 function M.register_mappings(jump_opts)
   if type(jump_opts) ~= "table" then
-    utils.log("Invalid type for option `jump` (expected: table with prev_url and next_url keys)", vim.log.levels.WARN)
+    utils.log(
+      "Invalid type for option `jump` (expected: table with `prev` and `next` key mappings)",
+      vim.log.levels.WARN
+    )
   else
     if jump_opts.prev ~= "" then
       vim.keymap.set("n", jump_opts.prev, function()
