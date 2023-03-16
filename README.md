@@ -37,7 +37,7 @@
 
 ### 🔌 Plugin Links
 
-`:UrlView packer` or `:UrlView vimplug` depending on your plugin manager of choice
+`:UrlView lazy`, `:UrlView packer`, or `:UrlView vimplug` depending on your plugin manager of choice
 
 ![packer-demo](https://user-images.githubusercontent.com/62098008/161417652-fd514310-a926-4ec7-af28-b2cfa3aa4b19.png)
 
