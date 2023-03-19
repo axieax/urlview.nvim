@@ -14,16 +14,16 @@
 
 ✨ UrlView is an extensible plugin for the [Neovim](https://neovim.io) text editor which essentially:
 
-1. Finds URLs from a variety of **search contexts** (e.g. from a buffer, file, [packer.nvim](https://github.com/wbthomason/packer.nvim) and [vim-plug](https://github.com/junegunn/vim-plug) plugin URLs)
+1. Finds URLs from a variety of **search contexts** (e.g. from a buffer, file, plugin URLs)
 2. Displays these URLs in a **picker**, such as the built-in `vim.ui.select` or [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
-3. Performs **actions** on selected URLs, such as navigating to the URL in your preferred browser, or copying the link to your clipboard.
+3. Performs **actions** on selected URLs, such as navigating to the URL in your preferred browser, or copying the link to your clipboard
 
 🎯 Additional features and example use cases include:
 
 - Easily visualise all the URLs in a buffer or file (e.g. links in your Markdown documents)
 - Quickly accessing repo webpages for installed Neovim plugins (life-saver for config updates or browsing plugin documentation)
 - Ability to register custom searchers (e.g. Jira ticket numbers), pickers and actions (please see [docs](doc/urlview.txt) or `:h urlview.search-custom`)
-- Jumping to the previous or next URL in the active buffer
+- Jumping to the previous or next URL in the active buffer (and opening the URL in your browser)
 
 > Please note that currently, this plugin only detects URLs beginning with a `http(s)` or `www` prefix for buffer and file search, but there are plans to support a more general pattern (see [🗺️ Roadmap](https://github.com/axieax/urlview.nvim/issues/3)).
 
@@ -56,8 +56,8 @@
 - For your convenience, feel free to setup a keybind for this using `vim.keymap.set`:
 
   ```lua
-  vim.keymap.set("n", "\\u", "<Cmd>UrlView<CR>", { desc = "view buffer URLs" })
-  vim.keymap.set("n", "\\U", "<Cmd>UrlView packer<CR>", { desc = "view plugin URLs" })
+  vim.keymap.set("n", "\\u", "<Cmd>UrlView<CR>", { desc = "View buffer URLs" })
+  vim.keymap.set("n", "\\U", "<Cmd>UrlView packer<CR>", { desc = "View Packer plugin URLs" })
   ```
 
 - You can also hit `:UrlView <tab>` to see additional contexts that you can search from
@@ -68,14 +68,23 @@
 ### Buffer URL navigation
 
 1. You can use `[u` and `]u` (default bindings) to jump to the previous and next URL in the buffer respectively.
-2. This keymap can be altered under the `jump` config option.
+2. If desired, you can now press `gx` to open the URL under the cursor in your browser, with netrw.
+3. This keymap can be altered under the `jump` config option.
 
 ## 📦 Installation
 
-Free free to install this plugin manually or with your favourite plugin manager. As an example, using [packer.nvim](https://github.com/wbthomason/packer.nvim):
+Install this plugin with your package manager of choice. You can lazy load this plugin by the `UrlView` command if desired.
+
+- [packer.nvim](https://github.com/wbthomason/packer.nvim)
 
 ```lua
 use("axieax/urlview.nvim")
+```
+
+- [lazy.nvim](https://github.com/folke/lazy.nvim)
+
+```lua
+"axieax/urlview.nvim"
 ```
 
 ## ⚙️ Configuration
