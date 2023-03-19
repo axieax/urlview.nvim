@@ -73,16 +73,16 @@ Enable to ensure links shown in the picker are sorted alphabetically.
 
 Minimum log level for output from this plugin. Lower logging levels will be
 ignored. >
-vim.log.levels = {
-  TRACE = 0,
-  DEBUG = 1,
-  INFO = 2,
-  WARN = 3
-  ERROR = 4,
-  OFF = 5,  -- Neovim v0.8+
-}
-<
 
+  vim.log.levels = {
+    TRACE = 0,
+    DEBUG = 1,
+    INFO = 2,
+    WARN = 3
+    ERROR = 4,
+    OFF = 5,  -- Neovim v0.8+
+  }
+<
 The default value of `vim.log.levels.INFO` means that INFO, WARN and ERROR
 logs will all be displayed. Similarly, a log_level_min value of
 `vim.log.levels.WARN` means that only WARN and ERROR logs will be displayed.
@@ -119,11 +119,11 @@ options configured ( |default_title|, |default_picker|, |default_action|,
 
 The command expects arguments in the format `:UrlView <ctx> <options...>`,
 e.g. >
+
   :UrlView buffer bufnr=1
   :UrlView file filepath=/etc/hosts picker=telescope
   :UrlView packer sorted=false
 <
-
 
 ================================================================================
 SEARCH                                                          *urlview.search*
@@ -171,28 +171,28 @@ Here is an example which finds Jira ticket numbers in the format of "AXIE-"
 followed by any number (capture field). This entire pattern gets captured and
 can then be embedded into the format string in the format field, allowing
 a user to directly navigate to the Jira ticket in their browser. >
-local search = require("urlview.search")
-local search_helpers = require("urlview.search.helpers")
-search["jira"] = search_helpers.generate_custom_search({
-  capture = "AXIE%-%d+",
-  format = "https://jira.axieax.com/browse/%s",
-})
-<
+
+  local search = require("urlview.search")
+  local search_helpers = require("urlview.search.helpers")
+  search["jira"] = search_helpers.generate_custom_search({
+    capture = "AXIE%-%d+",
+    format = "https://jira.axieax.com/browse/%s",
+  })
 
 This allows for captures such as "AXIE-1", "AXIE-17", "AXIE-132". Feel free to
 adjust the `capture` field to suit your needs.
 
 A custom function can also be registered for a search context, as well as
 additional parameters with something like >
-local search = require("urlview.search")
-search["fruits"] = function(opts)
-  local fruits = { "apple", "banana", "watermelon" }
-  if opts.include_tomato then
-    table.insert(fruits, "tomato")
+
+  local search = require("urlview.search")
+  search["fruits"] = function(opts)
+    local fruits = { "apple", "banana", "watermelon" }
+    if opts.include_tomato then
+      table.insert(fruits, "tomato")
+    end
+    return fruits
   end
-  return fruits
-end
-<
 
 Additional parameters can be passed into the custom search context using the
 `:UrlView` command, for example `:UrlView fruits include_tomato` or `:UrlView
@@ -233,13 +233,13 @@ A recommendation for registering a custom picker is to first check out a
 be used for the native picker (e.g. nui, fzf).
 
 In the case that you want to write your own picker, you can register it by
-adding it as a function to the `urlview.pickers` module.>
-local pickers = require("urlview.pickers")
-pickers["fzf"] = function(items, opts)
-  -- TODO
-end
-<
+adding it as a function to the `urlview.pickers` module. >
 
+  local pickers = require("urlview.pickers")
+  pickers["fzf"] = function(items, opts)
+    -- TODO
+  end
+<
 Please check out `urlview/pickers.lua` for examples on how to do this.
 
 
@@ -278,6 +278,7 @@ There are two main types of custom actions:
 This is the main use case for custom actions - specifying a browser such as
 `chromium` or `firefox` to open your URL with. By default, this executes the
 provided shell command and passes in the URL as an argument, such as >
+
   $ chromium 'https://www.google.com'
 <
 which launches Google in the chromium browser. This can be any executable (be
@@ -288,10 +289,11 @@ sure to find the correct path to your desired application).
 With urlview.nvim's principle of extensibility in mind, you can also register a
 custom action as a Lua function by adding it to the `urlview.actions` module,
 like so: >
-local actions = require("urlview.actions")
-actions["spectate"] = function(raw_url)
-  -- TODO
-end
+
+  local actions = require("urlview.actions")
+  actions["spectate"] = function(raw_url)
+    -- TODO
+  end
 <
 
 Please refer to `urlview/actions.lua` for examples, and feel free to create a
