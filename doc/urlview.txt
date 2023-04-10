@@ -72,7 +72,7 @@ Enable to ensure links shown in the picker are sorted alphabetically.
 {log_level_min}    `vim.log.levels` enum or int (default: `vim.log.levels.INFO`)
 
 Minimum log level for output from this plugin. Lower logging levels will be
-ignored. >
+ignored. >lua
 
   vim.log.levels = {
     TRACE = 0,
@@ -118,7 +118,7 @@ options configured ( |default_title|, |default_picker|, |default_action|,
 |unique|, |sorted|, etc. ).
 
 The command expects arguments in the format `:UrlView <ctx> <options...>`,
-e.g. >
+e.g. >lua
 
   :UrlView buffer bufnr=1
   :UrlView file filepath=/etc/hosts picker=telescope
@@ -170,7 +170,7 @@ search context to be selected with the `:UrlView` command (with completion).
 Here is an example which finds Jira ticket numbers in the format of "AXIE-"
 followed by any number (capture field). This entire pattern gets captured and
 can then be embedded into the format string in the format field, allowing
-a user to directly navigate to the Jira ticket in their browser. >
+a user to directly navigate to the Jira ticket in their browser. >lua
 
   local search = require("urlview.search")
   local search_helpers = require("urlview.search.helpers")
@@ -183,7 +183,7 @@ This allows for captures such as "AXIE-1", "AXIE-17", "AXIE-132". Feel free to
 adjust the `capture` field to suit your needs.
 
 A custom function can also be registered for a search context, as well as
-additional parameters with something like >
+additional parameters with something like >lua
 
   local search = require("urlview.search")
   search["fruits"] = function(opts)
@@ -233,7 +233,7 @@ A recommendation for registering a custom picker is to first check out a
 be used for the native picker (e.g. nui, fzf).
 
 In the case that you want to write your own picker, you can register it by
-adding it as a function to the `urlview.pickers` module. >
+adding it as a function to the `urlview.pickers` module. >lua
 
   local pickers = require("urlview.pickers")
   pickers["fzf"] = function(items, opts)
@@ -277,7 +277,7 @@ There are two main types of custom actions:
 
 This is the main use case for custom actions - specifying a browser such as
 `chromium` or `firefox` to open your URL with. By default, this executes the
-provided shell command and passes in the URL as an argument, such as >
+provided shell command and passes in the URL as an argument, such as >bash
 
   $ chromium 'https://www.google.com'
 <
@@ -288,7 +288,7 @@ sure to find the correct path to your desired application).
 
 With urlview.nvim's principle of extensibility in mind, you can also register a
 custom action as a Lua function by adding it to the `urlview.actions` module,
-like so: >
+like so: >lua
 
   local actions = require("urlview.actions")
   actions["spectate"] = function(raw_url)
