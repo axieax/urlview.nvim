@@ -38,21 +38,6 @@ function M.search(ctx, opts)
   end
 end
 
-local function check_breaking()
-  if config.navigate_method ~= nil then
-    utils.log([[`config.navigate_method` has been deprecated for `config.default_action`
-    Please see https://github.com/axieax/urlview.nvim/issues/37#issuecomment-1251246520]])
-  end
-  if config.debug ~= nil then
-    utils.log([[`config.debug` has been deprecated for `config.log_level_min`
-    Please see https://github.com/axieax/urlview.nvim/issues/37#issuecomment-1257113527]])
-  end
-  if config.custom_searches ~= nil then
-    utils.log([[Registering custom search contexts with `config.custom_searches` has been deprecated
-    Please see https://github.com/axieax/urlview.nvim/issues/37#issuecomment-1268023592]])
-  end
-end
-
 local function autoload()
   config_helpers.reset_defaults()
   command.register_command()
@@ -66,7 +51,6 @@ autoload()
 function M.setup(user_config)
   user_config = utils.fallback(user_config, {})
   config_helpers.update_config(user_config)
-  check_breaking()
 
   jump.register_mappings(config.jump)
 end
