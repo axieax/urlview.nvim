@@ -2,10 +2,10 @@ local M = {}
 
 local utils = require("urlview.utils")
 
---- Validates `value` is of `expected_type`
+--- Validates `value` is of `expected_type` and casts to expected type
 ---@param value any @value to validate
 ---@param expected_type string @expected type
-local function validate_type(value, expected_type)
+local function validate_and_cast_type(value, expected_type)
   if type(value) == expected_type then
     return value
   else
@@ -23,7 +23,7 @@ end
 --- Verifies `opts` if `opts` is provided, otherwise returns all possible accepted options
 ---@param opts table (map) of user options
 ---@param accepted_opts table (map) of accepted options
----       (option_key (string) -> { type (string), is_optional (boolean) })
+---       (option_key (string) -> { type (string), optional: boolean, default: any })
 ---@return table (map) of updated user options if `opts` is provided, otherwise returns all possible accepted options as a table (list)
 local function verify_or_accept(opts, accepted_opts)
   if not opts then
@@ -34,12 +34,22 @@ local function verify_or_accept(opts, accepted_opts)
   -- validate provided options if `opts` provided
   local new_opts = vim.deepcopy(opts)
   for expected_key, expected_v in pairs(accepted_opts) do
-    local expected_type, is_optional = unpack(expected_v)
+    local expected_type = expected_v[1]
+    local is_optional = expected_v.optional
     local user_option = opts[expected_key]
-    if not is_optional and user_option == nil then
+
+    if user_option == nil and not is_optional then
       utils.log(string.format("Missing required option `%s`", expected_key), vim.log.levels.WARN)
-    elseif user_option ~= nil then
-      new_opts[expected_key] = validate_type(user_option, expected_type)
+    elseif user_option == nil and is_optional then
+      if expected_v.default == nil then
+        utils.log(
+          string.format("Missing default validation field for optional key `%s`", expected_key),
+          vim.log.levels.WARN
+        )
+      end
+      new_opts[expected_key] = expected_v.default
+    else
+      new_opts[expected_key] = validate_and_cast_type(user_option, expected_type)
       if new_opts[expected_key] == nil then
         utils.log(
           string.format("Invalid type for option `%s` (expected: %s)", expected_key, expected_type),
@@ -58,7 +68,7 @@ end
 ---@return table (map) of updated user options if `opts` is provided, otherwise returns all possible accepted options as a table (list)
 function M.buffer(opts)
   return verify_or_accept(opts, {
-    bufnr = { "number", true },
+    bufnr = { "number", optional = true },
   })
 end
 
@@ -67,7 +77,34 @@ end
 ---@return table (map) of updated user options if `opts` is provided, otherwise returns all possible accepted options as a table (list)
 function M.file(opts)
   return verify_or_accept(opts, {
-    filepath = { "string", false },
+    filepath = { "string", optional = false },
+  })
+end
+
+--- Validation for the "packer" search context
+---@param opts table (map, optional) of user options
+---@return table (map) of updated user options if `opts` is provided, otherwise returns all possible accepted options as a table (list)
+function M.packer(opts)
+  return verify_or_accept(opts, {
+    include_branch = { "boolean", optional = true, default = true },
+  })
+end
+
+--- Validation for the "lazy" search context
+---@param opts table (map, optional) of user options
+---@return table (map) of updated user options if `opts` is provided, otherwise returns all possible accepted options as a table (list)
+function M.lazy(opts)
+  return verify_or_accept(opts, {
+    include_branch = { "boolean", optional = true, default = true },
+  })
+end
+
+--- Validation for the "vimplug" search context
+---@param opts table (map, optional) of user options
+---@return table (map) of updated user options if `opts` is provided, otherwise returns all possible accepted options as a table (list)
+function M.vimplug(opts)
+  return verify_or_accept(opts, {
+    include_branch = { "boolean", optional = true, default = true },
   })
 end
 

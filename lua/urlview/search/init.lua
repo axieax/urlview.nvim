@@ -22,27 +22,30 @@ function M.file(opts)
 end
 
 --- Extracts urls of packer.nvim plugins
+---@param opts table (map)
 ---@return table (list) of strings (extracted links)
-function M.packer()
+function M.packer(opts)
   -- selene: allow(global_usage)
   local plugins = _G.packer_plugins or {}
-  return search_helpers.extract_plugins_spec(plugins, "url")
+  return search_helpers.extract_plugins_spec(plugins, "url", opts.include_branch)
 end
 
 --- Extracts urls of lazy.nvim plugins
+---@param opts table (map)
 ---@return table (list) of strings (extracted links)
-function M.lazy()
+function M.lazy(opts)
   local ok, lazy = pcall(require, "lazy")
   local plugins = ok and lazy.plugins() or {}
-  local results = search_helpers.extract_plugins_spec(plugins, "url")
+  local results = search_helpers.extract_plugins_spec(plugins, "url", opts.include_branch)
   return search_helpers.remove_git_url_suffix(results)
 end
 
 --- Extracts urls of vim-plug plugins
+---@param opts table (map)
 ---@return table (list) of strings (extracted links)
-function M.vimplug()
+function M.vimplug(opts)
   local plugins = vim.g.plugs or {}
-  return search_helpers.extract_plugins_spec(plugins, "uri")
+  return search_helpers.extract_plugins_spec(plugins, "uri", opts.include_branch)
 end
 
 return setmetatable(M, {

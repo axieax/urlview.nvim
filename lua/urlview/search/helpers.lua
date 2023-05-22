@@ -80,16 +80,21 @@ end
 
 --- Extract Git links from @plugins_spec
 ---@param plugins_spec table @map of specs for plugins
----@param key string @key in plugin_spec containing the Git URL
+---@param uri_key string @key in plugin_spec containing the Git URL
+---@param include_branch boolean @whether to include the branch in the URL
 ---@return table @list of extracted links
-function M.extract_plugins_spec(plugins_spec, key)
+function M.extract_plugins_spec(plugins_spec, uri_key, include_branch)
   local function filter_files(plugin_url)
     local fs_stat = vim.loop.fs_stat(plugin_url)
     return not fs_stat or vim.tbl_isempty(fs_stat)
   end
 
   local function extract_key(plugin_spec)
-    return plugin_spec[key]
+    local uri = plugin_spec[uri_key]
+    if include_branch and plugin_spec.branch then
+      uri = string.format("%s/tree/%s", uri, plugin_spec.branch)
+    end
+    return uri
   end
 
   local plugins = vim.tbl_map(extract_key, vim.tbl_values(plugins_spec or {}))
