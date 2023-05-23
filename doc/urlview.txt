@@ -58,6 +58,15 @@ although it is less secure than the default HTTPS protocol.
 Default action to take upon selecting a URL from a picker. This should be any
 one of the actions in |urlview.actions|.
 
+                                         *urlview.config-default_include_branch*
+{default_include_branch}                                boolean (default: false)
+
+Default option for whether plugin URLs should link to the branch used by your
+package manager, for |urlview.search-lazy|, |urlview.search-packer| or
+|urlview.search-vimplug|. When this option is enabled, navigated links will
+open the plugin's repository to the specific branch specified to your plugin
+manager.
+
                                                          *urlview.config-unique*
 {unique}                                                 boolean (default: true)
 
@@ -144,15 +153,20 @@ The file search context allows a user to find URLs in a particular file. This
 requires passing in the parameter `filepath` for URLs in the desired file to be
 searched, for example with `:UrlView file filepath="/etc/hosts"`.
 
+Lazy Search Context                                       *urlview.search-lazy*
+
+This search context resolves Git repository URLs for plugins installed with
+the lazy.nvim plugin manager. Invoked with `:UrlView lazy`.
+
 Packer Search Context                                    *urlview.search-packer*
 
 This search context resolves Git repository URLs for plugins installed with
-the packer.nvim plugin manager.
+the packer.nvim plugin manager. Invoked with `:UrlView packer`.
 
-vim-plug Search Context                                *urlview.search-vim_plug*
+vim-plug Search Context                                 *urlview.search-vimplug*
 
 This search context resolves Git repository URLs for plugins installed with
-the vim-plug plugin manager.
+the vim-plug plugin manager. Invoked with `:UrlView vimplug`.
 
 Registering a custom search context                      *urlview.search-custom*
 

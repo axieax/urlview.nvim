@@ -1,6 +1,7 @@
 local M = {}
 
 local utils = require("urlview.utils")
+local config = require("urlview.config")
 
 --- Validates `value` is of `expected_type` and casts to expected type
 ---@param value any @value to validate
@@ -86,7 +87,7 @@ end
 ---@return table (map) of updated user options if `opts` is provided, otherwise returns all possible accepted options as a table (list)
 function M.packer(opts)
   return verify_or_accept(opts, {
-    include_branch = { "boolean", optional = true, default = true },
+    include_branch = { "boolean", optional = true, default = config.default_include_branch },
   })
 end
 
@@ -95,7 +96,7 @@ end
 ---@return table (map) of updated user options if `opts` is provided, otherwise returns all possible accepted options as a table (list)
 function M.lazy(opts)
   return verify_or_accept(opts, {
-    include_branch = { "boolean", optional = true, default = true },
+    include_branch = { "boolean", optional = true, default = config.default_include_branch },
   })
 end
 
@@ -104,7 +105,7 @@ end
 ---@return table (map) of updated user options if `opts` is provided, otherwise returns all possible accepted options as a table (list)
 function M.vimplug(opts)
   return verify_or_accept(opts, {
-    include_branch = { "boolean", optional = true, default = true },
+    include_branch = { "boolean", optional = true, default = config.default_include_branch },
   })
 end
 

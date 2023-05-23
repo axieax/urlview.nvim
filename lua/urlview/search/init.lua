@@ -36,8 +36,7 @@ end
 function M.lazy(opts)
   local ok, lazy = pcall(require, "lazy")
   local plugins = ok and lazy.plugins() or {}
-  local results = search_helpers.extract_plugins_spec(plugins, "url", opts.include_branch)
-  return search_helpers.remove_git_url_suffix(results)
+  return search_helpers.extract_plugins_spec(plugins, "url", opts.include_branch)
 end
 
 --- Extracts urls of vim-plug plugins
