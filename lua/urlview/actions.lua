@@ -1,6 +1,7 @@
 local M = {}
 
 local utils = require("urlview.utils")
+local config = require("urlview.config")
 
 --- Use command to open the URL
 ---@param cmd string @name of executable to run
@@ -55,7 +56,7 @@ end
 --- Copy URL to clipboard
 ---@param raw_url string @unescaped URL
 function M.clipboard(raw_url)
-  vim.api.nvim_command(string.format("let @+ = '%s'", raw_url))
+  vim.fn.setreg(config.default_register, raw_url)
   utils.log(string.format("URL %s copied to clipboard", raw_url), vim.log.levels.INFO)
 end
 

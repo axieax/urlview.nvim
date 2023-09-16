@@ -1,6 +1,9 @@
 local default_config = {
   -- Prompt title (`<context> <default_title>`, e.g. `Buffer Links:`)
   default_title = "Links:",
+  -- Set the register to use when yanking
+  -- Default: + (system clipboard)
+  default_register = "+",
   -- Default picker to display links with
   -- Options: "native" (vim.ui.select) or "telescope"
   default_picker = "native",
