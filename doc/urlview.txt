@@ -58,6 +58,11 @@ although it is less secure than the default HTTPS protocol.
 Default action to take upon selecting a URL from a picker. This should be any
 one of the actions in |urlview.actions|.
 
+                                                 *urlview.config-default_register*
+{default_register}                                     string (default: "+")
+
+Default register to use when yankying.
+
                                          *urlview.config-default_include_branch*
 {default_include_branch}                                boolean (default: false)
 
