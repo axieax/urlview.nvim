@@ -1,9 +1,6 @@
 local default_config = {
   -- Prompt title (`<context> <default_title>`, e.g. `Buffer Links:`)
   default_title = "Links:",
-  -- Set the register to use when yanking
-  -- Default: + (system clipboard)
-  default_register = "+",
   -- Default picker to display links with
   -- Options: "native" (vim.ui.select) or "telescope"
   default_picker = "native",
@@ -13,6 +10,9 @@ local default_config = {
   -- Options: "netrw", "system" (default OS browser), "clipboard"; or "firefox", "chromium" etc.
   -- By default, this is "netrw", or "system" if netrw is disabled
   default_action = "netrw",
+  -- Set the register to use when yanking
+  -- Default: + (system clipboard)
+  default_register = "+",
   -- Whether plugin URLs should link to the branch used by your package manager
   default_include_branch = false,
   -- Ensure links shown in the picker are unique (no duplicates)
