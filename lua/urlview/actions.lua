@@ -7,13 +7,16 @@ local config = require("urlview.config")
 ---@param cmd string @name of executable to run
 ---@param args string|table @arg(s) to pass into cmd (unescaped URL string or table of args)
 local function shell_exec(cmd, args)
-  if cmd and vim.fn.executable(cmd) then
+  if cmd and vim.fn.executable(cmd) == 1 then
     -- NOTE: `vim.fn.system` shellescapes arguments
     local cmd_args = { cmd }
     vim.list_extend(cmd_args, type(args) == "table" and args or { args })
     local err = vim.fn.system(cmd_args)
-    if err ~= "" then
-      utils.log(string.format("Could not navigate link with `%s`:\n%s", cmd, err), vim.log.levels.ERROR)
+    if vim.v.shell_error ~= 0 or err ~= "" then
+      utils.log(
+        string.format("Failed to navigate link with cmd `%s` and args `%s`\n%s", cmd, args, err),
+        vim.log.levels.ERROR
+      )
     end
   else
     utils.log(
