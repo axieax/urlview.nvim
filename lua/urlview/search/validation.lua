@@ -69,7 +69,7 @@ end
 ---@return table (map) of updated user options if `opts` is provided, otherwise returns all possible accepted options as a table (list)
 function M.buffer(opts)
   return verify_or_accept(opts, {
-    bufnr = { "number", optional = true },
+    bufnr = { "number", optional = true, default = 0 },
   })
 end
 
