@@ -85,11 +85,13 @@ end
 ---@return table @list of extracted links
 function M.extract_plugins_spec(plugins_spec, uri_key, include_branch)
   local function filter_files(plugin_url)
+    if plugin_url == nil then return false end
     local fs_stat = vim.loop.fs_stat(plugin_url)
     return not fs_stat or vim.tbl_isempty(fs_stat)
   end
 
   local function extract_key(plugin_spec)
+    if plugin_spec[uri_key] == nil then return nil end
     local uri = plugin_spec[uri_key]:gsub("%.git$", "") -- remove `.git` suffix
     if include_branch and plugin_spec.branch then
       uri = string.format("%s/tree/%s", uri, plugin_spec.branch)
