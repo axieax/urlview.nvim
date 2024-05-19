@@ -3,62 +3,27 @@ local M = {}
 local utils = require("urlview.utils")
 local config = require("urlview.config")
 
---- Validates `value` is of `expected_type` and casts to expected type
----@param value any @value to validate
----@param expected_type string @expected type
-local function validate_and_cast_type(value, expected_type)
-  if type(value) == expected_type then
-    return value
-  else
-    -- try to convert to expected type
-    if expected_type == "number" then
-      return tonumber(value)
-    elseif expected_type == "boolean" then
-      return utils.string_to_boolean(value)
-    elseif expected_type == "string" then
-      return tostring(value)
-    end
-  end
-end
-
---- Verifies `opts` if `opts` is provided, otherwise returns all possible accepted options
+--- Validates `opts` and sets default values if `opts` is provided, otherwise returns all possible accepted options
 ---@param opts table (map) of user options
----@param accepted_opts table (map) of accepted options
+---@param rules table (map) of vim.validate rules (with an optional fourth tuple member for default value)
 ---       (option_key (string) -> { type (string), optional: boolean, default: any })
 ---@return table (map) of updated user options if `opts` is provided, otherwise returns all possible accepted options as a table (list)
-local function verify_or_accept(opts, accepted_opts)
+local function verify_or_accept(opts, rules)
   if not opts then
     -- return valid options if `opts` not provided
-    return vim.tbl_keys(accepted_opts)
+    return vim.tbl_keys(rules)
   end
 
-  -- validate provided options if `opts` provided
   local new_opts = vim.deepcopy(opts)
-  for expected_key, expected_v in pairs(accepted_opts) do
-    local expected_type = expected_v[1]
-    local is_optional = expected_v.optional
-    local user_option = opts[expected_key]
-
-    if user_option == nil and not is_optional then
-      utils.log(string.format("Missing required option `%s`", expected_key), vim.log.levels.WARN)
-    elseif user_option == nil and is_optional then
-      if expected_v.default == nil then
-        utils.log(
-          string.format("Missing default validation field for optional key `%s`", expected_key),
-          vim.log.levels.WARN
-        )
-      end
-      new_opts[expected_key] = expected_v.default
-    else
-      new_opts[expected_key] = validate_and_cast_type(user_option, expected_type)
-      if new_opts[expected_key] == nil then
-        utils.log(
-          string.format("Invalid type for option `%s` (expected: %s)", expected_key, expected_type),
-          vim.log.levels.WARN
-        )
-      end
+  for key, value in pairs(rules) do
+    if #value == 4 and value[3] and opts[key] == nil then
+      local default = value[4]
+      new_opts[key] = default
+      rules[key][1] = default
     end
   end
+
+  vim.validate(rules)
   return new_opts
 end
 
@@ -69,7 +34,7 @@ end
 ---@return table (map) of updated user options if `opts` is provided, otherwise returns all possible accepted options as a table (list)
 function M.buffer(opts)
   return verify_or_accept(opts, {
-    bufnr = { "number", optional = true, default = 0 },
+    bufnr = { opts.bufnr, "number", true, 0 },
   })
 end
 
@@ -78,7 +43,7 @@ end
 ---@return table (map) of updated user options if `opts` is provided, otherwise returns all possible accepted options as a table (list)
 function M.file(opts)
   return verify_or_accept(opts, {
-    filepath = { "string", optional = false },
+    filepath = { opts.filepath, "string", false },
   })
 end
 
@@ -87,7 +52,7 @@ end
 ---@return table (map) of updated user options if `opts` is provided, otherwise returns all possible accepted options as a table (list)
 function M.packer(opts)
   return verify_or_accept(opts, {
-    include_branch = { "boolean", optional = true, default = config.default_include_branch },
+    include_branch = { opts.include_branch, "boolean", true, config.default_include_branch },
   })
 end
 
@@ -96,7 +61,7 @@ end
 ---@return table (map) of updated user options if `opts` is provided, otherwise returns all possible accepted options as a table (list)
 function M.lazy(opts)
   return verify_or_accept(opts, {
-    include_branch = { "boolean", optional = true, default = config.default_include_branch },
+    include_branch = { opts.include_branch, "boolean", true, config.default_include_branch },
   })
 end
 
@@ -105,7 +70,7 @@ end
 ---@return table (map) of updated user options if `opts` is provided, otherwise returns all possible accepted options as a table (list)
 function M.vimplug(opts)
   return verify_or_accept(opts, {
-    include_branch = { "boolean", optional = true, default = config.default_include_branch },
+    include_branch = { opts.include_branch, "boolean", true, config.default_include_branch },
   })
 end
 
