@@ -41,10 +41,16 @@ function M.telescope(items, opts)
       sorter = conf.generic_sorter(opts),
       attach_mappings = function(prompt_bufnr, _)
         actions.select_default:replace(function()
-          local selection = action_state.get_selected_entry()
+          local picker = action_state.get_current_picker(prompt_bufnr)
+          local multi = picker:get_multi_selection()
+          local single = picker:get_selection()
           actions.close(prompt_bufnr)
-          if selection[1] then
-            opts.action(selection[1])
+          if #multi > 0 then
+            for _, entry in ipairs(multi) do
+              opts.action(entry[1])
+            end
+          elseif single[1] then
+            opts.action(single[1])
           end
         end)
         return true
