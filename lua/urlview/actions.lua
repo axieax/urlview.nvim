@@ -7,22 +7,41 @@ local config = require("urlview.config")
 ---@param cmd string @name of executable to run
 ---@param args string|table @arg(s) to pass into cmd (unescaped URL string or table of args)
 local function shell_exec(cmd, args)
-  if cmd and vim.fn.executable(cmd) == 1 then
-    -- NOTE: `vim.fn.system` shellescapes arguments
-    local cmd_args = { cmd }
-    vim.list_extend(cmd_args, type(args) == "table" and args or { args })
-    local err = vim.fn.system(cmd_args)
-    if vim.v.shell_error ~= 0 or err ~= "" then
-      utils.log(
-        string.format("Failed to navigate link with cmd `%s` and args `%s`\n%s", cmd, args, err),
-        vim.log.levels.ERROR
-      )
-    end
-  else
+  -- NOTE: `vim.fn.system` shellescapes arguments
+  local cmd_args = { cmd }
+  vim.list_extend(cmd_args, type(args) == "table" and args or { args })
+
+  local err_cache = {}
+  local start_job_id = vim.fn.jobstart(cmd_args, {
+    on_exit = function(job_id, exit_code, _)
+      if exit_code ~= 0 then
+        local errors = err_cache[job_id]
+        local err = table.concat(vim.tbl_flatten(errors), "\n")
+        utils.log(
+          string.format("Failed to navigate link with cmd `%s` and args `%s`\n%s", cmd, args, err),
+          vim.log.levels.ERROR
+        )
+      end
+
+      err_cache[job_id] = nil
+    end,
+    on_stderr = function(job_id, err, _)
+      table.insert(err_cache[job_id], err)
+    end,
+  })
+
+  if start_job_id == -1 then
     utils.log(
       string.format("Cannot use command `%s` to navigate links (either empty or non-executable)", cmd),
       vim.log.levels.ERROR
     )
+  elseif start_job_id == 0 then
+    utils.log(
+      string.format("Cannot use command `%s` to navigate links (invalid arguments: `%s`)", cmd, args),
+      vim.log.levels.ERROR
+    )
+  else
+    err_cache[start_job_id] = {}
   end
 end
 
