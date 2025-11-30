@@ -16,6 +16,29 @@ function M.native(items, opts)
   vim.ui.select(items, options, on_choice)
 end
 
+--- Displays items using the fzf-lua picker
+---@param items table (list) of strings
+---@param opts table (map) of options
+function M.fzf_lua(items, opts)
+  local fzf = pcall(require, "fzf-lua")
+  if not fzf then
+    utils.log("fzf-lua is not installed, defaulting to native vim.ui.select picker.", vim.log.levels.INFO)
+    return M.native(items, opts)
+  end
+
+  require("fzf-lua").fzf_exec(items, {
+    prompt = opts.title,
+    fzf_opts = { ["--multi"] = true },
+    actions = {
+      ["default"] = function(selected)
+        for _, entry in ipairs(selected) do
+          opts.action(entry)
+        end
+      end,
+    },
+  })
+end
+
 --- Displays items using the Telescope picker
 ---@param items table (list) of strings
 ---@param opts table (map) of options

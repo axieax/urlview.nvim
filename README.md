@@ -15,7 +15,7 @@
 ✨ UrlView is an extensible plugin for the [Neovim](https://neovim.io) text editor which essentially:
 
 1. Finds URLs from a variety of **search contexts** (e.g. from a buffer, file, plugin URLs)
-2. Displays these URLs in a **picker**, such as the built-in `vim.ui.select` or [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
+2. Displays these URLs in a **picker**, such as the built-in `vim.ui.select`, [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim), or [fzf-lua](https://github.com/ibhagwan/fzf-lua).
 3. Performs **actions** on selected URLs, such as navigating to the URL in your preferred browser, or copying the link to your clipboard
 
 🎯 Additional features and example use cases include:
@@ -113,6 +113,13 @@ You can customise the appearance of `vim.ui.select` with plugins such as [dressi
 - Additional requirements (only if you're using this picker): [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
 - You can use Telescope as your `default_picker` using the `require("urlview").setup` function
 - Alternatively, you can specify a picker dynamically with `:UrlView <ctx> picker=telescope`
+
+### 📑 fzf-lua
+
+- Optional picker option
+- Additional requirements (only if you're using this picker): [fzf-lua](https://github.com/ibhagwan/fzf-lua)
+- You can use fzf-lua as your `default_picker` using the `require("urlview").setup` function
+- Alternatively, you can specify a picker dynamically with `:UrlView <ctx> picker=fzf_lua`
 
 ## 🚧 Stay Updated
 
