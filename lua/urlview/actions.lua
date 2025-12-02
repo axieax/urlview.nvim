@@ -31,7 +31,7 @@ end
 function M.netrw(raw_url)
   local url = vim.fn.shellescape(raw_url)
   local ok, err = pcall(vim.cmd, string.format("call netrw#BrowseX(%s, netrw#CheckIfRemote(%s))", url, url))
-  if not ok and vim.startswith(err, "Vim(call):E117: Unknown function") then
+  if not ok and string.find(err, "Vim(call):E117: Unknown function", 1, true) then
     -- lazily use system action if netrw is disabled
     M.system(raw_url)
   end
